@@ -1,0 +1,48 @@
+//
+// Mesosphere privacy enhanced execution configuration
+//
+
+#if defined(VIP_NA_MODE)
+
+#define VIP_INIT
+#define VIP_ENCCHAR     char
+#define VIP_ENCINT      int
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCBOOL     bool
+#define VIP_ENCFLOAT    float
+#define VIP_ENCDOUBLE   double
+#define VIP_DEC(X)      (X)
+
+#elif defined(VIP_DO_MODE)
+
+#define VIP_INIT
+#define VIP_ENCCHAR     char
+#define VIP_ENCINT      int
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCBOOL     bool
+#define VIP_ENCFLOAT    float
+#define VIP_ENCDOUBLE   double
+#define VIP_DEC(X)      (X)
+#define VIP_CMOV(P,A,B) ((P) ? (A) : (B))
+
+#elif defined(VIP_ENC_MODE)
+
+#include "meso.h"
+
+#define VIP_INIT        MesoInit()
+
+#define VIP_ENCCHAR     MesoSealedChar
+#define VIP_ENCINT      MesoSealedInt32
+#define VIP_ENCUINT     MesoSealedUInt32
+#define VIP_ENCBOOL     MesoSealedBool
+#define VIP_ENCFLOAT    MesoSealedFloat
+#define VIP_ENCDOUBLE   MesoSealedDouble
+#define VIP_DEC(X)      ((X).asval())
+#define VIP_CMOV(P,A,B) MesoCMOV((P), (A), (B))
+
+// Meso require DO mode code
+#undef  VIP_DO_MODE
+#define VIP_DO_MODE
+
+#endif
+

@@ -1,0 +1,12 @@
+Attic/
+config.h
+config.mk
+*.o
+*.log
+*.na
+*.do
+*.oz
+*.swp
+FOO
+FOO1
+

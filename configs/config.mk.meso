@@ -1,0 +1,21 @@
+CC  = gcc
+CXX = g++
+LD  = g++
+
+OPT_CFLAGS = -O0 -g
+
+NA_CFLAGS =
+NA_LIBS =
+NA_SIM =
+NA_DIFF = diff
+
+DO_CFLAGS =
+DO_LIBS =
+DO_SIM =
+DO_DIFF = diff
+
+ENC_CFLAGS = -I../../mesosphere -DTARGET_EMUL
+ENC_LIBS = ../../mesosphere/mesolib.a
+ENC_SIM =
+ENC_DIFF = diff
+
