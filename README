@@ -1,8 +1,8 @@
-##
-## VIP (Very Improvable Privacy) Benchmark Suite
-##
+#
+# VIP (Very Improvable Privacy) Benchmark Suite
+#
 
-# Introduction
+## Introduction
 
 This is the VIP Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
 A privacy-enhance computation framework is one in which encrypted data can be directly processed without sofware needing to decrypt it.
@@ -22,7 +22,7 @@ these benchmarks, we felt it was important to take a great-common-demoninator ap
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
 
 
-# VIP Benchmarks
+## VIP Benchmarks
 
 The VIP benchmarks were selected for their (mostly) obvious demands for data privacy. Currently, the benchmark suite supports the following
 benchmarks.
@@ -34,7 +34,7 @@ benchmarks.
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
 
 
-# Building and Running the VIP Benchmarks
+## Building and Running the VIP Benchmarks
 
 First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. For example, to configure the benchmarks for Agita Labs' Mesosphere encrypted computation library, execute the following commands:
 ```
@@ -69,7 +69,7 @@ make MODE=enc clean
 ```
 
 
-# Porting the VIP Benchmarks to Another Privacy-Enhanced Computation Framework
+## Porting the VIP Benchmarks to Another Privacy-Enhanced Computation Framework
 
 The benchmarks suite is designed to be readily ported to other privacy-emhanced computation frameworks. To accomplish this, one needs to define
 the approach "config.mk" and "config.h" in the directory "configs/". "config.mk" teaches the top-level makefile how to build the three modes
@@ -79,7 +79,7 @@ data type (for validating test results only), and conditional move primitives. T
 support both fixed and floating point math.
 
 
-# Porting New Benchmarks into the VIP Benchmark Suite
+## Porting New Benchmarks into the VIP Benchmark Suite
 
 We are eager to include new benchmarks into the VIP Benchmark Suite, however, we ask contributors to limit their contributions to benchmarks that
 accomplish a non-trivial goal that clear fills a privacy need. New benchmarks do not need to be large and complicated, though, but try to make
@@ -101,12 +101,12 @@ semantics: VIP_CMOV(P,T,F) == P ? T : F. This predication primitive is used by t
 data-oblivious manner.
 
 
-# Licensing Details
+## Licensing Details
 
 The portions of the benchmark suite that was build by the VIP Benchmark team are (C) 2019-2020 and available for use under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 
-# VIP Benchmark Suite Authors
+## VIP Benchmark Suite Authors
 
 - Fitsum Andargiae, AAiT
 - Todd Austin, UM and Agita Labs
