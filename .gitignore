@@ -9,4 +9,6 @@ config.mk
 *.swp
 FOO
 FOO1
+*.enc
+*.na
 
