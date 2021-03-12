@@ -111,9 +111,6 @@ main(void)
   /*** GWAS COMPUTATION ***/
   //Calculate constant scalar r1
   VIP_ENCDOUBLE r1 = 0;
-  cout << sData.size() << endl;
-  cout << sData[0].size() << endl;
-  cout << sData.size() << endl;
   for (int i=0; i<yData.size(); i++)
   {
       r1 = r1 + 2*(yData[i]*yData[i]);
@@ -134,14 +131,20 @@ main(void)
       c1 = c1 + sData[j][i];  // Sum all values of SNP[i] for the N indivuduals
     }
     
+    // cout<< i << ": " << c1 <<"; " << r1 <<"; " << n_11 << endl;
+
+    // if(i>4095 && i<4099){
+    //   cout<< i << ": " << c1 <<"; " << r1 <<"; " << n_11 << "; " << 2*N<< endl;
+    // }
+
     //Calculate chi2 and or for SNP[i]
     VIP_ENCDOUBLE chi2_i_num = 2*n_11*N - c1*r1;
     chi2_i_num = 2*N*chi2_i_num*chi2_i_num; //Instead of using pow...
     VIP_ENCDOUBLE chi2_i = (chi2_i_num)/((c1*(2*N - c1)*r1 * (2*N - r1)));      
-    cout << "INFO: chi2(" << headersS[i] << ") == " << VIP_DEC(chi2_i) << endl;
+    cout << i << "::INFO: chi2(" << headersS[i] << ") == " << VIP_DEC(chi2_i) << endl;
 
     VIP_ENCDOUBLE or_i = (n_11*(n_11 - r1 - c1 + 2*N))/((c1 - n_11)*(r1 - n_11));
-    cout << "INFO: or(" << headersS[i] << ") == " << VIP_DEC(or_i) << endl;
+    cout << i << "::INFO: or(" << headersS[i] << ") == " << VIP_DEC(or_i) << endl;
   }
   /*** END GWAS COMPUTATION ***/
 
