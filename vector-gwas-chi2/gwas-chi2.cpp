@@ -19,11 +19,8 @@ using namespace std;
 #include "../config.h"
 
 
-
-
-VIP_VEC_ENCDOUBLE BinaryTreeAdd(vector<VIP_VEC_ENCDOUBLE> &vector) {
-
-
+VIP_VEC_ENCDOUBLE BinaryTreeAdd(vector<VIP_VEC_ENCDOUBLE> &vector) 
+{
 	for(size_t j = 1; j < vector.size(); j=j*2) {
 		for(size_t i = 0; i<vector.size(); i = i + 2*j) {
 			if ((i+j)<vector.size())
@@ -32,7 +29,6 @@ VIP_VEC_ENCDOUBLE BinaryTreeAdd(vector<VIP_VEC_ENCDOUBLE> &vector) {
 	}
 
   VIP_VEC_ENCDOUBLE ret = vector[0];
-	// Ciphertext<DCRTPoly> result(new CiphertextImpl<DCRTPoly>(*(vector[0])));
 	return ret;
 }
 
@@ -114,9 +110,8 @@ main(void)
 
 
   /*** Initialized PACKED Vectors for SIMD Computation ***/
-  int max_vector_len = 4096; //WORKS 16384;
+  int max_vector_len = 4096; 
 	int sizeS = (size_t)std::ceil((double)sData[0].size()/(max_vector_len)); //# of SNPS divided by # of slots
-  // cout << sizeS << endl; //SHOULD BE 4
 
 	vector<vector<VIP_VEC_ENCDOUBLE>> sDataArray(sizeS);
 
@@ -138,77 +133,62 @@ main(void)
 		}
 	}
 
-
+  // I think this is redundant, but used by palisade version...
   vector<vector<VIP_VEC_ENCDOUBLE>> S(sizeS);
 	vector<VIP_VEC_ENCDOUBLE> Y(N);
 
 	for (size_t i = 0; i < sizeS; i++)
 		S[i] = vector<VIP_VEC_ENCDOUBLE>(N);
 
-	//Encryption of single-integer ciphertexts
 	for (size_t i=0; i<N; i++){
 		for (size_t s=0; s < sizeS; s++){
 			S[s][i] = sDataArray[s][i];
 		}
 		Y[i] = VIP_VEC_ENCDOUBLE(yData[i], max_vector_len);
-    // cout << Y[i][0] << " " << yData[i] << endl;
 	}
-
   /*** END Initialized PACKED Vectors... ***/
 
-  /** Compute d **/
-	VIP_VEC_ENCDOUBLE d = VIP_VEC_ENCDOUBLE((2*N), max_vector_len); //[2N, 2N, 2N, ...]
-  // cout << d[0] << d[1] << d[100] << endl;
-  // cout << d.size() << endl;
 
-  /** Compute r1, same as scalar-GWAS comuatation... Palisade is different, uses binary tree add */
-  //From palisade:
+
+  /*** GWAS COMPUTATION ***/
+  //Calculate constant d
+	VIP_VEC_ENCDOUBLE d = VIP_VEC_ENCDOUBLE((2*N), max_vector_len); //[2N, 2N, 2N, ...]
+
+  //Calculate r1
   vector<VIP_VEC_ENCDOUBLE> ySum = Y;
 	VIP_VEC_ENCDOUBLE yU = BinaryTreeAdd(ySum);
   VIP_VEC_ENCDOUBLE r1 = yU + yU;
 
-  /*** GWAS COMPUTATION ***/
-
-	for (int s = 0; s < sizeS; s++)   //Loop over s vectors of SNPs
+	for (int s = 0; s < sizeS; s++)   //Loop over s groups of M/s SNPs
   {
     //Calculate VECTOR n_11
-    //n_11 = yData.transform() . S[s];
-    //From palisade:
 		vector<VIP_VEC_ENCDOUBLE> ySMult(N);
-		for(int i = 0; i < N; i++) {
+		for(int i = 0; i < N; i++) 
+    {
 			ySMult[i] = (S[s][i])*Y[i]; 
 		}
-		VIP_VEC_ENCDOUBLE n_11 = BinaryTreeAdd(ySMult); //Sum elements in each vector
-    //End palisade:
-
+		VIP_VEC_ENCDOUBLE n_11 = BinaryTreeAdd(ySMult); 
 
     //Calculate VECTOR c1
-    //From palisade: 
     VIP_VEC_ENCDOUBLE c1 = BinaryTreeAdd(S[s]); 
-    //End palisade:
 
 
     // DO NOT REMOVE BELOW OR THINGS BREAK
-    // for(int k=0; k<3; k++){
-       cout << endl;
-    // }
+    cout << endl;
     // DO NOT REMOVE ABOVE OR THINGS BREAK
 
 
+    //Calculate chi2 and or for SNP vector
+    VIP_VEC_ENCDOUBLE chi2_num = (n_11*d) - (c1*r1);
+    chi2_num = d*chi2_num*chi2_num; //Instead of using pow...
+    VIP_VEC_ENCDOUBLE chi2_s = (chi2_num)/((c1*(d - c1)*r1 * (d - r1)));      
 
-    //Calculate chi2 and or for SNP[i]
-    VIP_VEC_ENCDOUBLE chi2_i_num = (n_11*d) - (c1*r1);
-    chi2_i_num = d*chi2_i_num*chi2_i_num; //Instead of using pow...
+    VIP_VEC_ENCDOUBLE or_s = (n_11*(n_11 - r1 - c1 + d))/((c1 - n_11)*(r1 - n_11));
 
-    VIP_VEC_ENCDOUBLE chi2_i = (chi2_i_num)/((c1*(d - c1)*r1 * (d - r1)));      
-    // cout << "INFO: chi2(" << headersS[0] << ") == " << VIP_DEC(chi2_i[0]) << endl;
-
-    VIP_VEC_ENCDOUBLE or_i = (n_11*(n_11 - r1 - c1 + d))/((c1 - n_11)*(r1 - n_11));
-    // cout << "INFO: or(" << headersS[0] << ") == " << VIP_DEC(or_i[0]) << endl;
-
-    for(int i=0; i<max_vector_len; i++){
-        cout << (s*max_vector_len) + i << "::INFO: chi2(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_i[i]) << endl;
-        cout << (s*max_vector_len) + i << "::INFO: or(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_i[i]) << endl;
+    for(int i=0; i<max_vector_len; i++)
+    {
+        cout << "INFO: chi2(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_s[i]) << endl;
+        cout << "INFO: or(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_s[i]) << endl;
 
     }
   }
