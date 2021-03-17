@@ -272,10 +272,10 @@ VIP_ENCDOUBLE j_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int re
 typedef VIP_ENCDOUBLE (*method_fn)(VIP_ENCDOUBLE, VIP_ENCDOUBLE, VIP_ENCDOUBLE, int);
 static method_fn methods[] = {
           strict_iteration,
-					strict_iteration, // newton,
-					strict_iteration, // binary,
-					strict_iteration, // e_series,
-					strict_iteration, // j_series,
+					newton,
+					binary,
+					e_series,
+					j_series,
 				};
 
 #define NMETHODS (sizeof methods /sizeof(void *))
