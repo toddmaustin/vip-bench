@@ -5,8 +5,10 @@ config.mk
 *.log
 *.na
 *.do
-*.oz
+*.enc
 *.swp
 FOO
 FOO1
+*.enc
+*.na
 
