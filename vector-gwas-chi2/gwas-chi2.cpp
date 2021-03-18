@@ -174,21 +174,21 @@ main(void)
 
 
     // DO NOT REMOVE BELOW OR THINGS BREAK
-    cout << endl;
+    // cout << endl;
     // DO NOT REMOVE ABOVE OR THINGS BREAK
 
 
     //Calculate chi2 and or for SNP vector
     VIP_VEC_ENCDOUBLE chi2_num = (n_11*d) - (c1*r1);
-    chi2_num = d*chi2_num*chi2_num; //Instead of using pow...
-    VIP_VEC_ENCDOUBLE chi2_s = (chi2_num)/((c1*(d - c1)*r1 * (d - r1)));      
+    VIP_VEC_ENCDOUBLE chi2a_num = d*chi2_num*chi2_num; //Instead of using pow...
+    VIP_VEC_ENCDOUBLE chi2_s = (chi2a_num)/((c1*(d - c1)*r1 * (d - r1)));      
 
     VIP_VEC_ENCDOUBLE or_s = (n_11*(n_11 - r1 - c1 + d))/((c1 - n_11)*(r1 - n_11));
 
     for(int i=0; i<max_vector_len; i++)
     {
-        cout << "INFO: chi2(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_s[i]) << endl;
-        cout << "INFO: or(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_s[i]) << endl;
+        cout << "INFO: chi2(" << s << ",  " << i << ", " << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_s[i]) << endl;
+        cout << "INFO: or(" << s << ",  " << i << ", " << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_s[i]) << endl;
 
     }
   }
