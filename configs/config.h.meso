@@ -8,6 +8,8 @@
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
@@ -19,6 +21,8 @@
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
@@ -34,6 +38,8 @@
 #define VIP_ENCCHAR     MesoSealedChar
 #define VIP_ENCINT      MesoSealedInt32
 #define VIP_ENCUINT     MesoSealedUInt32
+#define VIP_ENCLONG     MesoSealedLong64
+#define VIP_ENCULONG    MesoSealedULong64
 #define VIP_ENCBOOL     MesoSealedBool
 #define VIP_ENCFLOAT    MesoSealedFloat
 #define VIP_ENCDOUBLE   MesoSealedDouble
