@@ -187,8 +187,8 @@ main(void)
 
     for(int i=0; i<max_vector_len; i++)
     {
-        cout << "INFO: chi2(" << s << ",  " << i << ", " << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_s[i]) << endl;
-        cout << "INFO: or(" << s << ",  " << i << ", " << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_s[i]) << endl;
+        cout << "INFO: chi2(" << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(chi2_s[i]) << endl;
+        cout << "INFO: or("   << headersS[(s*max_vector_len) + i] << ") == " << VIP_DEC(or_s[i]) << endl;
 
     }
   }
