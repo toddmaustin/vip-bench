@@ -1,6 +1,5 @@
-//
-// 
-//
+#ifndef CONFIG_SE_H
+#define CONFIG_SE_H
 
 #if defined(VIP_NA_MODE)
 
@@ -10,6 +9,8 @@
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     uint64_t
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
@@ -24,6 +25,8 @@
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     uint64_t
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
@@ -41,6 +44,8 @@
 #define VIP_ENCCHAR     enc_char
 #define VIP_ENCINT      enc_int
 #define VIP_ENCUINT     enc_uint
+#define VIP_ENCLONG     enc_long
+#define VIP_ENCULONG    enc_ulong
 #define VIP_ENCBOOL     enc_bool
 #define VIP_ENCFLOAT    enc_float
 #define VIP_ENCDOUBLE   enc_double
@@ -54,3 +59,4 @@
 
 #endif
 
+#endif
