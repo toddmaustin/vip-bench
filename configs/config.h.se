@@ -38,6 +38,7 @@
 
 #include "se.h"
 #include <valarray>
+using namespace enc_lib;
 
 #define VIP_INIT        SEInit()
 

@@ -1,6 +1,6 @@
 #ifndef MATHLIB_H
 #define MATHLIB_H
-
+#include "../config.h"
 VIP_ENCDOUBLE myfloor(VIP_ENCDOUBLE x);
 VIP_ENCDOUBLE myfabs(VIP_ENCDOUBLE x);
 VIP_ENCDOUBLE mypow(VIP_ENCDOUBLE x, unsigned exp);
