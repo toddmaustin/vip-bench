@@ -1,0 +1,279 @@
+/* parrando.c: simulation of J. Parrando's probability paradox */
+
+
+/* Parrondo's game is based upon two simple games of chance.
+
+        The gambler's fortune starts at 0.
+
+	The simple game: Toss a biased coin and win +1 with probability
+		S_WIN_PROB (defined below). Otherwise win -1; 
+
+	The complex game: If the player's fortune is divisible by 3, toss
+		the "bad coin" having win probability BAD_WIN_PROB.
+		If the player's fortune is not divisible by 3 toss the
+                "good coin" having win probability GOOD_WIN_PROB.
+
+	A game ends when the accumlated fortune exceeds MAX_FORTUNE ( a "win" )
+	or dips below -MAX_FORTUNE ( a "loss .)  
+
+	The numbers are chosen so that each game is quite unfavorable.
+        Remarkably, when the games are alternated at random, the resulting
+        game is quite favorable.
+
+	This program simulates many trials of a Parrondo game and reports
+        statistics on their outcomes. (It can also simulate the simple and
+        complex games individually.) The number of trials, fortune limits,
+        and a seed for the random number can be supplied on the command line.
+        The -h option prints detailed help. 
+
+	For more information on Parrondo games and related phenomena see
+        J. Parrondo's website, http://seneca.fis.ucm.es/parr/,  or the
+        announcement in Nature magazine, 23/30, December 1999.
+*/
+
+/* compile: cc -o parrondo parrondo.c 
+
+      Use -D_NO_RANDOM if your library doesn't have random/srandom. Most do,
+       	but the only truly portable RNG is rand/srand. Unfortunately it has
+        very poor performance, so you should use random if possible.
+
+      Use -D_MAX_RAND=  to set the size of the maximum value returned by
+         random(). The portable RNG rand() always returns a maximum of 
+         RAND_MAX (defined in stdlib.h), but some implementations of random
+         do not use this value. Read the man page for random to be sure. A
+	 common value is 2^31-1 = 2147483647. In so, and this is not the
+         value of RAND_MAX on your system, you would compile with
+         -D_MAX_RAND=214748367.
+
+      Use -D_SHORT_STRINGS if your compiler does not support multiline
+          string constants.
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "../config.h"
+
+#define VERSION "1.1"
+#define USAGE "parrondo [ -s number -t number -m number -1 -2 -h -v]"
+#ifndef _SHORT_STRINGS
+#define HELP "parrondo [ -s number -t number -m number -1 -2 ]\n\n\
+Print information on simulations of Parrondo's paradoxical game.\n\n\
+-s: Use next argument as RNG seed. (otherwise use system time as seed.)\n\
+-t: Use next argument as number of trials. Default 10000.\n\
+-m: Use number as max fortune (win), -number as min fortune(loss). Default 50. \n\
+-v: Print version number and exit. \n\
+-h: Print this helpful information. \n\
+-1: Simulate simple game alone.\n\
+-2: Simulate complex game alone.\n\n"
+#else
+#define HELP USAGE
+#endif
+
+
+#ifdef _NO_RANDOM
+#define RANDOM rand
+#define SRANDOM srand
+#else
+#define RANDOM random
+#define SRANDOM srandom
+#endif
+
+#define MAX_ITERATIONS 1000L   //Iterations per trial
+#define TRIALS 100             //Trials per run
+#define RUNS   10              //Runs
+#define INITIAL_SEED 1
+#ifndef _MAX_RAND
+#define _MAX_RAND RAND_MAX
+#endif
+
+
+/* Default values */
+VIP_ENCINT MAX_FORTUNE 	  = 50;
+
+
+/* See above for meaning of these */
+VIP_ENCDOUBLE S_WIN_PROB 	  = 0.495;
+VIP_ENCDOUBLE BAD_WIN_PROB   = 0.095;
+VIP_ENCDOUBLE GOOD_WIN_PROB  = 0.745;
+
+VIP_ENCINT zero        =   0;
+VIP_ENCINT one         =   1;
+VIP_ENCINT neg_one     =   -1;
+
+
+double getrand()
+{
+	double U;   /* U(0,1) random variable */
+	U = ((double)RANDOM())/((double)_MAX_RAND);
+
+	return U;
+}
+
+VIP_ENCINT cointoss(VIP_ENCDOUBLE p, double U)
+{
+#ifndef VIP_DO_MODE
+  VIP_ENCINT ret = p<=U ? -1 : 1;
+#else
+	VIP_ENCINT ret = VIP_CMOV(p<=U, neg_one, one);
+#endif
+	return ret;
+} 
+
+/* One play of the simple game: +1 if win, -1 if loss. */
+VIP_ENCINT play_s(double U)
+{
+	return cointoss(S_WIN_PROB, U);
+}
+
+/* One play of the complicated game: +1 if win, -1 if loss. */
+VIP_ENCINT play_c(VIP_ENCINT fortune, double U)
+{
+#ifndef VIP_DO_MODE
+	if( fortune % 3 )
+		return cointoss(GOOD_WIN_PROB, U);
+	return cointoss(BAD_WIN_PROB, U);
+#else
+  VIP_ENCINT ret = VIP_CMOV(fortune % 3, cointoss(GOOD_WIN_PROB, U), cointoss(BAD_WIN_PROB, U));
+  return ret; 
+#endif
+}
+	
+
+
+int
+main(void)
+{
+	long n=0L;
+	double n_bar, n_tot=0.0;
+
+	VIP_ENCINT m; 
+	VIP_ENCINT win_count = zero;
+	VIP_ENCINT loss_count = zero;
+	VIP_ENCINT site_visits[3];  /* counts visits to numbers mod 3 */
+  for(int i=0;i<3;i++) site_visits[i] = zero;  /* initialize counters */
+	VIP_ENCINT fortune = zero;
+	VIP_ENCINT max_fortune = MAX_FORTUNE;
+	
+  /* Governs a coin toss below which selects between games. 
+     Setting this to 1.0 chooses complex game only. Setting 
+     to 0.0 chooses simple game only. 
+	*/  
+	VIP_ENCDOUBLE game_select = 0.5;                               
+
+
+	SRANDOM((int)INITIAL_SEED);
+  int SEED_STREAM[TRIALS*RUNS];
+  for(int i=0; i<TRIALS*RUNS; i++){
+    SEED_STREAM[i] = RANDOM();
+  }
+
+
+	for(int i=0; i<RUNS; i++){
+		win_count = zero;
+		loss_count = zero;
+		fortune = zero;
+		max_fortune = MAX_FORTUNE;
+		n=0L;
+		n_bar = n_tot=0.0;
+
+		printf("Simulating %d trials ...\n", TRIALS);
+		for(int j=0; j<TRIALS; j++)
+    { 
+
+			/* reseed with predetermined seed stream*/
+			SRANDOM(SEED_STREAM[(i*TRIALS)+j]);
+      n=0L;
+
+			/* Each trial: loop until fortune goes out of range */
+			fortune = zero;
+			VIP_ENCBOOL done = false; 
+			for(int k=0; k<MAX_ITERATIONS; k++)
+      {
+        VIP_ENCBOOL cond = (cointoss(game_select, getrand())==1); 
+				double U = getrand(); 
+
+#ifndef VIP_DO_MODE
+        if (cond) 
+          fortune += play_c(fortune,U);
+        else
+          fortune += play_s(U);
+#else
+				VIP_ENCINT if_result = play_c(fortune, U); 
+				VIP_ENCINT else_result = play_s(U);
+				fortune += VIP_CMOV(!done, VIP_CMOV(cond, if_result, else_result), 0);
+#endif
+
+#ifndef VIP_DO_MODE
+        done = (fortune >= max_fortune)||(fortune <= -max_fortune);
+        if(VIP_DEC(done))
+          break;
+#else
+				done = VIP_CMOV(!done && ((fortune >= max_fortune)||(fortune <= -max_fortune)), true, done); 
+#endif
+
+#ifndef VIP_DO_MODE
+        m = (fortune > 0) ? fortune : -fortune;
+#else
+				m = VIP_CMOV(!done, VIP_CMOV(fortune > 0, fortune, -fortune), m);
+#endif
+
+#ifndef VIP_DO_MODE
+        site_visits[m%3]++;	
+#else
+        VIP_ENCINT index = m%3;
+        site_visits[0] += VIP_CMOV(!done && index==0, 1, 0);
+        site_visits[1] += VIP_CMOV(!done && index==1, 1, 0);
+        site_visits[2] += VIP_CMOV(!done && index==2, 1, 0);
+#endif
+
+#ifndef VIP_DO_MODE
+        n++;
+#else 
+        n += VIP_CMOV(!done, 1, 0); // Number of iters
+#endif
+			} // Iteration loop (k)
+
+
+      /*** Aggregate stats for Trial-j ***/
+      // Increment total iteration count with results from this trial
+      n_tot += n;
+      // Increment win count/loss count with results from this trial
+#ifndef VIP_DO_MODE
+			if(fortune == max_fortune)
+				win_count++;
+			else if(fortune == -max_fortune)
+				loss_count++;
+#else
+      VIP_ENCBOOL cond1 = (fortune == max_fortune); 
+			VIP_ENCBOOL cond2 = (fortune == -max_fortune);
+			win_count =  VIP_CMOV(cond1, win_count+1, win_count);
+			loss_count = VIP_CMOV(!cond1 && cond2, loss_count+1, loss_count);
+#endif
+
+		} // Trial loop (j)
+	
+    
+		/*** Print Results of this run ***/
+    n_bar = n_tot/((double)TRIALS);
+		printf("%d wins, %d losses, %d draws\n",
+            VIP_DEC(win_count),
+				    VIP_DEC(loss_count), 
+            TRIALS-VIP_DEC(win_count+loss_count));
+		printf("Average trial length = %g\n",n_bar);
+		int sv_0 = VIP_DEC(site_visits[0]);
+		int sv_1 = VIP_DEC(site_visits[1]);
+		int sv_2 = VIP_DEC(site_visits[2]);
+		printf("Site occupancy: 0 mod 3: %g%%, 1 mod 3: %g%%, 2 mod 3: %g%%\n",
+			100.0*((double)sv_0)/n_tot,			//*** n_tot is a loop count, so not d-o
+			100.0*((double)sv_1)/n_tot,			//*** site_visits is. Here we are printing result
+			100.0*((double)sv_2)/n_tot
+		);
+
+	} // Run loop (i)
+
+	return 0;
+
+}
+
