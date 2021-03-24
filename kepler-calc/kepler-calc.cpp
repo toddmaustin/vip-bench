@@ -297,6 +297,8 @@ int newmain(int argc, const char **argv);
 int
 main(void)
 {
+  VIP_INIT;
+
   // test parameters
   printf("Solve Kepler's Eq via	simple iteration for test parameters...\n"); 
   {
