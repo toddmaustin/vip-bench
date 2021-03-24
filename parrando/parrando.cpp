@@ -90,17 +90,15 @@ Print information on simulations of Parrondo's paradoxical game.\n\n\
 
 
 /* Default values */
-VIP_ENCINT MAX_FORTUNE 	  = 50;
+int MAX_FORTUNE 	  = 50;
 
 
 /* See above for meaning of these */
-VIP_ENCDOUBLE S_WIN_PROB 	  = 0.495;
-VIP_ENCDOUBLE BAD_WIN_PROB   = 0.095;
-VIP_ENCDOUBLE GOOD_WIN_PROB  = 0.745;
+double S_WIN_PROB 	  = 0.495;
+double BAD_WIN_PROB   = 0.095;
+double GOOD_WIN_PROB  = 0.745;
 
-VIP_ENCINT zero        =   0;
-VIP_ENCINT one         =   1;
-VIP_ENCINT neg_one     =   -1;
+
 
 
 double getrand()
@@ -116,7 +114,7 @@ VIP_ENCINT cointoss(VIP_ENCDOUBLE p, double U)
 #ifndef VIP_DO_MODE
   VIP_ENCINT ret = p<=U ? -1 : 1;
 #else
-	VIP_ENCINT ret = VIP_CMOV(p<=U, neg_one, one);
+	VIP_ENCINT ret = VIP_CMOV(p<=U, (VIP_ENCINT)-1, (VIP_ENCINT)1);
 #endif
 	return ret;
 } 
@@ -135,7 +133,7 @@ VIP_ENCINT play_c(VIP_ENCINT fortune, double U)
 		return cointoss(GOOD_WIN_PROB, U);
 	return cointoss(BAD_WIN_PROB, U);
 #else
-  VIP_ENCINT ret = VIP_CMOV(fortune % 3, cointoss(GOOD_WIN_PROB, U), cointoss(BAD_WIN_PROB, U));
+  VIP_ENCINT ret = VIP_CMOV( (fortune % 3) != 0, cointoss(GOOD_WIN_PROB, U), cointoss(BAD_WIN_PROB, U));
   return ret; 
 #endif
 }
@@ -145,13 +143,15 @@ VIP_ENCINT play_c(VIP_ENCINT fortune, double U)
 int
 main(void)
 {
-	VIP_ENCLONG n=0L;
+  VIP_INIT;
+
+  VIP_ENCINT n=0;
 	VIP_ENCDOUBLE n_bar, n_tot=0.0;
-	VIP_ENCINT win_count = zero;
-	VIP_ENCINT loss_count = zero;
+	VIP_ENCINT win_count = 0;
+	VIP_ENCINT loss_count = 0;
 	VIP_ENCINT site_visits[3];                   // Counts visits to numbers mod 3 
-  for(int i=0;i<3;i++) site_visits[i] = zero;  // Initialize counters 
-	VIP_ENCINT fortune = zero;
+  for(int i=0;i<3;i++) site_visits[i] = 0;     // Initialize counters 
+	VIP_ENCINT fortune = 0;
 	
   /* Governs a coin toss below which selects between games. 
      Setting this to 1.0 chooses complex game only. Setting 
@@ -172,10 +172,10 @@ main(void)
 	for(int i=0; i<RUNS; i++)
   {
     /*** Prepare run variables ***/
-		win_count = zero;
-		loss_count = zero;
-		fortune = zero;
-		n=0L;
+		win_count = 0;
+		loss_count = 0;
+		fortune = 0;
+		n=0;
 		n_bar = n_tot=0.0;
 		printf("Simulating %d trials ...\n", TRIALS);
 
@@ -185,9 +185,9 @@ main(void)
       // Re-seed PRNG with seed stream
 			SRANDOM(SEED_STREAM[(i*TRIALS)+j]);
       // Reset iteration count variable, n
-      n=0L;
+      n=0;
       // Reset fortune
-    	fortune = zero;
+    	fortune = 0;
   		// For each trial, loop until fortune goes out of range (e.g., beyond MAX_FORTUNE)
 			VIP_ENCBOOL done = false; 
 
@@ -205,7 +205,7 @@ main(void)
 #else
 				VIP_ENCINT if_result = play_c(fortune, U); 
 				VIP_ENCINT else_result = play_s(U);
-				fortune += VIP_CMOV(!done, VIP_CMOV(cond, if_result, else_result), 0);
+				fortune += VIP_CMOV(!done, VIP_CMOV(cond, if_result, else_result), (VIP_ENCINT) 0);
 #endif
         // Check if fortune has gone out of range (e.g., beyond MAX_FORTUNE)
 #ifndef VIP_DO_MODE
@@ -220,17 +220,17 @@ main(void)
         VIP_ENCINT m = (fortune > 0) ? fortune : -fortune;
         site_visits[m%3]++;	
 #else
-				VIP_ENCINT m = VIP_CMOV(!done, VIP_CMOV(fortune > 0, fortune, -fortune), m);
+				VIP_ENCINT m = VIP_CMOV(fortune > 0, fortune, -fortune);
         VIP_ENCINT m_index = m%3;
-        site_visits[0] += VIP_CMOV(!done && m_index==0, 1, 0);
-        site_visits[1] += VIP_CMOV(!done && m_index==1, 1, 0);
-        site_visits[2] += VIP_CMOV(!done && m_index==2, 1, 0);
+        site_visits[0] = site_visits[0] + VIP_CMOV(!done && m_index==0, (VIP_ENCINT)1, (VIP_ENCINT)0);
+        site_visits[1] = site_visits[1] + VIP_CMOV(!done && m_index==1, (VIP_ENCINT)1, (VIP_ENCINT)0);
+        site_visits[2] = site_visits[2] + VIP_CMOV(!done && m_index==2, (VIP_ENCINT)1, (VIP_ENCINT)0);
 #endif
         // Increment iteration count variable, n
 #ifndef VIP_DO_MODE
         n++;
 #else 
-        n += VIP_CMOV(!done, 1, 0); 
+        n += VIP_CMOV(!done, (VIP_ENCINT)1, (VIP_ENCINT)0); 
 #endif
 			} // Iteration loop (k)
 
@@ -238,7 +238,7 @@ main(void)
 
       /*** Aggregate stats for Trial-j ***/
       // Increment total iteration count with results from this trial
-      n_tot += n;
+      n_tot = n_tot + n;
       // Increment win count/loss count with results from this trial
 #ifndef VIP_DO_MODE
 			if(fortune == MAX_FORTUNE)
