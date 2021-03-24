@@ -15,7 +15,7 @@ using namespace std;
 
 // The preprocessing function for Boyer Moore's
 // bad character heuristic
-void badCharHeuristic(VIP_ENCCHAR *str, int size, VIP_ENCINT badchar[NO_OF_CHARS])
+void badCharHeuristic(vector<VIP_ENCCHAR> str, int size, VIP_ENCINT badchar[NO_OF_CHARS])
 {
 	// Initialize all occurrences as -1
 	for(int i = 0; i < NO_OF_CHARS; i++)
@@ -41,7 +41,7 @@ void badCharHeuristic(VIP_ENCCHAR *str, int size, VIP_ENCINT badchar[NO_OF_CHARS
 
 /* A pattern searching function that uses Bad
 Character Heuristic of Boyer Moore Algorithm */
-void search(VIP_ENCCHAR *txt, int n, VIP_ENCCHAR *pat, int m, VIP_ENCBOOL *ret)
+void search(vector<VIP_ENCCHAR> txt, int n, vector<VIP_ENCCHAR> pat, int m, VIP_ENCBOOL *ret)
 {
 	VIP_ENCINT badchar[NO_OF_CHARS];
 
@@ -82,7 +82,7 @@ void search(VIP_ENCCHAR *txt, int n, VIP_ENCCHAR *pat, int m, VIP_ENCBOOL *ret)
       for(int j=0; j<n; j++)
         txt_idx = VIP_CMOV(j==s+idx, txt[j], txt_idx);
 
-      idx = idx - VIP_CMOV(idx >= 0 && pat_idx == txt_idx, 1, 0);
+      idx = idx - VIP_CMOV(idx >= 0 && pat_idx == txt_idx, (VIP_ENCINT)1,  (VIP_ENCINT)0);
     }
 #endif
 
@@ -109,16 +109,16 @@ void search(VIP_ENCCHAR *txt, int n, VIP_ENCCHAR *pat, int m, VIP_ENCBOOL *ret)
     }
 
     // Access: badchar[VIP_DEC(txt[VIP_DEC(s+m)])]
-    VIP_ENCCHAR txt_sm = txt[0];
-    VIP_ENCCHAR badchar_txt_sm = badchar[0];
+    VIP_ENCINT txt_sm = (VIP_ENCINT) txt[0];
+    VIP_ENCINT badchar_txt_sm = badchar[0];
     for(int j=0; j<n; j++)
       txt_sm = VIP_CMOV(j==s+m, txt[j], txt_sm);
     for(int j=0; j<NO_OF_CHARS; j++)
       badchar_txt_sm = VIP_CMOV(j==txt_sm, badchar[j], badchar_txt_sm);
 
     // Access: badchar[VIP_DEC(txt[VIP_DEC(s+idx)])]
-    VIP_ENCCHAR txt_sidx = txt[0];
-    VIP_ENCCHAR badchar_txt_sidx = badchar[0];
+    VIP_ENCINT txt_sidx = (VIP_ENCINT) txt[0];
+    VIP_ENCINT badchar_txt_sidx = badchar[0];
     for(int j=0; j<n; j++)
       txt_sidx = VIP_CMOV(j==s+idx, txt[j], txt_sidx);
     for(int j=0; j<NO_OF_CHARS; j++)
@@ -126,8 +126,8 @@ void search(VIP_ENCCHAR *txt, int n, VIP_ENCCHAR *pat, int m, VIP_ENCBOOL *ret)
 
     VIP_ENCINT s_if   = VIP_CMOV(s+m < n, m-badchar_txt_sm, 1);
     VIP_ENCINT s_shift = idx - badchar_txt_sidx;
-    VIP_ENCINT s_else =  1 > s_shift ? 1 : s_shift;
-    s += VIP_CMOV(cond, s_if, s_else);
+    VIP_ENCINT s_else =  VIP_CMOV(1 > s_shift, 1, s_shift);
+    s = s + VIP_CMOV(cond, s_if, s_else);
 #endif
 	}
 }
@@ -139,11 +139,19 @@ main(void)
   VIP_INIT; 
 
   // Inputs
-	VIP_ENCCHAR txt[] = "ABAAABCDDABC";
-	VIP_ENCCHAR pat[] = "ABC";
-  int n = strlen(txt); // String lengths are public
-  int m = strlen(pat); // String lengths are public
+  char inp_txt[] = "ABAAABCDDABC";
+  char inp_pat[] = "ABC";
+  int n = strlen(inp_txt); // String lengths are public
+  int m = strlen(inp_pat); // String lengths are public
   
+  vector<VIP_ENCCHAR> txt(n);
+  for (unsigned k=0; k < n; k++)
+    txt[k] = inp_txt[k];
+
+  vector<VIP_ENCCHAR> pat(m);
+  for (unsigned k=0; k < m; k++)
+    pat[k] = inp_pat[k];
+
   // Return vector
   VIP_ENCBOOL  ret[n];
   for(int i=0; i<n; i++) ret[i] = false; 
