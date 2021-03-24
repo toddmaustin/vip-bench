@@ -145,16 +145,13 @@ VIP_ENCINT play_c(VIP_ENCINT fortune, double U)
 int
 main(void)
 {
-	long n=0L;
-	double n_bar, n_tot=0.0;
-
-	VIP_ENCINT m; 
+	VIP_ENCLONG n=0L;
+	VIP_ENCDOUBLE n_bar, n_tot=0.0;
 	VIP_ENCINT win_count = zero;
 	VIP_ENCINT loss_count = zero;
-	VIP_ENCINT site_visits[3];  /* counts visits to numbers mod 3 */
-  for(int i=0;i<3;i++) site_visits[i] = zero;  /* initialize counters */
+	VIP_ENCINT site_visits[3];                   // Counts visits to numbers mod 3 
+  for(int i=0;i<3;i++) site_visits[i] = zero;  // Initialize counters 
 	VIP_ENCINT fortune = zero;
-	VIP_ENCINT max_fortune = MAX_FORTUNE;
 	
   /* Governs a coin toss below which selects between games. 
      Setting this to 1.0 chooses complex game only. Setting 
@@ -163,37 +160,43 @@ main(void)
 	VIP_ENCDOUBLE game_select = 0.5;                               
 
 
+  /*** Prepare random number generator ***/
 	SRANDOM((int)INITIAL_SEED);
   int SEED_STREAM[TRIALS*RUNS];
-  for(int i=0; i<TRIALS*RUNS; i++){
+  for(int i=0; i<TRIALS*RUNS; i++)
+  {
     SEED_STREAM[i] = RANDOM();
   }
 
 
-	for(int i=0; i<RUNS; i++){
+	for(int i=0; i<RUNS; i++)
+  {
+    /*** Prepare run variables ***/
 		win_count = zero;
 		loss_count = zero;
 		fortune = zero;
-		max_fortune = MAX_FORTUNE;
 		n=0L;
 		n_bar = n_tot=0.0;
-
 		printf("Simulating %d trials ...\n", TRIALS);
+
 		for(int j=0; j<TRIALS; j++)
     { 
-
-			/* reseed with predetermined seed stream*/
+			/*** Prepare trial variables ***/
+      // Re-seed PRNG with seed stream
 			SRANDOM(SEED_STREAM[(i*TRIALS)+j]);
+      // Reset iteration count variable, n
       n=0L;
-
-			/* Each trial: loop until fortune goes out of range */
-			fortune = zero;
+      // Reset fortune
+    	fortune = zero;
+  		// For each trial, loop until fortune goes out of range (e.g., beyond MAX_FORTUNE)
 			VIP_ENCBOOL done = false; 
+
+      /*** Begin trials ***/
 			for(int k=0; k<MAX_ITERATIONS; k++)
       {
+        // Coin toss to select between conplex or simple game
         VIP_ENCBOOL cond = (cointoss(game_select, getrand())==1); 
 				double U = getrand(); 
-
 #ifndef VIP_DO_MODE
         if (cond) 
           fortune += play_c(fortune,U);
@@ -204,36 +207,33 @@ main(void)
 				VIP_ENCINT else_result = play_s(U);
 				fortune += VIP_CMOV(!done, VIP_CMOV(cond, if_result, else_result), 0);
 #endif
-
+        // Check if fortune has gone out of range (e.g., beyond MAX_FORTUNE)
 #ifndef VIP_DO_MODE
-        done = (fortune >= max_fortune)||(fortune <= -max_fortune);
+        done = (fortune >= MAX_FORTUNE)||(fortune <= -MAX_FORTUNE);
         if(VIP_DEC(done))
           break;
 #else
-				done = VIP_CMOV(!done && ((fortune >= max_fortune)||(fortune <= -max_fortune)), true, done); 
+				done = VIP_CMOV(!done && ((fortune >= MAX_FORTUNE)||(fortune <= -MAX_FORTUNE)), true, done); 
 #endif
-
+        // Document site visits 
 #ifndef VIP_DO_MODE
-        m = (fortune > 0) ? fortune : -fortune;
-#else
-				m = VIP_CMOV(!done, VIP_CMOV(fortune > 0, fortune, -fortune), m);
-#endif
-
-#ifndef VIP_DO_MODE
+        VIP_ENCINT m = (fortune > 0) ? fortune : -fortune;
         site_visits[m%3]++;	
 #else
-        VIP_ENCINT index = m%3;
-        site_visits[0] += VIP_CMOV(!done && index==0, 1, 0);
-        site_visits[1] += VIP_CMOV(!done && index==1, 1, 0);
-        site_visits[2] += VIP_CMOV(!done && index==2, 1, 0);
+				VIP_ENCINT m = VIP_CMOV(!done, VIP_CMOV(fortune > 0, fortune, -fortune), m);
+        VIP_ENCINT m_index = m%3;
+        site_visits[0] += VIP_CMOV(!done && m_index==0, 1, 0);
+        site_visits[1] += VIP_CMOV(!done && m_index==1, 1, 0);
+        site_visits[2] += VIP_CMOV(!done && m_index==2, 1, 0);
 #endif
-
+        // Increment iteration count variable, n
 #ifndef VIP_DO_MODE
         n++;
 #else 
-        n += VIP_CMOV(!done, 1, 0); // Number of iters
+        n += VIP_CMOV(!done, 1, 0); 
 #endif
 			} // Iteration loop (k)
+
 
 
       /*** Aggregate stats for Trial-j ***/
@@ -241,37 +241,40 @@ main(void)
       n_tot += n;
       // Increment win count/loss count with results from this trial
 #ifndef VIP_DO_MODE
-			if(fortune == max_fortune)
+			if(fortune == MAX_FORTUNE)
 				win_count++;
-			else if(fortune == -max_fortune)
+			else if(fortune == -MAX_FORTUNE)
 				loss_count++;
 #else
-      VIP_ENCBOOL cond1 = (fortune == max_fortune); 
-			VIP_ENCBOOL cond2 = (fortune == -max_fortune);
+      VIP_ENCBOOL cond1 = (fortune == MAX_FORTUNE); 
+			VIP_ENCBOOL cond2 = (fortune == -MAX_FORTUNE);
 			win_count =  VIP_CMOV(cond1, win_count+1, win_count);
 			loss_count = VIP_CMOV(!cond1 && cond2, loss_count+1, loss_count);
 #endif
-
 		} // Trial loop (j)
 	
     
+
 		/*** Print Results of this run ***/
     n_bar = n_tot/((double)TRIALS);
 		printf("%d wins, %d losses, %d draws\n",
             VIP_DEC(win_count),
 				    VIP_DEC(loss_count), 
-            TRIALS-VIP_DEC(win_count+loss_count));
-		printf("Average trial length = %g\n",n_bar);
+            TRIALS-VIP_DEC(win_count+loss_count)
+    );
+		printf("Average trial length = %g\n",VIP_DEC(n_bar));
 		int sv_0 = VIP_DEC(site_visits[0]);
 		int sv_1 = VIP_DEC(site_visits[1]);
 		int sv_2 = VIP_DEC(site_visits[2]);
 		printf("Site occupancy: 0 mod 3: %g%%, 1 mod 3: %g%%, 2 mod 3: %g%%\n",
-			100.0*((double)sv_0)/n_tot,			//*** n_tot is a loop count, so not d-o
-			100.0*((double)sv_1)/n_tot,			//*** site_visits is. Here we are printing result
-			100.0*((double)sv_2)/n_tot
+			      100.0*((double)sv_0)/VIP_DEC(n_tot),			//*** n_tot is a loop count, so not d-o
+			      100.0*((double)sv_1)/VIP_DEC(n_tot),			//*** site_visits is. Here we are printing result
+			      100.0*((double)sv_2)/VIP_DEC(n_tot)
 		);
 
 	} // Run loop (i)
+
+
 
 	return 0;
 
