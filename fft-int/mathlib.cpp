@@ -7,6 +7,7 @@
 #include "../config.h"
 #include "mathlib.h"
 
+
 VIP_ENCDOUBLE
 myfloor(VIP_ENCDOUBLE x)
 {
