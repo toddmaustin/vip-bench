@@ -456,6 +456,8 @@ int Loudampl[100] = {
 int
 main(void)
 {
+  VIP_INIT;
+  
   VIP_ENCINT real[N], imag[N];
   int     i;
 

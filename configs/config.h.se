@@ -8,7 +8,8 @@
 #define VIP_INIT
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
-#define VIP_ENCUINT     uint64_t
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
 #define VIP_ENCLONG     long
 #define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
@@ -24,7 +25,8 @@
 #define VIP_INIT
 #define VIP_ENCCHAR     char
 #define VIP_ENCINT      int
-#define VIP_ENCUINT     uint64_t
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
 #define VIP_ENCLONG     long
 #define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
@@ -44,7 +46,8 @@ using namespace enc_lib;
 
 #define VIP_ENCCHAR     enc_char
 #define VIP_ENCINT      enc_int
-#define VIP_ENCUINT     enc_uint
+#define VIP_ENCUINT     enc_uint32
+#define VIP_ENCUINT64   enc_uint64
 #define VIP_ENCLONG     enc_long
 #define VIP_ENCULONG    enc_ulong
 #define VIP_ENCBOOL     enc_bool
