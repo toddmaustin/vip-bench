@@ -74,7 +74,12 @@ kann_data_t *kann_data_read(const char *fn)
 				if (k == 0) {
 					str.s[i] = 0;
 					d->rname[d->n_row] = strdup(&str.s[st]);
-				} else d->x[d->n_row][k-1] = strtod(&str.s[st], &p);
+				} 
+				else {
+					double temp = strtod(&str.s[st], &p);
+					d->x[d->n_row][k-1] = VIP_ENCDOUBLE(temp);
+					printf("d->x[%d][%d] = %f/%f\n", d->n_row, k-1, temp, VIP_DEC(d->x[d->n_row][k-1]));
+				}
 				++k, st = i + 1;
 			}
 		}

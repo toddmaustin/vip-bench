@@ -544,11 +544,15 @@ kann_t *kann_load_fp(FILE *fp)
 	ann->g = (VIP_ENCFLOAT *)calloc(n_var, sizeof(VIP_ENCFLOAT));
 	ann->c = (VIP_ENCFLOAT *)malloc(n_const * sizeof(VIP_ENCFLOAT));
   // copy/encrypt the data
-  for (int qq=0; qq < n_var; qq++)
-    ann->x[qq] = _x[qq];
-  for (int qq=0; qq < n_const; qq++)
-    ann->c[qq] = _c[qq];
-	kad_ext_sync(ann->n, ann->v, ann->x, ann->g, ann->c);
+  for (int qq=0; qq < n_var; qq++){
+    ann->x[qq] = VIP_ENCFLOAT(_x[qq]);
+	printf("x[%d] = %f/%f\n", qq, _x[qq], VIP_DEC(ann->x[qq]));
+  }
+  for (int qq=0; qq < n_const; qq++){
+    ann->c[qq] = VIP_ENCFLOAT(_c[qq]);
+	printf("c[%d] = %f/%f\n", qq, _c[qq], VIP_DEC(ann->c[qq]));
+  }
+  kad_ext_sync(ann->n, ann->v, ann->x, ann->g, ann->c);
   free(_x);
   free(_c);
 	return ann;

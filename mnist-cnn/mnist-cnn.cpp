@@ -8,6 +8,8 @@
 
 int main(int argc, char *argv[])
 {
+	VIP_INIT; 
+
 	kann_t *ann;
 	kann_data_t *x, *y;
 	char *fn_in = 0 /*, *fn_out = 0 */;
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
 	kad_trap_fe();
 	kann_srand(seed);
 	if (fn_in) {
+		printf("load knn...\n");
 		ann = kann_load(fn_in);
 	} else {
 		kad_node_t *t;
@@ -51,9 +54,23 @@ int main(int argc, char *argv[])
 		ann = kann_new(kann_layer_cost(t, 10, KANN_C_CEB), 0);
 	}
 
+	printf("load x...\n");
 	x = kann_data_read(argv[optind]);
 	assert(x->n_col == 28 * 28);
+	printf("load y...\n");
 	y = argc - optind >= 2? kann_data_read(argv[optind+1]) : 0;
+
+// LB:
+	printf("test...\n");
+	for (int i=0; i<1; i++){
+		for(int j=0; j<10; j++){
+			printf("x->x[%d][%d] = %f\n", i, j, VIP_DEC(x->x[i][j]));
+		}
+	}
+	// printf("%.3g/%.3g", y->x[0][0], VIP_DEC(y->x[0][0]));
+	printf("ann->x[0] = %f\n", VIP_DEC(ann->x[0]));
+	printf("ann->g[0] = %f\n", VIP_DEC(ann->g[0]));
+	printf("ann->c[0] = %f\n", VIP_DEC(ann->c[0]));
 
   assert(!y);
 

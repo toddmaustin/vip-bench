@@ -1553,7 +1553,7 @@ int kad_op_mse(kad_node_t *p, int action)
 	} else if (action == KAD_FORWARD) {
 		VIP_ENCDOUBLE cost = 0.0;
 		for (i = 0; i < n; ++i)
-			cost += (y1->x[i] - y0->x[i]) * (y1->x[i] - y0->x[i]);
+			cost = cost + ((y1->x[i] - y0->x[i]) * (y1->x[i] - y0->x[i]));
 		p->x[0] = (VIP_ENCFLOAT)(cost / n);
 	} else if (action == KAD_BACKWARD && kad_is_back(y1)) {
 		VIP_ENCFLOAT t = (VIP_ENCFLOAT)2.0f * p->g[0] / n;
@@ -1751,8 +1751,10 @@ int kad_op_sigm(kad_node_t *p, int action)
 	if (action == KAD_SYNC_DIM) {
 		kad_copy_dim1(p, q);
 	} else if (action == KAD_FORWARD) {
-		for (i = 0; i < n; ++i)
+		for (i = 0; i < n; ++i){
+			// printf("kautodiff: %f\n", VIP_DEC(q->x[i]));
 			p->x[i] = (VIP_ENCFLOAT)1.0f / ((VIP_ENCFLOAT)1.0f + (VIP_ENCFLOAT)myexp((VIP_ENCDOUBLE)(-q->x[i])));
+		}
 	} else if (action == KAD_BACKWARD && kad_is_back(q)) {
 		for (i = 0; i < n; ++i)
 			q->g[i] += p->g[i] * (p->x[i] * ((VIP_ENCFLOAT)1.0f - p->x[i]));

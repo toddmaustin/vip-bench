@@ -249,12 +249,13 @@ do {                \
 VIP_ENCDOUBLE
 myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
 {
+  // printf("myexp(%f) = ", VIP_DEC(x));
   VIP_ENCDOUBLE y=0.0,hi=0.0,lo=0.0,c,t=0.0,twopk=0.0;
   VIP_ENCINT k=0,xsb;
   VIP_ENCUINT hx;
 
   GET_HIGH_WORD(hx,x);
-  xsb = (hx>>31)&1;   /* sign bit of x */
+  xsb = (VIP_ENCINT)((hx>>31)&1);   /* sign bit of x */
   hx &= 0x7fffffff;   /* high word of |x| */
 
 #ifdef VIP_DO_MODE
@@ -345,7 +346,7 @@ myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
   retval = VIP_CMOV(_escape4 && !_pred13, y*twopk*twom1000, retval);
 
   // /* resume FP exceptions: */ fesetexceptflag(&except, FE_ALL_EXCEPT);
-
+  // printf("%f\n", VIP_DEC(retval));
   return retval;
 #else /* !VIP_DO_MODE */
   /* filter out non-finite argument */
