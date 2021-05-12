@@ -1,9 +1,9 @@
 
-LOCAL_CFLAGS= -Wno-unused-function -Wno-unused-result -Wno-strict-aliasing
+LOCAL_CFLAGS= -Wno-unused-function -Wno-unused-result -Wno-strict-aliasing -I../common
 LOCAL_LIBS=
 
 PROG=mnist-cnn
-OBJS=mnist-cnn.o kautodiff.o kann.o kann_data.o mathlib.o
+OBJS=mnist-cnn.o kautodiff.o kann.o kann_data.o ../common/mathlib.o
 
 include ../Makefile
 
