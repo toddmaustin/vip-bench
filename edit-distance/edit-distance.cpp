@@ -100,11 +100,42 @@ main(void)
 { 
 	//cout << "Distance: "<< editDistance(str2, str1)<< endl; 
     fprintf(stdout, "------Within the randoms array------\n");
+    // AJK
+    uint64_t perf_cmds = 0;
+    uint64_t perf_idle = 0;
+    uint64_t perf_prep = 0;
+    uint64_t perf_ex = 0;
+    uint64_t perf_wait = 0;
+    uint64_t perf_skip = 0;
+
+    OZonePerfClear();
+    perf_cmds = OZonePerfCmds();
+    perf_idle = OZonePerfIdle();
+    perf_prep = OZonePerfPrep();
+    perf_ex   = OZonePerfEx();
+    perf_wait = OZonePerfWait();
+    perf_skip = OZonePerfSkipped();
+    OZonePerfClear();
+    
+    fprintf(stdout, 
+        "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+        perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
     FindDistanceWithinArray(random_s);
     // cout<<"------Between random array and biased array (sequences of the same length)------"<<endl;
     // findDistanceBetweenArray(random_s, biased_s);
     // cout<<"------check for same and empty sequences------"<<endl;
     // checkForSameAndEmpty();
+    perf_cmds = OZonePerfCmds();
+    perf_idle = OZonePerfIdle();
+    perf_prep = OZonePerfPrep();
+    perf_ex   = OZonePerfEx();
+    perf_wait = OZonePerfWait();
+    perf_skip = OZonePerfSkipped();
+    
+    fprintf(stdout, 
+        "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+        perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
 
 	return 0; 
 } 

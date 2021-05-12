@@ -48,6 +48,27 @@ VIP_ENCUINT newplain[2];
 int
 main(void)
 {
+  // AJK
+  uint64_t perf_cmds = 0;
+  uint64_t perf_idle = 0;
+  uint64_t perf_prep = 0;
+  uint64_t perf_ex = 0;
+  uint64_t perf_wait = 0;
+  uint64_t perf_skip = 0;
+
+  OZonePerfClear();
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex   = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+  OZonePerfClear();
+  
+  fprintf(stdout, 
+      "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
   // encrypt test inputs
   for (int i=0; i < 4; i++)
     keytext[i] = _keytext[i];
@@ -66,6 +87,16 @@ main(void)
   printf("  ciphertext: 0x%08x 0x%08x\n", VIP_DEC(ciphertext[0]), VIP_DEC(ciphertext[1]));
   printf("  newplain:   0x%08x 0x%08x\n", VIP_DEC(newplain[0]), VIP_DEC(newplain[1]));
 
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex   = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+  
+  fprintf(stdout, 
+      "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   return 0;
 }
 

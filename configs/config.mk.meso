@@ -14,8 +14,8 @@ DO_LIBS =
 DO_SIM =
 DO_DIFF = diff
 
-ENC_CFLAGS = -I../../mesosphere -DTARGET_EMUL
-ENC_LIBS = ../../mesosphere/mesolib.a
+ENC_CFLAGS = -Wno-deprecated-declarations -I../../mesosphere -I/opt/xilinx/xrt/include -I/tools/Xilinx/Vivado/2020.2/include -DTARGET_ALVEO
+ENC_LIBS = ../../mesosphere/mesolib.a -L/opt/xilinx/xrt/lib -lxrt_core -luuid
 ENC_SIM =
 ENC_DIFF = diff
 

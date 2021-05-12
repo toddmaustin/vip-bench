@@ -65,6 +65,27 @@ main(void)
   srand(42);
   // srand(time(NULL));
 
+  // AJK
+  uint64_t perf_cmds = 0;
+  uint64_t perf_idle = 0;
+  uint64_t perf_prep = 0;
+  uint64_t perf_ex = 0;
+  uint64_t perf_wait = 0;
+  uint64_t perf_skip = 0;
+
+  OZonePerfClear();
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex   = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+  OZonePerfClear();
+  
+  fprintf(stdout, 
+      "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
   // initialize the array to sort
   for (unsigned i=0; i < DATASET_SIZE; i++)
     data[i] = rand();
@@ -82,6 +103,18 @@ main(void)
       return -1;
     }
   }
+  
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex   = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+  
+  fprintf(stdout, 
+      "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+  
   fprintf(stdout, "INFO: %lu swaps executed.\n", swaps);
   fprintf(stdout, "INFO: data is properly sorted.\n");
   return 0;
