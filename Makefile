@@ -38,28 +38,28 @@ build: $(TARGET_EXE)
 
 %.o: %.cpp
 ifeq ($(MODE), na)
-	$(CXX) $(CFLAGS) -DVIP_NA_MODE -o $@ -c $<
+	$(CXX) $(CFLAGS) -DVIP_NA_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), do)
-	$(CXX) $(CFLAGS) -DVIP_DO_MODE -o $@ -c $<
+	$(CXX) $(CFLAGS) -DVIP_DO_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), enc)
-	$(CXX) $(CFLAGS) -DVIP_ENC_MODE -o $@ -c $<
+	$(CXX) $(CFLAGS) -DVIP_ENC_MODE -o $(notdir $@) -c $<
 else
 	$(error MODE is not defined (add: MODE={na|do|enc}).)
 endif
 
 %.o: %.c
 ifeq ($(MODE), na)
-	$(CC) $(CFLAGS) -DVIP_NA_MODE -o $@ -c $<
+	$(CC) $(CFLAGS) -DVIP_NA_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), do)
-	$(CC) $(CFLAGS) -DVIP_DO_MODE -o $@ -c $<
+	$(CC) $(CFLAGS) -DVIP_DO_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), enc)
-	$(CC) $(CFLAGS) -DVIP_ENC_MODE -o $@ -c $<
+	$(CC) $(CFLAGS) -DVIP_ENC_MODE -o $(notdir $@) -c $<
 else
 	$(error MODE is not defined (add: MODE={na|do|enc}).)
 endif
 
 $(TARGET_EXE): $(OBJS)
-	$(LD) $(CFLAGS) -o $@ $^ $(LIBS)
+	$(LD) $(CFLAGS) -o $@ $(notdir $^) $(LIBS)
 
 clean:
 	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core FOO

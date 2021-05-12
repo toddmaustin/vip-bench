@@ -1,4 +1,3 @@
-WARNING: software is attempting to seal data!
 DATA DUMP:
   data[0] = 71876166
   data[1] = 537146758
@@ -256,7 +255,6 @@ DATA DUMP:
   data[253] = 994049544
   data[254] = 118157028
   data[255] = 624849173
-INFO: 65025 swaps executed.
 DATA DUMP:
   data[0] = 14172633
   data[1] = 18854742
@@ -514,4 +512,5 @@ DATA DUMP:
   data[253] = 2106487713
   data[254] = 2108313867
   data[255] = 2122459278
+INFO: 65025 swaps executed.
 INFO: data is properly sorted.

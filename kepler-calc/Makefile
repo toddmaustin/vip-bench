@@ -1,15 +1,15 @@
 
 
-LOCAL_CFLAGS=
+LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
 
 PROG=kepler-calc
-OBJS=kepler-calc.o mathlib.o
+OBJS=kepler-calc.o ../common/mathlib.o
 
 include ../Makefile
 
 test:
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO kelp-calc.out
+	-$(TARGET_DIFF) FOO kepler-calc.out
 	rm -f FOO
 
