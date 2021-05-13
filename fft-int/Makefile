@@ -1,9 +1,9 @@
 
-LOCAL_CFLAGS=
+LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
 
 PROG=fft-int
-OBJS=fft-int.o mathlib.o
+OBJS=fft-int.o ../common/mathlib.o
 
 include ../Makefile
 
