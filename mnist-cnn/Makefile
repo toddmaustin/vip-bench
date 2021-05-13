@@ -9,6 +9,9 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) -i mnist-cnn.kan mnist-test-x.knd > FOO
-	-$(TARGET_DIFF) FOO mnist-cnn.out
+	-$(TARGET_DIFF) FOO mnist-cnn-infer.out
+	rm -f FOO
+	-$(TARGET_SIM) $(TARGET_EXE) -o mnist-data.kan mnist-train-x.knd mnist-train-y.knd > FOO
+	-$(TARGET_DIFF) FOO mnist-cnn-train.out
 	rm -f FOO
 

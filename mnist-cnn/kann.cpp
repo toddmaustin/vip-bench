@@ -748,7 +748,7 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 			kann_RMSprop(n_var, lr, 0, 0.9f, ann->g, ann->x, r);
 			n_proc += ms;
 		  if (kann_verbose >= 3)
-			  fprintf(stderr, "epoch: %d; training cost: %g ms:%d m_train_err:%d n_train_base:%d\n", i+1, VIP_DEC(train_cost), ms, n_train_err, n_train_base);
+			  fprintf(stdout, "epoch: %d; training cost: %g ms:%d m_train_err:%d n_train_base:%d\n", i+1, VIP_DEC(train_cost), ms, n_train_err, n_train_base);
 		}
 		train_cost /= n_train;
 		kann_switch(ann, 0);
@@ -767,13 +767,13 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 		}
 		if (n_val > 0) val_cost /= n_val;
 		if (kann_verbose >= 3) {
-			fprintf(stderr, "epoch: %d; training cost: %g", i+1, VIP_DEC(train_cost));
-			if (n_train_base) fprintf(stderr, " (class error: %.2f%%)", 100.0f * n_train_err / n_train);
+			fprintf(stdout, "epoch: %d; training cost: %g", i+1, VIP_DEC(train_cost));
+			if (n_train_base) fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_train_err / n_train);
 			if (n_val > 0) {
-				fprintf(stderr, "; validation cost: %g", VIP_DEC(val_cost));
-				if (n_val_base) fprintf(stderr, " (class error: %.2f%%)", 100.0f * n_val_err / n_val);
+				fprintf(stdout, "; validation cost: %g", VIP_DEC(val_cost));
+				if (n_val_base) fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_val_err / n_val);
 			}
-			fputc('\n', stderr);
+			fputc('\n', stdout);
 		}
 		if (i >= max_drop_streak && n_val > 0) {
 			if (VIP_DEC(val_cost) < min_val_cost) {
