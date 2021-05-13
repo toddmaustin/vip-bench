@@ -18,7 +18,7 @@
 /* See the GNU Library General Public License for more details.    */
 /* You should have received a copy of the GNU Library General      */
 /* Public License along with this library; if not, write to the    */
-/* Free Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA   */ 
+/* Free Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA   */
 /* 02111-1307  USA                                                 */
 
 /* Copyright (C) 1997, 1999 Makoto Matsumoto and Takuji Nishimura. */
@@ -33,7 +33,6 @@
 /* ACM Transactions on Modeling and Computer Simulation,           */
 /* Vol. 8, No. 1, January 1998, pp 3--30.                          */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -43,15 +42,15 @@ using namespace std;
 
 #include "../config.h"
 
-/* Period parameters */  
+/* Period parameters */
 #define N 624
 #define M 397
 
-VIP_ENCUINT MATRIX_A;     /* constant vector a */
-VIP_ENCUINT UPPER_MASK;   /* most significant w-r bits */
-VIP_ENCUINT LOWER_MASK;   /* least significant r bits */
+VIP_ENCUINT MATRIX_A;   /* constant vector a */
+VIP_ENCUINT UPPER_MASK; /* most significant w-r bits */
+VIP_ENCUINT LOWER_MASK; /* least significant r bits */
 
-/* Tempering parameters */   
+/* Tempering parameters */
 VIP_ENCUINT TEMPERING_MASK_B;
 VIP_ENCUINT TEMPERING_MASK_C;
 VIP_ENCUINT TEMPERING_SHIFT_U;
@@ -59,76 +58,95 @@ VIP_ENCUINT TEMPERING_SHIFT_S;
 VIP_ENCUINT TEMPERING_SHIFT_T;
 VIP_ENCUINT TEMPERING_SHIFT_L;
 
-static VIP_ENCUINT mt[N];   /* the array for the state vector  */
+static VIP_ENCUINT mt[N]; /* the array for the state vector  */
 
 /*USED FOR ARRAY ACCESS, NOT SECRET*/
-static int         mti=N+1; /* mti==N+1 means mt[N] is not initialized */
-
+static int mti = N + 1; /* mti==N+1 means mt[N] is not initialized */
 
 /* Initializing the array with a seed */
-void
-sgenrand(VIP_ENCUINT seed)
+void sgenrand(VIP_ENCUINT seed)
 {
   int i;
 
-  for (i=0;i<N;i++)
-    {
-      mt[i] = seed & 0xffff0000;
-      seed = (VIP_ENCUINT)69069 * seed + 1;
-      mt[i] = mt[i] | ((seed & 0xffff0000) >> 16);
-      seed = (VIP_ENCUINT)69069 * seed + 1;
-    }
+  for (i = 0; i < N; i++)
+  {
+    mt[i] = seed & 0xffff0000;
+    seed = (VIP_ENCUINT)69069 * seed + 1;
+    mt[i] = mt[i] | ((seed & 0xffff0000) >> 16);
+    seed = (VIP_ENCUINT)69069 * seed + 1;
+  }
   mti = N;
 }
 
-
-VIP_ENCUINT 
+VIP_ENCUINT
 genrand(void)
 {
   VIP_ENCUINT y;
 
-  if (mti >= N) { /* generate N words at one time */
+  if (mti >= N)
+  { /* generate N words at one time */
     int kk;
 
-    if (mti == N+1)   /* if sgenrand() has not been called, */
-      abort(); // sgenrand((VIP_ENCUINT)4357); /* a default initial seed is used   */
+    if (mti == N + 1) /* if sgenrand() has not been called, */
+      abort();        // sgenrand((VIP_ENCUINT)4357); /* a default initial seed is used   */
 
-    for (kk=0;kk<N-M;kk++){
-	      y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-	      mt[kk] = mt[kk+M] ^ (y >> 1) ^ ((y & 0x1)*MATRIX_A);
+    for (kk = 0; kk < N - M; kk++)
+    {
+      y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+      mt[kk] = mt[kk + M] ^ (y >> 1) ^ ((y & 0x1) * MATRIX_A);
     }
-    for (;kk<N-1;kk++){
-	      y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);
-	      mt[kk] = mt[kk+(M-N)] ^ (y >> 1) ^ ((y & 0x1)*MATRIX_A); 
+    for (; kk < N - 1; kk++)
+    {
+      y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
+      mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ ((y & 0x1) * MATRIX_A);
     }
 
-    y = (mt[N-1]&UPPER_MASK)|(mt[0]&LOWER_MASK);
-    mt[N-1] = mt[M-1] ^ (y >> 1) ^ ((y & 0x1)*MATRIX_A);
+    y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
+    mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ ((y & 0x1) * MATRIX_A);
 
     mti = 0;
   }
-  
+
   y = mt[mti++];
   y = y ^ (y >> TEMPERING_SHIFT_U);
   y = y ^ ((y << TEMPERING_SHIFT_S) & TEMPERING_MASK_B);
   y = y ^ ((y << TEMPERING_SHIFT_T) & TEMPERING_MASK_C);
   y = y ^ (y >> TEMPERING_SHIFT_L);
 
-  return y; 
+  return y;
 }
 
+int main(void)
+{
+  VIP_INIT;
 
-int
-main(void) 
-{ 
-  VIP_INIT; 
-  MATRIX_A   = 0x9908b0df;   /* constant vector a */
-  UPPER_MASK = 0x80000000;   /* most significant w-r bits */
-  LOWER_MASK = 0x7fffffff;   /* least significant r bits */
-  
-  /* Tempering parameters */   
-  TEMPERING_MASK_B  = 0x9d2c5680;
-  TEMPERING_MASK_C  = 0xefc60000;
+  // AJK
+  uint64_t perf_cmds = 0;
+  uint64_t perf_idle = 0;
+  uint64_t perf_prep = 0;
+  uint64_t perf_ex = 0;
+  uint64_t perf_wait = 0;
+  uint64_t perf_skip = 0;
+
+  OZonePerfClear();
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+  fprintf(stdout,
+          "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+          perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+  OZonePerfClear();
+
+  MATRIX_A = 0x9908b0df;   /* constant vector a */
+  UPPER_MASK = 0x80000000; /* most significant w-r bits */
+  LOWER_MASK = 0x7fffffff; /* least significant r bits */
+
+  /* Tempering parameters */
+  TEMPERING_MASK_B = 0x9d2c5680;
+  TEMPERING_MASK_C = 0xefc60000;
   TEMPERING_SHIFT_U = 11;
   TEMPERING_SHIFT_S = 7;
   TEMPERING_SHIFT_T = 15;
@@ -140,13 +158,28 @@ main(void)
   sgenrand(seedval);
 
   VIP_ENCUINT randval;
-  for (i=0,j=0; i<steps; i++)
+
+  for (i = 0, j = 0; i < steps; i++)
   {
     randval = genrand();
+#ifndef PERF_OUTPUT_ONLY
     fprintf(stdout, "%10u, ", VIP_DEC(randval));
-	  if (++j%8==0)
-	    cout << endl;;
+    if (++j % 8 == 0)
+      cout << endl;
+    ;
+#endif
   }
-  return 0;
-} 
 
+  perf_cmds = OZonePerfCmds();
+  perf_idle = OZonePerfIdle();
+  perf_prep = OZonePerfPrep();
+  perf_ex = OZonePerfEx();
+  perf_wait = OZonePerfWait();
+  perf_skip = OZonePerfSkipped();
+
+  fprintf(stdout,
+          "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+          perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
+  return 0;
+}

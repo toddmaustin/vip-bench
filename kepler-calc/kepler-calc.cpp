@@ -62,7 +62,6 @@
 
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -83,7 +82,7 @@
 #ifdef _SHORT_STRINGS
 #define HELP USAGE
 #else
-#define HELP USAGE"\n\
+#define HELP USAGE "\n\
 -h: print this helpful message\n\
 -v: print version number and exit\n\
 -a: obtain solution to accuracy of  < .nnnn (default .0000001)\n\
@@ -103,9 +102,9 @@ e = orbit eccentricty."
    (using radian measure).
 */
 
-double bin_fact(int n, int j);  /* Used with e-series method. See below. */
-VIP_ENCDOUBLE J(int, VIP_ENCDOUBLE);           /* Calculates Bessel function. */
-#define MAXITER     16
+double bin_fact(int n, int j);		 /* Used with e-series method. See below. */
+VIP_ENCDOUBLE J(int, VIP_ENCDOUBLE); /* Calculates Bessel function. */
+#define MAXITER 16
 static double derror = 0.000001;
 
 /* All the algorithms for solving kepler's equation are implemented in
@@ -124,7 +123,7 @@ static double derror = 0.000001;
    static information it retains and return.
    Then add the address of
    the new subroutine to the methods array defined below.
-*/ 
+*/
 
 /* CURRENTLY IMPLEMENTED METHODS: */
 
@@ -135,7 +134,7 @@ VIP_ENCDOUBLE strict_iteration(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M
 
 	/* reset is not used in this routine. It may generate a compiler
            warning */
-	return M + e*mysin(E);
+	return M + e * mysin(E);
 }
 
 /* The following routine is used to solve kepler's equation using
@@ -148,7 +147,7 @@ VIP_ENCDOUBLE newton(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int rese
 {
 	/* reset is not used in this routine. It may generate a compiler
            warning */
-	return E + (M + e*mysin(E) - E)/((VIP_ENCDOUBLE)1 - e*mycos(E));
+	return E + (M + e * mysin(E) - E) / ((VIP_ENCDOUBLE)1 - e * mycos(E));
 }
 
 /* The following routine implements the binary search algorithm due
@@ -158,26 +157,27 @@ VIP_ENCDOUBLE newton(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int rese
 
 VIP_ENCDOUBLE binary(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int reset)
 {
-	static double scale = .7853981633975;   /* PI/4 */
+	static double scale = .7853981633975; /* PI/4 */
 	VIP_ENCDOUBLE R;
 	VIP_ENCDOUBLE X;
 
-  // reset is not private
-	if(reset) {
-		scale = PI/4.0;
+	// reset is not private
+	if (reset)
+	{
+		scale = PI / 4.0;
 		return 0.0;
 	}
 
-	R = E - e*mysin(E);
+	R = E - e * mysin(E);
 #ifdef VIP_DO_MODE
 	X = VIP_CMOV(M > R, (E + scale), (E - scale));
 #else /* !VIP_DO_MODE */
-  if (M > R)
-    X = E + scale;
-  else
-    X = E - scale;
+	if (M > R)
+		X = E + scale;
+	else
+		X = E - scale;
 #endif
-	scale = scale/2.0;
+	scale = scale / 2.0;
 	return X;
 }
 
@@ -205,32 +205,33 @@ VIP_ENCDOUBLE e_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int re
 {
 	static int n;
 	int k;
-	VIP_ENCDOUBLE n_2k,a_n=0.0,s_k;
+	VIP_ENCDOUBLE n_2k, a_n = 0.0, s_k;
 
-  // reset is not private
-	if(reset){
+	// reset is not private
+	if (reset)
+	{
 		n = 0;
 		return 0.0;
 	}
 
-  // n is not private
-	if (n==0)
-  {
+	// n is not private
+	if (n == 0)
+	{
 		n++;
 		return M;
 	}
 
-
-	for(k=0;2*k<=n;k++){
+	for (k = 0; 2 * k <= n; k++)
+	{
 		n_2k = (double)n - 2.0 * ((double)k);
-    // k is not private
-		s_k = k%2 ? -1.0 : 1.0;   /*   (-1)^k */
-		a_n += s_k*bin_fact(n,k)*mysin(n_2k*M);
+		// k is not private
+		s_k = k % 2 ? -1.0 : 1.0; /*   (-1)^k */
+		a_n += s_k * bin_fact(n, k) * mysin(n_2k * M);
 	}
 	n++;
-	return E + mypow(e,n-1)*a_n;
+	return E + mypow(e, n - 1) * a_n;
 }
-	
+
 /* The eccentric anomaly is an odd periodic function in the Mean Anomoly
    and so can be developed in a Fourier sine series. This turns out to
    be 
@@ -245,40 +246,40 @@ VIP_ENCDOUBLE e_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int re
   pp 22-23. The following routine is used to sum this series.
 */
 
-
 VIP_ENCDOUBLE j_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int reset)
 {
 	static int n;
 	VIP_ENCDOUBLE dn, term;
 
-  // reset is not private
-	if(reset){
+	// reset is not private
+	if (reset)
+	{
 		n = 0;
 		return 0.0;
 	}
 
-	if (n==0)
-  {
+	if (n == 0)
+	{
 		n++;
 		return M;
 	}
 
 	dn = (double)n;
-	term = ((VIP_ENCDOUBLE)2.0/(double)n)*J(n,dn*e)*mysin(dn*M);
+	term = ((VIP_ENCDOUBLE)2.0 / (double)n) * J(n, dn * e) * mysin(dn * M);
 	n++;
 	return E + term;
 }
 
 typedef VIP_ENCDOUBLE (*method_fn)(VIP_ENCDOUBLE, VIP_ENCDOUBLE, VIP_ENCDOUBLE, int);
 static method_fn methods[] = {
-          strict_iteration,
-					newton,
-					binary,
-					e_series,
-					j_series,
-				};
+	strict_iteration,
+	newton,
+	binary,
+	e_series,
+	j_series,
+};
 
-#define NMETHODS (sizeof methods /sizeof(void *))
+#define NMETHODS (sizeof methods / sizeof(void *))
 
 /* Symbolic constants for method indices. */
 #define IITERATION 0
@@ -291,150 +292,165 @@ static method_fn methods[] = {
 
 int newmain(int argc, const char **argv);
 
-
-int
-main(void)
+int main(void)
 {
-  // AJK
-  uint64_t perf_cmds = 0;
-  uint64_t perf_idle = 0;
-  uint64_t perf_prep = 0;
-  uint64_t perf_ex = 0;
-  uint64_t perf_wait = 0;
-  uint64_t perf_skip = 0;
+	// AJK
+	uint64_t perf_cmds = 0;
+	uint64_t perf_idle = 0;
+	uint64_t perf_prep = 0;
+	uint64_t perf_ex = 0;
+	uint64_t perf_wait = 0;
+	uint64_t perf_skip = 0;
 
-  OZonePerfClear();
-  perf_cmds = OZonePerfCmds();
-  perf_idle = OZonePerfIdle();
-  perf_prep = OZonePerfPrep();
-  perf_ex   = OZonePerfEx();
-  perf_wait = OZonePerfWait();
-  perf_skip = OZonePerfSkipped();
-  OZonePerfClear();
-  
-  fprintf(stdout, 
-      "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
-      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
-  // test parameters
-  printf("Solve Kepler's Eq via	simple iteration for test parameters...\n"); 
-  {
-    int argc=5;
-    const char *argv[] = { "kepler", "-m", "1", "0.34", "0.25" };
+	OZonePerfClear();
+	perf_cmds = OZonePerfCmds();
+	perf_idle = OZonePerfIdle();
+	perf_prep = OZonePerfPrep();
+	perf_ex = OZonePerfEx();
+	perf_wait = OZonePerfWait();
+	perf_skip = OZonePerfSkipped();
+	fprintf(stdout,
+			"INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+			perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+	OZonePerfClear();
 
-    newmain(argc, argv);
-  }
+	// test parameters
+#ifndef PERF_OUTPUT_ONLY
+	printf("Solve Kepler's Eq via	simple iteration for test parameters...\n");
+#endif
+	{
+		int argc = 5;
+		const char *argv[] = {"kepler", "-m", "1", "0.34", "0.25"};
 
-  // SpaceX Tesla orbit
-  printf("Solve Kepler's Eq via	Newton's method for SpaceX Tesla...\n"); 
-  {
-    int argc=5;
-    const char *argv[] = { "kepler", "-m", "2", "6.037831992006549", "0.25600674983752" };
+		newmain(argc, argv);
+	}
 
-    newmain(argc, argv);
-  }
+	// SpaceX Tesla orbit
+#ifndef PERF_OUTPUT_ONLY
+	printf("Solve Kepler's Eq via	Newton's method for SpaceX Tesla...\n");
+#endif
+	{
+		int argc = 5;
+		const char *argv[] = {"kepler", "-m", "2", "6.037831992006549", "0.25600674983752"};
 
-  // Haley's comet
-  printf("Solve Kepler's Eq via	binary search for Haley's comet...\n"); 
-  {
-    int argc=5;
-    const char *argv[] = { "kepler", "-m", "3", "0.66985737", "0.96714" };
+		newmain(argc, argv);
+	}
 
-    newmain(argc, argv);
-  }
+	// Haley's comet
+#ifndef PERF_OUTPUT_ONLY
+	printf("Solve Kepler's Eq via	binary search for Haley's comet...\n");
+#endif
+	{
+		int argc = 5;
+		const char *argv[] = {"kepler", "-m", "3", "0.66985737", "0.96714"};
 
-  // Earth's orbit
-  printf("Solve Kepler's Eq via	power series for Earth's orbit...\n"); 
-  {
-    int argc=5;
-    const char *argv[] = { "kepler", "-m", "4", "6.259047404", "0.0167086" };
+		newmain(argc, argv);
+	}
 
-    newmain(argc, argv);
-  }
+	// Earth's orbit
+#ifndef PERF_OUTPUT_ONLY
+	printf("Solve Kepler's Eq via	power series for Earth's orbit...\n");
+#endif
+	{
+		int argc = 5;
+		const char *argv[] = {"kepler", "-m", "4", "6.259047404", "0.0167086"};
 
-  // Pluto's orbit
-  printf("Solve Kepler's Eq via	Fourier Bessel series for Pluto's orbit...\n"); 
-  {
-    int argc=5;
-    const char *argv[] = { "kepler", "-m", "5", "0.25359634", "0.2488" };
+		newmain(argc, argv);
+	}
 
-    newmain(argc, argv);
-  }
-  perf_cmds = OZonePerfCmds();
-  perf_idle = OZonePerfIdle();
-  perf_prep = OZonePerfPrep();
-  perf_ex   = OZonePerfEx();
-  perf_wait = OZonePerfWait();
-  perf_skip = OZonePerfSkipped();
-  
-  fprintf(stdout, 
-      "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
-      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
-  
-  return 0;
+	// Pluto's orbit
+#ifndef PERF_OUTPUT_ONLY
+	printf("Solve Kepler's Eq via	Fourier Bessel series for Pluto's orbit...\n");
+#endif
+	{
+		int argc = 5;
+		const char *argv[] = {"kepler", "-m", "5", "0.25359634", "0.2488"};
+
+		newmain(argc, argv);
+	}
+	perf_cmds = OZonePerfCmds();
+	perf_idle = OZonePerfIdle();
+	perf_prep = OZonePerfPrep();
+	perf_ex = OZonePerfEx();
+	perf_wait = OZonePerfWait();
+	perf_skip = OZonePerfSkipped();
+
+	fprintf(stdout,
+			"PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+			perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
+	return 0;
 }
 
-
-int
-newmain(int argc, const char **argv)
+int newmain(int argc, const char **argv)
 {
-	int n = 1,i=1;
-	int m=1;
+	int n = 1, i = 1;
+	int m = 1;
 	VIP_ENCDOUBLE sign = 1.0;
 	VIP_ENCDOUBLE M = 0.0;
-  double _e = -0.1;
-  VIP_ENCDOUBLE e = -0.1;
-  VIP_ENCDOUBLE E_old=PI/2;
-  VIP_ENCDOUBLE E;
-	VIP_ENCDOUBLE (*method)(VIP_ENCDOUBLE,VIP_ENCDOUBLE, VIP_ENCDOUBLE,int);
-
+	double _e = -0.1;
+	VIP_ENCDOUBLE e = -0.1;
+	VIP_ENCDOUBLE E_old = PI / 2;
+	VIP_ENCDOUBLE E;
+	VIP_ENCDOUBLE(*method)
+	(VIP_ENCDOUBLE, VIP_ENCDOUBLE, VIP_ENCDOUBLE, int);
 
 	/* Process command line options */
 
-	while(argv[i][0] == '-'){
-		  if(strcmp(argv[i],"-h")==0){
+	while (argv[i][0] == '-')
+	{
+		if (strcmp(argv[i], "-h") == 0)
+		{
 			printf("%s\n", HELP);
 			exit(0);
-		  }
-		  if(strcmp(argv[i],"-v")==0){
-			printf("%s\n",VERSION);
+		}
+		if (strcmp(argv[i], "-v") == 0)
+		{
+			printf("%s\n", VERSION);
 			exit(0);
-		  }
-		  if(strcmp(argv[i],"-a")==0){
-			derror = atof(argv[i+1]);
-			if(derror <= DBL_EPSILON)
-			        fprintf(stderr,"Warning: requested precision may exceed implementation limit.\n");
+		}
+		if (strcmp(argv[i], "-a") == 0)
+		{
+			derror = atof(argv[i + 1]);
+			if (derror <= DBL_EPSILON)
+				fprintf(stderr, "Warning: requested precision may exceed implementation limit.\n");
 			i += 2;
 			continue;
-		  }
-		  if(strcmp(argv[i],"-m")==0){
-			m = atoi(argv[i+1]);
-			if((m<=0) || (m>(int)NMETHODS)){
-				fprintf(stderr,"Bad method number %d\n",m);
+		}
+		if (strcmp(argv[i], "-m") == 0)
+		{
+			m = atoi(argv[i + 1]);
+			if ((m <= 0) || (m > (int)NMETHODS))
+			{
+				fprintf(stderr, "Bad method number %d\n", m);
 				return 1;
 			}
 			i += 2;
 			continue;
-		  }
-		  fprintf(stderr, "kepler: Unknown option %s\n", argv[i]);
-		  fprintf(stderr, "%s\n",USAGE);
-		  return 1;
 		}
-	if(i + 2 > argc){
-		fprintf(stderr, "%s\n",USAGE);
+		fprintf(stderr, "kepler: Unknown option %s\n", argv[i]);
+		fprintf(stderr, "%s\n", USAGE);
+		return 1;
+	}
+	if (i + 2 > argc)
+	{
+		fprintf(stderr, "%s\n", USAGE);
 		return 1;
 	}
 	M = atof(argv[i++]);
 	e = _e = atof(argv[i]);
-	method = (VIP_ENCDOUBLE(*)(VIP_ENCDOUBLE,VIP_ENCDOUBLE,VIP_ENCDOUBLE,int))methods[m-1];
+	method = (VIP_ENCDOUBLE(*)(VIP_ENCDOUBLE, VIP_ENCDOUBLE, VIP_ENCDOUBLE, int))methods[m - 1];
 
-	if((m==4)&&(_e > LAPLACE_LIMIT)){
-		fprintf(stderr,"e cannot exceed %f for this method.\n",
+	if ((m == 4) && (_e > LAPLACE_LIMIT))
+	{
+		fprintf(stderr, "e cannot exceed %f for this method.\n",
 				LAPLACE_LIMIT);
 		return 1;
 	}
 
-	if((_e<0)||(_e>=1.0)){
-		fprintf(stderr,"Eccentricity %f out of range.\n",_e);
+	if ((_e < 0) || (_e >= 1.0))
+	{
+		fprintf(stderr, "Eccentricity %f out of range.\n", _e);
 		return 1;
 	}
 
@@ -444,33 +460,43 @@ newmain(int argc, const char **argv)
 #else /* !VIP_DO_MODE */
 	sign = M > 0 ? 1.0 : -1.0;
 #endif
-	M = myfabs(M)/((VIP_ENCDOUBLE)2*PI);
-	M = (M - myfloor(M))*2*PI*sign;
+	M = myfabs(M) / ((VIP_ENCDOUBLE)2 * PI);
+	M = (M - myfloor(M)) * 2 * PI * sign;
 #ifdef VIP_DO_MODE
 	sign = 1.0;
-  VIP_ENCBOOL _pred = M > PI;
-  M = VIP_CMOV(_pred, (VIP_ENCDOUBLE)2*PI - M, M);
-  sign = VIP_CMOV(_pred, (VIP_ENCDOUBLE)-1.0, sign);
+	VIP_ENCBOOL _pred = M > PI;
+	M = VIP_CMOV(_pred, (VIP_ENCDOUBLE)2 * PI - M, M);
+	sign = VIP_CMOV(_pred, (VIP_ENCDOUBLE)-1.0, sign);
 #else /* !VIP_DO_MODE */
 	sign = 1.0;
-	if(M > PI){
-		M = 2*PI - M;
+	if (M > PI)
+	{
+		M = 2 * PI - M;
 		sign = -1.0;
 	}
 #endif
 	/* Do selected calculation, and quit when accuracy is bettered. */
 #ifdef VIP_DO_MODE
-	for (unsigned iter=0; iter < MAXITER; iter++)
-    {
-      E = method(E_old, e, M, 0);
-		  E_old = E;
-		  printf("n = %d\tE = %f\n",n++,VIP_DEC(sign*E));
-	  }
-#else /* !VIP_DO_MODE */
-	while(myfabs(E_old - (E = method(E_old,e,M,0))) >= derror)
-  {
+	for (unsigned iter = 0; iter < MAXITER; iter++)
+	{
+		E = method(E_old, e, M, 0);
 		E_old = E;
-		printf("n = %d\tE = %lf\n",n++,sign*E);
+
+#ifndef PERF_OUTPUT_ONLY
+		printf("n = %d\tE = %f\n", n++, VIP_DEC(sign * E));
+#else  /* !PERF_OUTPUT_ONLY */
+		n++;
+#endif /* PERF_OUTPUT_ONLY */
+	}
+#else /* !VIP_DO_MODE */
+	while (myfabs(E_old - (E = method(E_old, e, M, 0))) >= derror)
+	{
+		E_old = E;
+#ifndef PERF_OUTPUT_ONLY
+		printf("n = %d\tE = %lf\n", n++, sign * E);
+#else  /* !PERF_OUTPUT_ONLY */
+		n++;
+#endif /* PERF_OUTPUT_ONLY */
 	}
 #endif /* VIP_DO_MODE */
 	return 0;
@@ -481,23 +507,24 @@ newmain(int argc, const char **argv)
    routine assumes 2k <  n, and tries to keep the intermediate products
    small to prevent overflow.  */
 
-double 
+double
 bin_fact(int n, int k)
 {
-		int j;
-		double cum_prod = 1.0;
-		double num_fact,den_fact,dj,dk,x;
+	int j;
+	double cum_prod = 1.0;
+	double num_fact, den_fact, dj, dk, x;
 
-		x = ((double) n)/2.0 - (double)k;
+	x = ((double)n) / 2.0 - (double)k;
 
-		for(j=n-k;j>1;j--){
-			dj = (double)j;
-			dk = (double) n -(double)k - dj + 1.0;
-			den_fact = n - k - j + 1 <= k ? dk*dj : dj;  
-			num_fact = n - k - j + 1 <= k ? x*x : x; 
-			cum_prod *= (num_fact/den_fact);
-		}
-		return cum_prod;
+	for (j = n - k; j > 1; j--)
+	{
+		dj = (double)j;
+		dk = (double)n - (double)k - dj + 1.0;
+		den_fact = n - k - j + 1 <= k ? dk * dj : dj;
+		num_fact = n - k - j + 1 <= k ? x * x : x;
+		cum_prod *= (num_fact / den_fact);
+	}
+	return cum_prod;
 }
 
 /* The following routine calculates the Bessel function of the first kind 
@@ -516,25 +543,26 @@ pp 95-142 for an introduction to Bessel functions and related cylinder
 functions.
 
 */
-#define MAXJITER    12
+#define MAXJITER 12
 
 VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 {
-	VIP_ENCDOUBLE dsum=0.0,dterm,s_j,d_n,d_j,cfact=1.0;
-	int j,nn;
+	VIP_ENCDOUBLE dsum = 0.0, dterm, s_j, d_n, d_j, cfact = 1.0;
+	int j, nn;
 
-	nn = n >= 0 ? n : -n;  /* Absolute value of n. Use the relation
+	nn = n >= 0 ? n : -n; /* Absolute value of n. Use the relation
                                   J  (x) = (-1)^n J  (x) for negative n 
 				    -n              n    */
 
-	d_n = (double) nn;
-	
+	d_n = (double)nn;
+
 	/* Calculate the common factor (x/2)^n/n! so it only has to be
            done once. */
 
-	for(j=1;j<=nn;j++){
+	for (j = 1; j <= nn; j++)
+	{
 		d_j = (double)j;
-		cfact *= x/((VIP_ENCDOUBLE)2.0*d_j);
+		cfact *= x / ((VIP_ENCDOUBLE)2.0 * d_j);
 	}
 
 	/* j = 0 term: */
@@ -542,20 +570,20 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 
 	j = 1;
 
-	do {
+	do
+	{
 		d_j = (double)j;
-		s_j = j%2 ? -1.0: 1.0;
-		dterm *= x*x/(d_j*4.0*(d_n + d_j));
-		dsum += s_j*dterm;
+		s_j = j % 2 ? -1.0 : 1.0;
+		dterm *= x * x / (d_j * 4.0 * (d_n + d_j));
+		dsum += s_j * dterm;
 		j++;
 #ifdef VIP_DO_MODE
-	} while( j < MAXJITER );
+	} while (j < MAXJITER);
 #else /* !VIP_DO_MODE */
-	} while( dterm > DBL_EPSILON );
+	} while (dterm > DBL_EPSILON);
 #endif
-  // fprintf(stderr, "j == %d\n", j);
-		
-	s_j = nn%2 ? -1.0 : 1.0;
-	return  n >= 0 ? dsum : s_j*dsum;
-}
+	// fprintf(stderr, "j == %d\n", j);
 
+	s_j = nn % 2 ? -1.0 : 1.0;
+	return n >= 0 ? dsum : s_j * dsum;
+}

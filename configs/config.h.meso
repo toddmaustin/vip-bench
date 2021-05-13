@@ -2,6 +2,10 @@
 // Mesosphere privacy enhanced execution configuration
 //
 
+// TODO: make this an optional flag in the Makefile
+#define PERF_OUTPUT_ONLY
+// end TODO
+
 #if defined(VIP_NA_MODE)
 
 #define VIP_INIT

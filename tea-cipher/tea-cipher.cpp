@@ -3,50 +3,49 @@
 
 #include "../config.h"
 
-void
-encipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
+void encipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
 {
-  VIP_ENCUINT y=in[0], z=in[1], sum=0, delta=0x9E3779B9;
-  VIP_ENCUINT a=key[0], b=key[1], c=key[2], d=key[3];
-  unsigned int n=32;
+  VIP_ENCUINT y = in[0], z = in[1], sum = 0, delta = 0x9E3779B9;
+  VIP_ENCUINT a = key[0], b = key[1], c = key[2], d = key[3];
+  unsigned int n = 32;
 
-  while (n-->0)
+  while (n-- > 0)
   {
     sum += delta;
-    y += ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
-    z += ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
+    y += ((z << 4) + a) ^ (z + sum) ^ ((z >> 5) + b);
+    z += ((y << 4) + c) ^ (y + sum) ^ ((y >> 5) + d);
   }
-  out[0]=y; out[1]=z;
+  out[0] = y;
+  out[1] = z;
 }
 
-void
-decipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
+void decipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
 {
-  VIP_ENCUINT y=in[0], z=in[1], sum=0xC6EF3720, delta=0x9E3779B9;
-  VIP_ENCUINT a=key[0], b=key[1], c=key[2], d=key[3];
-  unsigned int n=32;
+  VIP_ENCUINT y = in[0], z = in[1], sum = 0xC6EF3720, delta = 0x9E3779B9;
+  VIP_ENCUINT a = key[0], b = key[1], c = key[2], d = key[3];
+  unsigned int n = 32;
 
   /* sum = delta<<5, in general sum = delta * n */
-  while (n-->0)
+  while (n-- > 0)
   {
-    z -= ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
-    y -= ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
+    z -= ((y << 4) + c) ^ (y + sum) ^ ((y >> 5) + d);
+    y -= ((z << 4) + a) ^ (z + sum) ^ ((z >> 5) + b);
     sum -= delta;
   }
-  out[0]=y; out[1]=z;
+  out[0] = y;
+  out[1] = z;
 }
 
-unsigned int _keytext[4] = { 358852050,	311606025, 739108171, 861449956 };
-unsigned int _plaintext[2] = { 765625614, 14247501 };
-unsigned int cipherref[2] = { 0x9fe2c864, 0xd7da4da4 };
+unsigned int _keytext[4] = {358852050, 311606025, 739108171, 861449956};
+unsigned int _plaintext[2] = {765625614, 14247501};
+unsigned int cipherref[2] = {0x9fe2c864, 0xd7da4da4};
 
 VIP_ENCUINT keytext[4];
 VIP_ENCUINT plaintext[2];
 VIP_ENCUINT ciphertext[2];
 VIP_ENCUINT newplain[2];
 
-int
-main(void)
+int main(void)
 {
   // AJK
   uint64_t perf_cmds = 0;
@@ -60,19 +59,18 @@ main(void)
   perf_cmds = OZonePerfCmds();
   perf_idle = OZonePerfIdle();
   perf_prep = OZonePerfPrep();
-  perf_ex   = OZonePerfEx();
+  perf_ex = OZonePerfEx();
   perf_wait = OZonePerfWait();
   perf_skip = OZonePerfSkipped();
+  fprintf(stdout,
+          "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+          perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   OZonePerfClear();
-  
-  fprintf(stdout, 
-      "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
-      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
 
   // encrypt test inputs
-  for (int i=0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
     keytext[i] = _keytext[i];
-  for (int i=0; i < 2; i++)
+  for (int i = 0; i < 2; i++)
     plaintext[i] = _plaintext[i];
 
   encipher(plaintext, ciphertext, keytext);
@@ -81,22 +79,21 @@ main(void)
   decipher(ciphertext, newplain, keytext);
   if (VIP_DEC(newplain[0]) != _plaintext[0] || VIP_DEC(newplain[1]) != _plaintext[1])
     return 1;
-  
+#ifndef PERF_OUTPUT_ONLY
   printf("TEA Cipher results:\n");
   printf("  plaintext:  0x%08x 0x%08x\n", VIP_DEC(plaintext[0]), VIP_DEC(plaintext[1]));
   printf("  ciphertext: 0x%08x 0x%08x\n", VIP_DEC(ciphertext[0]), VIP_DEC(ciphertext[1]));
   printf("  newplain:   0x%08x 0x%08x\n", VIP_DEC(newplain[0]), VIP_DEC(newplain[1]));
-
+#endif
   perf_cmds = OZonePerfCmds();
   perf_idle = OZonePerfIdle();
   perf_prep = OZonePerfPrep();
-  perf_ex   = OZonePerfEx();
+  perf_ex = OZonePerfEx();
   perf_wait = OZonePerfWait();
   perf_skip = OZonePerfSkipped();
-  
-  fprintf(stdout, 
-      "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
-      perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
+  fprintf(stdout,
+          "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+          perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   return 0;
 }
-

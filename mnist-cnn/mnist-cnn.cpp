@@ -8,27 +8,59 @@
 
 int main(int argc, char *argv[])
 {
+
+	// AJK
+	uint64_t perf_cmds = 0;
+	uint64_t perf_idle = 0;
+	uint64_t perf_prep = 0;
+	uint64_t perf_ex = 0;
+	uint64_t perf_wait = 0;
+	uint64_t perf_skip = 0;
+
+	OZonePerfClear();
+	perf_cmds = OZonePerfCmds();
+	perf_idle = OZonePerfIdle();
+	perf_prep = OZonePerfPrep();
+	perf_ex = OZonePerfEx();
+	perf_wait = OZonePerfWait();
+	perf_skip = OZonePerfSkipped();
+	fprintf(stdout,
+			"INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+			perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+	OZonePerfClear();
+
 	kann_t *ann;
 	kann_data_t *x, *y;
 	char *fn_in = NULL, *fn_out = NULL;
 	int c, mini_size = 2, max_epoch = 5, max_drop_streak = 10, seed = 131, n_h_fc = 128, n_h_flt = 32, n_threads = 1;
 	float lr = 0.001f, dropout = 0.2f, frac_val = 0.1f;
 
-	while ((c = getopt(argc, argv, "i:o:m:h:f:d:s:t:v:")) >= 0) {
-		if (c == 'i') fn_in = optarg;
-		else if (c == 'o') fn_out = optarg;
+	while ((c = getopt(argc, argv, "i:o:m:h:f:d:s:t:v:")) >= 0)
+	{
+		if (c == 'i')
+			fn_in = optarg;
+		else if (c == 'o')
+			fn_out = optarg;
 #ifdef notdef
-		else if (c == 'm') max_epoch = atoi(optarg);
-		else if (c == 'd') dropout = atof(optarg);
-		else if (c == 't') n_threads = atoi(optarg);
-		else if (c == 'v') frac_val = atof(optarg);
+		else if (c == 'm')
+			max_epoch = atoi(optarg);
+		else if (c == 'd')
+			dropout = atof(optarg);
+		else if (c == 't')
+			n_threads = atoi(optarg);
+		else if (c == 'v')
+			frac_val = atof(optarg);
 #endif
-		else if (c == 'h') n_h_fc = atoi(optarg);
-		else if (c == 'f') n_h_flt = atoi(optarg);
-		else if (c == 's') seed = atoi(optarg);
+		else if (c == 'h')
+			n_h_fc = atoi(optarg);
+		else if (c == 'f')
+			n_h_flt = atoi(optarg);
+		else if (c == 's')
+			seed = atoi(optarg);
 	}
 
-	if (argc - optind == 0 || (argc - optind == 1 && fn_in == 0)) {
+	if (argc - optind == 0 || (argc - optind == 1 && fn_in == 0))
+	{
 		FILE *fp = stdout;
 		fprintf(fp, "Usage: mnist-cnn [-i model] [-o model] [-t nThreads] <x.knd> [y.knd]\n");
 		return 1;
@@ -36,9 +68,12 @@ int main(int argc, char *argv[])
 
 	kad_trap_fe();
 	kann_srand(seed);
-	if (fn_in) {
+	if (fn_in)
+	{
 		ann = kann_load(fn_in);
-	} else {
+	}
+	else
+	{
 		kad_node_t *t;
 		t = kad_feed(4, 1, 1, 28, 28), t->ext_flag |= KANN_F_IN;
 		t = kad_relu(kann_layer_conv2d(t, n_h_flt, 3, 3, 1, 1, 0, 0)); // 3x3 kernel; 1x1 stride; 0x0 padding
@@ -53,28 +88,39 @@ int main(int argc, char *argv[])
 
 	x = kann_data_read(argv[optind]);
 	assert(x->n_col == 28 * 28);
-	y = argc - optind >= 2? kann_data_read(argv[optind+1]) : 0;
+	y = argc - optind >= 2 ? kann_data_read(argv[optind + 1]) : 0;
 
-	if (y) { // training
+	if (y)
+	{ // training
 		assert(y->n_col == 10);
-		if (n_threads > 1) kann_mt(ann, n_threads, mini_size);
+		if (n_threads > 1)
+			kann_mt(ann, n_threads, mini_size);
 		kann_train_fnn1(ann, lr, mini_size, max_epoch, max_drop_streak, frac_val, x->n_row, x->x, y->x);
-		if (fn_out) kann_save(fn_out, ann);
+		if (fn_out)
+			kann_save(fn_out, ann);
 		kann_data_free(y);
 	}
-  else
-  { // applying
+	else
+	{ // applying
 		int i, j, n_out;
 		kann_switch(ann, 0);
 		n_out = kann_dim_out(ann);
 		assert(n_out == 10);
-		for (i = 0; i < x->n_row; ++i) {
+		for (i = 0; i < x->n_row; ++i)
+		{
 			VIP_ENCFLOAT *y;
 			y = kann_apply1(ann, x->x[i]);
-			if (x->rname) printf("%s\t", x->rname[i]);
-			for (j = 0; j < n_out; ++j) {
-				if (j) putchar('\t');
+			if (x->rname)
+#ifndef PERF_OUTPUT_ONLY
+				printf("%s\t", x->rname[i]);
+#endif
+			for (j = 0; j < n_out; ++j)
+			{
+				if (j)
+					putchar('\t');
+#ifndef PERF_OUTPUT_ONLY
 				printf("%.3g", VIP_DEC(y[j]) + 1.0f - 1.0f);
+#endif
 			}
 			putchar('\n');
 		}
@@ -82,5 +128,17 @@ int main(int argc, char *argv[])
 
 	kann_data_free(x);
 	kann_delete(ann);
+
+	perf_cmds = OZonePerfCmds();
+	perf_idle = OZonePerfIdle();
+	perf_prep = OZonePerfPrep();
+	perf_ex = OZonePerfEx();
+	perf_wait = OZonePerfWait();
+	perf_skip = OZonePerfSkipped();
+
+	fprintf(stdout,
+			"PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
+			perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
 	return 0;
 }
