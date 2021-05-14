@@ -125,5 +125,9 @@ int main(void)
   fprintf(stdout,
           "PERFORMANCE METRICS:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
           perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+  fprintf(stdout,
+          "PERFORMANCE METRICS (formatted):\n%lu\n%lu\n%lu\n%lu\n%lu\n%lu\n",
+          perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
+
   return 0;
 }
