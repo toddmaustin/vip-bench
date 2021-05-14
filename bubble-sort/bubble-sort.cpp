@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "utils.h"
 
 // include build configuration defines
 #include "../config.h"
@@ -62,12 +63,12 @@ main(void)
   VIP_INIT;
 
   // initialize the pseudo-RNG
-  srand(42);
-  // srand(time(NULL));
+  mysrand(42);
+  // mysrand(time(NULL));
 
   // initialize the array to sort
   for (unsigned i=0; i < DATASET_SIZE; i++)
-    data[i] = rand();
+    data[i] = myrand();
   print_data(data, DATASET_SIZE);
 
   bubblesort(data, DATASET_SIZE);
@@ -82,7 +83,7 @@ main(void)
       return -1;
     }
   }
-  fprintf(stdout, "INFO: %lu swaps executed.\n", swaps);
+  fprintf(stderr, "INFO: %lu swaps executed.\n", swaps);
   fprintf(stdout, "INFO: data is properly sorted.\n");
   return 0;
 }

@@ -1,9 +1,9 @@
 
-LOCAL_CFLAGS=
+LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
 
 PROG=bubble-sort
-OBJS=bubble-sort.o
+OBJS=bubble-sort.o ../common/utils.o
 
 include ../Makefile
 
