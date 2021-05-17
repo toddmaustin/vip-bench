@@ -14,8 +14,8 @@ the algorithms become less heuristic since they can no longer inspect the data t
 be replaced with encrypted (and otherwise enhanced) data types. The VIP Benchmark Suite has already done this work for you, for a wide
 range of application that suggest a strong need for data privacy.
 
-*My privacy-enhanced computation framework doesn't work with some/all of the VIP benchmarks!* Yes, this may be the case, hence the name
-"Very Improvable Privacy (VIP) Benchmarks. If you cannot support a benchmark, due to the data types it requires or the complexity of its
+*My privacy-enhanced computation framework doesn't work with some/all of the VIP benchmarks!* Yes, this may be the case
+If you cannot support a benchmark, due to the data types it requires or the complexity of its
 computation, perhaps you can benchmark without that particular application. Since some of the privacy-enhanced frameworks can do all of
 these benchmarks, we felt it was important to take a great-common-demoninator approach to selecting benchmarks, rather than a
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
