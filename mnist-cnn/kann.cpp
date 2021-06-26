@@ -677,7 +677,7 @@ void kann_RMSprop(int n, float h0, VIP_ENCFLOAT *h, float decay, VIP_ENCFLOAT *g
 	for (i = 0; i < n; ++i) {
 		float lr = h? VIP_DEC(h[i]) : h0;
 		r[i] = (VIP_ENCFLOAT)(1.0f - decay) * g[i] * g[i] + (VIP_ENCFLOAT)decay * r[i];
-		t[i] -= (VIP_ENCFLOAT)lr / (VIP_ENCFLOAT)mysqrt((VIP_ENCDOUBLE)((VIP_ENCFLOAT)1e-6f + r[i])) * g[i];
+		t[i] = t[i] - ((VIP_ENCFLOAT)lr / (VIP_ENCFLOAT)mysqrt((VIP_ENCDOUBLE)((VIP_ENCFLOAT)1e-6f + r[i])) * g[i]);
 	}
 }
 
@@ -690,7 +690,7 @@ float kann_grad_clip(float thres, int n, float *g)
 	s2 = sqrt(s2);
 	if (s2 > thres)
 		for (i = 0, s2 = 1.0 / s2; i < n; ++i)
-			g[i] *= (float)s2;
+			g[i] = g[i] * (float)s2;
 	return (float)s2 / thres;
 }
 
@@ -742,7 +742,7 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 				memcpy(&y1[b*n_out], y[shuf[n_proc+b]], n_out * sizeof(VIP_ENCFLOAT));
 			}
 			kann_set_batch_size(ann, ms);
-			train_cost += kann_cost(ann, 0, 1) * ms;
+			train_cost = train_cost + (kann_cost(ann, 0, 1) * ms);
 			c = kann_class_error(ann, &b);
 			n_train_err += c, n_train_base += b;
 			kann_RMSprop(n_var, lr, 0, 0.9f, ann->g, ann->x, r);
@@ -750,7 +750,7 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 		  if (kann_verbose >= 3)
 			  fprintf(stdout, "epoch: %d; training cost: %g ms:%d m_train_err:%d n_train_base:%d\n", i+1, VIP_DEC(train_cost), ms, n_train_err, n_train_base);
 		}
-		train_cost /= n_train;
+		train_cost = train_cost / n_train;
 		kann_switch(ann, 0);
 		n_proc = 0;
 		while (n_proc < n_val) {
@@ -760,12 +760,12 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 				memcpy(&y1[b*n_out], y[n_train+n_proc+b], n_out * sizeof(VIP_ENCFLOAT));
 			}
 			kann_set_batch_size(ann, ms);
-			val_cost += kann_cost(ann, 0, 0) * ms;
+			val_cost = val_cost + (kann_cost(ann, 0, 0) * ms);
 			c = kann_class_error(ann, &b);
 			n_val_err += c, n_val_base += b;
 			n_proc += ms;
 		}
-		if (n_val > 0) val_cost /= n_val;
+		if (n_val > 0) val_cost = val_cost / n_val;
 		if (kann_verbose >= 3) {
 			fprintf(stdout, "epoch: %d; training cost: %g", i+1, VIP_DEC(train_cost));
 			if (n_train_base) fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_train_err / n_train);
