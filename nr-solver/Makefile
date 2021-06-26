@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=nr-solver
-OBJS=nr-solver.o
+OBJS=nr-solver.o ../common/utils.o
 
 include ../Makefile
 

@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=parrando
-OBJS=parrando.o
+OBJS=parrando.o ../common/utils.o
 
 include ../Makefile
 

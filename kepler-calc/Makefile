@@ -4,7 +4,7 @@ LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
 
 PROG=kepler-calc
-OBJS=kepler-calc.o ../common/mathlib.o
+OBJS=kepler-calc.o ../common/mathlib.o ../common/utils.o
 
 include ../Makefile
 

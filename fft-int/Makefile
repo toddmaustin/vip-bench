@@ -3,7 +3,7 @@ LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
 
 PROG=fft-int
-OBJS=fft-int.o ../common/mathlib.o
+OBJS=fft-int.o ../common/mathlib.o ../common/utils.o
 
 include ../Makefile
 

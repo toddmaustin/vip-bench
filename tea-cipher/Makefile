@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=tea-cipher
-OBJS=tea-cipher.o
+OBJS=tea-cipher.o ../common/utils.o
 
 include ../Makefile
 
