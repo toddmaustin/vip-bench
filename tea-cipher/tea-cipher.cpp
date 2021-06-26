@@ -12,9 +12,9 @@ encipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
 
   while (n-->0)
   {
-    sum += delta;
-    y += ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
-    z += ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
+    sum = sum + delta;
+    y = y + ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
+    z = z + ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
   }
   out[0]=y; out[1]=z;
 }
@@ -29,16 +29,13 @@ decipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
   /* sum = delta<<5, in general sum = delta * n */
   while (n-->0)
   {
-    z -= ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
-    y -= ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
-    sum -= delta;
+    z = z - ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
+    y = y -((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
+    sum = sum - delta;
   }
   out[0]=y; out[1]=z;
 }
 
-unsigned int _keytext[4] = { 358852050,	311606025, 739108171, 861449956 };
-unsigned int _plaintext[2] = { 765625614, 14247501 };
-unsigned int cipherref[2] = { 0x9fe2c864, 0xd7da4da4 };
 
 VIP_ENCUINT keytext[4];
 VIP_ENCUINT plaintext[2];
@@ -48,6 +45,11 @@ VIP_ENCUINT newplain[2];
 int
 main(void)
 {
+  VIP_INIT;
+  unsigned int _keytext[4] = { 358852050,	311606025, 739108171, 861449956 };
+  unsigned int _plaintext[2] = { 765625614, 14247501 };
+  unsigned int cipherref[2] = { 0x9fe2c864, 0xd7da4da4 };
+
   // encrypt test inputs
   for (int i=0; i < 4; i++)
     keytext[i] = _keytext[i];

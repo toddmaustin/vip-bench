@@ -62,6 +62,8 @@
 
 */
 
+#ifndef KEPLER_CALC_CPP
+#define KEPLER_CALC_CPP
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -225,7 +227,7 @@ VIP_ENCDOUBLE e_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int re
 		n_2k = (double)n - 2.0 * ((double)k);
     // k is not private
 		s_k = k%2 ? -1.0 : 1.0;   /*   (-1)^k */
-		a_n += s_k*bin_fact(n,k)*mysin(n_2k*M);
+		a_n = a_n + (s_k*bin_fact(n,k)*mysin(n_2k*M));
 	}
 	n++;
 	return E + mypow(e,n-1)*a_n;
@@ -295,6 +297,8 @@ int newmain(int argc, const char **argv);
 int
 main(void)
 {
+	VIP_INIT;
+
   // test parameters
   printf("Solve Kepler's Eq via	simple iteration for test parameters...\n"); 
   {
@@ -464,7 +468,7 @@ bin_fact(int n, int k)
 			dk = (double) n -(double)k - dj + 1.0;
 			den_fact = n - k - j + 1 <= k ? dk*dj : dj;  
 			num_fact = n - k - j + 1 <= k ? x*x : x; 
-			cum_prod *= (num_fact/den_fact);
+			cum_prod = cum_prod * (num_fact/den_fact);
 		}
 		return cum_prod;
 }
@@ -503,7 +507,7 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 
 	for(j=1;j<=nn;j++){
 		d_j = (double)j;
-		cfact *= x/((VIP_ENCDOUBLE)2.0*d_j);
+		cfact = cfact * (x/((VIP_ENCDOUBLE)2.0*d_j));
 	}
 
 	/* j = 0 term: */
@@ -514,8 +518,8 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 	do {
 		d_j = (double)j;
 		s_j = j%2 ? -1.0: 1.0;
-		dterm *= x*x/(d_j*4.0*(d_n + d_j));
-		dsum += s_j*dterm;
+		dterm = dterm * (x*x/(d_j*4.0*(d_n + d_j)));
+		dsum = dsum + (s_j*dterm);
 		j++;
 #ifdef VIP_DO_MODE
 	} while( j < MAXJITER );
@@ -528,3 +532,4 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 	return  n >= 0 ? dsum : s_j*dsum;
 }
 
+#endif
