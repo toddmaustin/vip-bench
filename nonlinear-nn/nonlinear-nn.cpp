@@ -51,10 +51,13 @@ main(void)
   cout << fixed;
   cout << setprecision(5);
 
-  for (int i=0; i<1000; i++){
-    VIP_ENCDOUBLE x = inputs[i]; 
-    cout << "INFO: ReLU("      << inputs[i] << ") == " << VIP_DEC(ReLU(x))      << endl;
-    cout << "INFO: LeakyReLU(" << inputs[i] << ") == " << VIP_DEC(LeakyReLU(x)) << endl;
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    for (int i=0; i<1000; i++){
+      VIP_ENCDOUBLE x = inputs[i]; 
+      cout << "INFO: ReLU("      << inputs[i] << ") == " << VIP_DEC(ReLU(x))      << endl;
+      cout << "INFO: LeakyReLU(" << inputs[i] << ") == " << VIP_DEC(LeakyReLU(x)) << endl;
+    }
   }
 
 	return 0; 

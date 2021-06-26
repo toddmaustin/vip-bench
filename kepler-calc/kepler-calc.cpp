@@ -391,11 +391,13 @@ newmain(int argc, const char **argv)
 		  fprintf(stderr, "kepler: Unknown option %s\n", argv[i]);
 		  fprintf(stderr, "%s\n",USAGE);
 		  return 1;
-		}
+	}
 	if(i + 2 > argc){
 		fprintf(stderr, "%s\n",USAGE);
 		return 1;
 	}
+	{
+    Stopwatch s("VIP_Bench Runtime");
 	M = atof(argv[i++]);
 	e = _e = atof(argv[i]);
 	method = (VIP_ENCDOUBLE(*)(VIP_ENCDOUBLE,VIP_ENCDOUBLE,VIP_ENCDOUBLE,int))methods[m-1];
@@ -446,6 +448,7 @@ newmain(int argc, const char **argv)
 		printf("n = %d\tE = %lf\n",n++,sign*E);
 	}
 #endif /* VIP_DO_MODE */
+}
 	return 0;
 }
 #endif /* NO_MAIN */

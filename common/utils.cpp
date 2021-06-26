@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "utils.h"
 
 /* Period parameters */  
 #define N 624
@@ -17,6 +18,11 @@
 
 static unsigned int mt[N]; /* the array for the state vector  */
 static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
+
+double Stopwatch::timeTaken=0;
+bool Stopwatch::precision=true;
+int Stopwatch::numIter=1;
+
 
 /* Initializing the array with a seed */
 void

@@ -100,7 +100,10 @@ main(void)
 { 
 	//cout << "Distance: "<< editDistance(str2, str1)<< endl; 
     fprintf(stdout, "------Within the randoms array------\n");
-    FindDistanceWithinArray(random_s);
+    {
+      Stopwatch s("VIP_Bench Runtime");
+      FindDistanceWithinArray(random_s);
+    }
     // cout<<"------Between random array and biased array (sequences of the same length)------"<<endl;
     // findDistanceBetweenArray(random_s, biased_s);
     // cout<<"------check for same and empty sequences------"<<endl;

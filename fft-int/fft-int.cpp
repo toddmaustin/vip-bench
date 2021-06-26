@@ -466,12 +466,18 @@ main(void)
     imag[i] = 0;
   }
 
-  fix_fft(real, imag, M, 0);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    fix_fft(real, imag, M, 0);
+  }
 
   for (i=0; i<N; i++)
     printf("%d: %d, %d\n", i, VIP_DEC(real[i]), VIP_DEC(imag[i]));
 
-  fix_fft(real, imag, M, 1);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    fix_fft(real, imag, M, 1);
+  }
 
   for (i=0; i<N; i++)
     printf("%d: %d, %d\n", i, VIP_DEC(real[i]), VIP_DEC(imag[i]));

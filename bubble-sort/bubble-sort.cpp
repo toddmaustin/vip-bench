@@ -71,7 +71,10 @@ main(void)
     data[i] = myrand();
   print_data(data, DATASET_SIZE);
 
-  bubblesort(data, DATASET_SIZE);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    bubblesort(data, DATASET_SIZE);
+  }
   print_data(data, DATASET_SIZE);
 
   // check the array

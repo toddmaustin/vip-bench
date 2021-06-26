@@ -1,6 +1,8 @@
 #ifndef CONFIG_SE_H
 #define CONFIG_SE_H
 
+#include "common/utils.h"
+
 #if defined(VIP_NA_MODE)
 
 #include <valarray>

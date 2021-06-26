@@ -136,16 +136,20 @@ main(void)
 
   int steps = 1000;
   int i, j;
-  VIP_ENCUINT seedval = 42;
-  sgenrand(seedval);
-
-  VIP_ENCUINT randval;
-  for (i=0,j=0; i<steps; i++)
+  
   {
-    randval = genrand();
-    fprintf(stdout, "%10u, ", VIP_DEC(randval));
-	  if (++j%8==0)
-	    cout << endl;;
+    Stopwatch s("VIP_Bench Runtime");
+    VIP_ENCUINT seedval = 42;
+    sgenrand(seedval);
+
+    VIP_ENCUINT randval;
+    for (i=0,j=0; i<steps; i++)
+    {
+      randval = genrand();
+      fprintf(stdout, "%10u, ", VIP_DEC(randval));
+      if (++j%8==0)
+        cout << endl;;
+    }
   }
   return 0;
 } 

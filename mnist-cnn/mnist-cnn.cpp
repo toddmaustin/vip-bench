@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	{
+    Stopwatch s("VIP_Bench Runtime");
 	kad_trap_fe();
 	kann_srand(seed);
 	if (fn_in) {
@@ -82,5 +84,6 @@ int main(int argc, char *argv[])
 
 	kann_data_free(x);
 	kann_delete(ann);
+	}
 	return 0;
 }

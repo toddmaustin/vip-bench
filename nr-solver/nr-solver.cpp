@@ -89,11 +89,14 @@ main(void)
   VIP_ENCDOUBLE root;
   VIP_ENCBOOL converged;
 
+  {
+    Stopwatch s("VIP_Bench Runtime");
   for (unsigned int i=0; i < NTESTDATA; i++)
   {
     sqrt_value = testdata[i];
     root = rn_solver(converged, 0.00001, 20, f, df);
     printf("sqrt(%lf) == %lf (converged:%c)\n", sqrt_value, VIP_DEC(root), VIP_DEC(converged) ? 't' : 'f');
+  }
   }
   return 0;
 }

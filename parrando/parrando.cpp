@@ -169,6 +169,7 @@ main(void)
   }
 
 
+{ Stopwatch s("VIP_Bench Runtime");
 	for(int i=0; i<RUNS; i++)
   {
     /*** Prepare run variables ***/
@@ -273,7 +274,7 @@ main(void)
 		);
 
 	} // Run loop (i)
-
+}
 
 
 	return 0;
