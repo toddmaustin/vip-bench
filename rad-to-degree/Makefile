@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=rad-to-degree
-OBJS=rad-to-degree.o
+OBJS=rad-to-degree.o ../common/utils.o
 
 include ../Makefile
 

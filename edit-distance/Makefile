@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=edit-distance
-OBJS=edit-distance.o
+OBJS=edit-distance.o ../common/utils.o
 
 include ../Makefile
 

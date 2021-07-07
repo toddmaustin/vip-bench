@@ -53,6 +53,7 @@ int main(void)
   cout << setprecision(5);
 #endif
 
+{ Stopwatch s("VIP_Bench Runtime");
   for (double x = 0.0; x <= 360.0; x += 1.0)
   {
     VIP_ENCDOUBLE rad_res = VIP_DEC(deg2rad((VIP_ENCDOUBLE)x));
@@ -68,6 +69,7 @@ int main(void)
     cout << "INFO: rad2deg(" << x << ") == " << deg_res << endl;
 #endif
   }
+}
 
   perf_cmds = OZonePerfCmds();
   perf_idle = OZonePerfIdle();

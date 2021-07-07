@@ -1437,6 +1437,8 @@ ERROR : N_LOUD != 100
 
 int main(void)
 {
+  VIP_INIT;
+
   // AJK
   uint64_t perf_cmds = 0;
   uint64_t perf_idle = 0;
@@ -1456,7 +1458,7 @@ int main(void)
           "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
           perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   OZonePerfClear();
-
+  
   VIP_ENCINT real[N], imag[N];
   int i;
 
@@ -1466,14 +1468,20 @@ int main(void)
     imag[i] = 0;
   }
 
-  fix_fft(real, imag, M, 0);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    fix_fft(real, imag, M, 0);
+  }
 #ifndef PERF_OUTPUT_ONLY
-  for (i = 0; i < N; i++)
+  for (i=0; i<N; i++)
     printf("%d: %d, %d\n", i, VIP_DEC(real[i]), VIP_DEC(imag[i]));
 #endif
-  fix_fft(real, imag, M, 1);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    fix_fft(real, imag, M, 1);
+  }
 #ifndef PERF_OUTPUT_ONLY
-  for (i = 0; i < N; i++)
+  for (i=0; i<N; i++)
     printf("%d: %d, %d\n", i, VIP_DEC(real[i]), VIP_DEC(imag[i]));
 #endif
   perf_cmds = OZonePerfCmds();

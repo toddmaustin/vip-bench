@@ -67,15 +67,18 @@ int main(void)
   cout << setprecision(5);
 #endif
 
-  for (int i = 0; i < 1000; i++)
   {
-    VIP_ENCDOUBLE x = inputs[i];
-    VIP_ENCDOUBLE relu_res = VIP_DEC(ReLU(x));
-    VIP_ENCDOUBLE leaky_res = VIP_DEC(LeakyReLU(x));
+    Stopwatch s("VIP_Bench Runtime");
+    for (int i = 0; i < 1000; i++)
+    {
+      VIP_ENCDOUBLE x = inputs[i];
+      VIP_ENCDOUBLE relu_res = VIP_DEC(ReLU(x));
+      VIP_ENCDOUBLE leaky_res = VIP_DEC(LeakyReLU(x));
 #ifndef PERF_OUTPUT_ONLY
-    cout << "INFO: ReLU(" << inputs[i] << ") == " << relu_res << endl;
-    cout << "INFO: LeakyReLU(" << inputs[i] << ") == " << leaky_res << endl;
+      cout << "INFO: ReLU(" << inputs[i] << ") == " << relu_res << endl;
+      cout << "INFO: LeakyReLU(" << inputs[i] << ") == " << leaky_res << endl;
 #endif
+    }
   }
 
   perf_cmds = OZonePerfCmds();

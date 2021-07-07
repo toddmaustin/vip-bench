@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	{
+    Stopwatch s("VIP_Bench Runtime");
 	kad_trap_fe();
 	kann_srand(seed);
 	if (fn_in)
@@ -143,5 +145,6 @@ int main(int argc, char *argv[])
 			"PERFORMANCE METRICS (formatted):\n%lu\n%lu\n%lu\n%lu\n%lu\n%lu\n",
 			perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
 
+	}
 	return 0;
 }

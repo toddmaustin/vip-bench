@@ -1498,7 +1498,7 @@ int kad_op_mse(kad_node_t *p, int action)
 	} else if (action == KAD_FORWARD) {
 		VIP_ENCDOUBLE cost = 0.0;
 		for (i = 0; i < n; ++i)
-			cost += (y1->x[i] - y0->x[i]) * (y1->x[i] - y0->x[i]);
+			cost = cost + ((y1->x[i] - y0->x[i]) * (y1->x[i] - y0->x[i]));
 		p->x[0] = (VIP_ENCFLOAT)(cost / n);
 	} else if (action == KAD_BACKWARD && kad_is_back(y1)) {
 		VIP_ENCFLOAT t = (VIP_ENCFLOAT)2.0f * p->g[0] / n;
@@ -1524,18 +1524,18 @@ int kad_op_ce_bin(kad_node_t *p, int action)
 		VIP_ENCDOUBLE cost = 0.0;
 		for (i = 0; i < n; ++i) {
 			if (/* FIXME: */VIP_DEC(y0->x[i]) > 0.0f)
-				cost += y0->x[i] * /* FIXME: */(VIP_ENCDOUBLE)log(VIP_DEC(y0->x[i] / (/*FIXME: */VIP_DEC(y1->x[i]) > tiny? y1->x[i] : tiny)));
+				cost = cost + (y0->x[i] * /* FIXME: */log(VIP_DEC(y0->x[i] / (/*FIXME: */VIP_DEC(y1->x[i]) > tiny? y1->x[i] : tiny))));
 			if (1.0f - /* FIXME: */VIP_DEC(y0->x[i]) > 0.0f)
-				cost += ((VIP_ENCFLOAT)1.0f - y0->x[i]) * /* FIXME: */(VIP_ENCDOUBLE)log(VIP_DEC(((VIP_ENCFLOAT)1.0f - y0->x[i]) / (1.0f - /* FIXME: */VIP_DEC(y1->x[i]) > tiny? (VIP_ENCFLOAT)1.0f - y1->x[i] : tiny)));
+				cost = cost + (((VIP_ENCFLOAT)1.0f - y0->x[i]) * /* FIXME: */log(VIP_DEC(((VIP_ENCFLOAT)1.0f - y0->x[i]) / (1.0f - /* FIXME: */VIP_DEC(y1->x[i]) > tiny? (VIP_ENCFLOAT)1.0f - y1->x[i] : tiny))));
 		}
 		p->x[0] = (VIP_ENCFLOAT)(cost / n);
 	} else if (action == KAD_BACKWARD && kad_is_back(y1)) {
 		VIP_ENCFLOAT t = p->g[0] / n;
 		for (i = 0; i < n; ++i) {
 			if (/*FIXME: */VIP_DEC(y0->x[i]) > 0.0f)
-				y1->g[i] -= t * y0->x[i] / (/* FIXME: */VIP_DEC(y1->x[i]) > tiny? y1->x[i] : tiny);
+				y1->g[i] = y1->g[i] - (t * y0->x[i] / (/* FIXME: */VIP_DEC(y1->x[i]) > tiny? y1->x[i] : tiny));
 			if (1.0f - /* FIXME: */VIP_DEC(y0->x[i]) > 0.0f)
-				y1->g[i] += t * ((VIP_ENCFLOAT)1.0f - y0->x[i]) / (1.0f - /* FIXME: */VIP_DEC(y1->x[i]) > tiny? (VIP_ENCFLOAT)1.0f - y1->x[i] : tiny);
+				y1->g[i] = y1->g[i] + (t * ((VIP_ENCFLOAT)1.0f - y0->x[i]) / (1.0f - /* FIXME: */VIP_DEC(y1->x[i]) > tiny? (VIP_ENCFLOAT)1.0f - y1->x[i] : tiny));
 		}
 	}
 	return 0;

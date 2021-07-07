@@ -107,7 +107,9 @@ int main(void)
   VIP_ENCDOUBLE root;
   VIP_ENCBOOL converged;
 
-  for (unsigned int i = 0; i < NTESTDATA; i++)
+  {
+    Stopwatch s("VIP_Bench Runtime");
+  for (unsigned int i=0; i < NTESTDATA; i++)
   {
     sqrt_value = testdata[i];
     root = rn_solver(converged, 0.00001, 20, f, df);
@@ -129,5 +131,6 @@ int main(void)
           "PERFORMANCE METRICS (formatted):\n%lu\n%lu\n%lu\n%lu\n%lu\n%lu\n",
           perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
 
+  }
   return 0;
 }

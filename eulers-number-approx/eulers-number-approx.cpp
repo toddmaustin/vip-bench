@@ -34,15 +34,18 @@ int main(void)
           perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   OZonePerfClear();
 
-  double steps = 10000000; /* STEPS is usually a very large number eg 10000000 */
+  double steps = 100; /* STEPS is usually a very large number eg 10000000 */
   VIP_ENCDOUBLE x, y;
 
-  y = (VIP_ENCDOUBLE)1.0 + (1.0 / steps);
-  x = (VIP_ENCDOUBLE)1.0;
-
-  for (; steps > 0; steps--)
   {
-    x = x * y;
+    Stopwatch s("VIP_Bench Runtime");
+    y = (VIP_ENCDOUBLE)1.0 + (1.0/steps);
+    x = (VIP_ENCDOUBLE)1.0;
+
+    for(; steps > 0; steps--)
+    {
+      x = x * y;
+    }
   }
 #ifndef PERF_OUTPUT_ONLY
   cout << "INFO: EulersNumberApprox(" << steps << ") == " << VIP_DEC(x) << endl;

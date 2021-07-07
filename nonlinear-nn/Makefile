@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=nonlinear-nn
-OBJS=nonlinear-nn.o
+OBJS=nonlinear-nn.o ../common/utils.o
 
 include ../Makefile
 

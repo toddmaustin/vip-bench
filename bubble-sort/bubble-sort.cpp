@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "utils.h"
 
 // include build configuration defines
 #include "../config.h"
@@ -78,16 +79,19 @@ int main(void)
   OZonePerfClear();
 
   // initialize the pseudo-RNG
-  srand(42);
-  // srand(time(NULL));
+  mysrand(42);
+  // mysrand(time(NULL));
 
   // initialize the array to sort
-  for (unsigned i = 0; i < DATASET_SIZE; i++)
-    data[i] = rand();
+  for (unsigned i=0; i < DATASET_SIZE; i++)
+    data[i] = myrand();
 #ifndef PERF_OUTPUT_ONLY
   print_data(data, DATASET_SIZE);
 #endif
-  bubblesort(data, DATASET_SIZE);
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    bubblesort(data, DATASET_SIZE);
+  }
 #ifndef PERF_OUTPUT_ONLY
   print_data(data, DATASET_SIZE);
 #endif
@@ -103,7 +107,7 @@ int main(void)
   }
 
 #ifndef PERF_OUTPUT_ONLY
-  fprintf(stdout, "INFO: %lu swaps executed.\n", swaps);
+  fprintf(stderr, "INFO: %lu swaps executed.\n", swaps);
   fprintf(stdout, "INFO: data is properly sorted.\n");
 #endif
   perf_cmds = OZonePerfCmds();

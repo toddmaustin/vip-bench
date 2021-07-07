@@ -1,0 +1,68 @@
+#ifndef CONFIG_SE_H
+#define CONFIG_SE_H
+
+#include "common/utils.h"
+
+#if defined(VIP_NA_MODE)
+
+#include <valarray>
+
+#define VIP_INIT
+#define VIP_ENCCHAR     char
+#define VIP_ENCINT      int
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
+#define VIP_ENCBOOL     bool
+#define VIP_ENCFLOAT    float
+#define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE std::valarray<double>
+#define VIP_DEC(X)      (X)
+
+#elif defined(VIP_DO_MODE)
+
+#include <valarray>
+
+#define VIP_INIT
+#define VIP_ENCCHAR     char
+#define VIP_ENCINT      int
+#define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
+#define VIP_ENCLONG     long
+#define VIP_ENCULONG    unsigned long
+#define VIP_ENCBOOL     bool
+#define VIP_ENCFLOAT    float
+#define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE std::valarray<double>
+#define VIP_DEC(X)      (X)
+#define VIP_CMOV(P,A,B) ((P) ? (A) : (B))
+
+#elif defined(VIP_ENC_MODE)
+
+#include "se.h"
+#include <valarray>
+using namespace enc_lib;
+
+#define VIP_INIT        SEInit()
+
+#define VIP_ENCCHAR     enc_char
+#define VIP_ENCINT      enc_int
+#define VIP_ENCUINT     enc_uint32
+#define VIP_ENCUINT64   enc_uint64
+#define VIP_ENCLONG     enc_long
+#define VIP_ENCULONG    enc_ulong
+#define VIP_ENCBOOL     enc_bool
+#define VIP_ENCFLOAT    enc_float
+#define VIP_ENCDOUBLE   enc_double
+#define VIP_VEC_ENCDOUBLE std::valarray<enc_double>
+#define VIP_DEC(X)      ((X).GET_DECRYPTED_VALUE()) //This is not a "legal" operation
+#define VIP_CMOV(P,A,B) CMOV((P), (A), (B))
+
+
+#undef  VIP_DO_MODE
+#define VIP_DO_MODE
+
+#endif
+
+#endif

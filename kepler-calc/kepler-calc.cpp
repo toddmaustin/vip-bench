@@ -62,6 +62,9 @@
 
 */
 
+#ifndef KEPLER_CALC_CPP
+#define KEPLER_CALC_CPP
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -224,9 +227,9 @@ VIP_ENCDOUBLE e_series(VIP_ENCDOUBLE E, VIP_ENCDOUBLE e, VIP_ENCDOUBLE M, int re
 	for (k = 0; 2 * k <= n; k++)
 	{
 		n_2k = (double)n - 2.0 * ((double)k);
-		// k is not private
-		s_k = k % 2 ? -1.0 : 1.0; /*   (-1)^k */
-		a_n += s_k * bin_fact(n, k) * mysin(n_2k * M);
+    // k is not private
+		s_k = k%2 ? -1.0 : 1.0;   /*   (-1)^k */
+		a_n = a_n + (s_k*bin_fact(n,k)*mysin(n_2k*M));
 	}
 	n++;
 	return E + mypow(e, n - 1) * a_n;
@@ -294,6 +297,7 @@ int newmain(int argc, const char **argv);
 
 int main(void)
 {
+	VIP_INIT;
 	// AJK
 	uint64_t perf_cmds = 0;
 	uint64_t perf_idle = 0;
@@ -335,6 +339,7 @@ int main(void)
 
 		newmain(argc, argv);
 	}
+	
 
 	// Haley's comet
 #ifndef PERF_OUTPUT_ONLY
@@ -429,16 +434,17 @@ int newmain(int argc, const char **argv)
 			}
 			i += 2;
 			continue;
-		}
-		fprintf(stderr, "kepler: Unknown option %s\n", argv[i]);
-		fprintf(stderr, "%s\n", USAGE);
+		  }
+		  fprintf(stderr, "kepler: Unknown option %s\n", argv[i]);
+		  fprintf(stderr, "%s\n",USAGE);
+		  return 1;
+	}
+	if(i + 2 > argc){
+		fprintf(stderr, "%s\n",USAGE);
 		return 1;
 	}
-	if (i + 2 > argc)
 	{
-		fprintf(stderr, "%s\n", USAGE);
-		return 1;
-	}
+    Stopwatch s("VIP_Bench Runtime");
 	M = atof(argv[i++]);
 	e = _e = atof(argv[i]);
 	method = (VIP_ENCDOUBLE(*)(VIP_ENCDOUBLE, VIP_ENCDOUBLE, VIP_ENCDOUBLE, int))methods[m - 1];
@@ -501,6 +507,7 @@ int newmain(int argc, const char **argv)
 #endif /* PERF_OUTPUT_ONLY */
 	}
 #endif /* VIP_DO_MODE */
+}
 	return 0;
 }
 #endif /* NO_MAIN */
@@ -512,21 +519,20 @@ int newmain(int argc, const char **argv)
 double
 bin_fact(int n, int k)
 {
-	int j;
-	double cum_prod = 1.0;
-	double num_fact, den_fact, dj, dk, x;
+		int j;
+		double cum_prod = 1.0;
+		double num_fact,den_fact,dj,dk,x;
 
-	x = ((double)n) / 2.0 - (double)k;
+		x = ((double) n)/2.0 - (double)k;
 
-	for (j = n - k; j > 1; j--)
-	{
-		dj = (double)j;
-		dk = (double)n - (double)k - dj + 1.0;
-		den_fact = n - k - j + 1 <= k ? dk * dj : dj;
-		num_fact = n - k - j + 1 <= k ? x * x : x;
-		cum_prod *= (num_fact / den_fact);
-	}
-	return cum_prod;
+		for(j=n-k;j>1;j--){
+			dj = (double)j;
+			dk = (double) n -(double)k - dj + 1.0;
+			den_fact = n - k - j + 1 <= k ? dk*dj : dj;  
+			num_fact = n - k - j + 1 <= k ? x*x : x; 
+			cum_prod = cum_prod * (num_fact/den_fact);
+		}
+		return cum_prod;
 }
 
 /* The following routine calculates the Bessel function of the first kind 
@@ -564,7 +570,7 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 	for (j = 1; j <= nn; j++)
 	{
 		d_j = (double)j;
-		cfact *= x / ((VIP_ENCDOUBLE)2.0 * d_j);
+		cfact = cfact * (x/((VIP_ENCDOUBLE)2.0*d_j));
 	}
 
 	/* j = 0 term: */
@@ -575,9 +581,9 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 	do
 	{
 		d_j = (double)j;
-		s_j = j % 2 ? -1.0 : 1.0;
-		dterm *= x * x / (d_j * 4.0 * (d_n + d_j));
-		dsum += s_j * dterm;
+		s_j = j%2 ? -1.0: 1.0;
+		dterm = dterm * (x*x/(d_j*4.0*(d_n + d_j)));
+		dsum = dsum + (s_j*dterm);
 		j++;
 #ifdef VIP_DO_MODE
 	} while (j < MAXJITER);
@@ -589,3 +595,4 @@ VIP_ENCDOUBLE J(int n, VIP_ENCDOUBLE x)
 	s_j = nn % 2 ? -1.0 : 1.0;
 	return n >= 0 ? dsum : s_j * dsum;
 }
+#endif

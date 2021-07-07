@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=eulers-number-approx
-OBJS=eulers-number-approx.o
+OBJS=eulers-number-approx.o ../common/utils.o
 
 include ../Makefile
 

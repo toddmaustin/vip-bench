@@ -68,13 +68,13 @@ void sgenrand(VIP_ENCUINT seed)
 {
   int i;
 
-  for (i = 0; i < N; i++)
-  {
-    mt[i] = seed & 0xffff0000;
-    seed = (VIP_ENCUINT)69069 * seed + 1;
-    mt[i] = mt[i] | ((seed & 0xffff0000) >> 16);
-    seed = (VIP_ENCUINT)69069 * seed + 1;
-  }
+  for (i=0;i<N;i++)
+    {
+      mt[i] = seed & 0xffff0000;
+      seed = 69069 * seed + 1;
+      mt[i] = mt[i] | ((seed & 0xffff0000) >> 16);
+      seed = 69069 * seed + 1;
+    }
   mti = N;
 }
 
@@ -154,20 +154,22 @@ int main(void)
 
   int steps = 1000;
   int i, j;
-  VIP_ENCUINT seedval = 42;
-  sgenrand(seedval);
-
-  VIP_ENCUINT randval;
-
-  for (i = 0, j = 0; i < steps; i++)
+  
   {
-    randval = genrand();
+    Stopwatch s("VIP_Bench Runtime");
+    VIP_ENCUINT seedval = 42;
+    sgenrand(seedval);
+
+    VIP_ENCUINT randval;
+    for (i=0,j=0; i<steps; i++)
+    {
+      randval = genrand();
 #ifndef PERF_OUTPUT_ONLY
-    fprintf(stdout, "%10u, ", VIP_DEC(randval));
-    if (++j % 8 == 0)
-      cout << endl;
-    ;
+      fprintf(stdout, "%10u, ", VIP_DEC(randval));
+      if (++j%8==0)
+        cout << endl;;
 #endif
+    }
   }
 
   perf_cmds = OZonePerfCmds();

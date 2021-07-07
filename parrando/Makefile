@@ -2,13 +2,13 @@
 LOCAL_CFLAGS=
 LOCAL_LIBS=
 
-PROG=tea-cipher
-OBJS=tea-cipher.o ../common/utils.o
+PROG=parrando
+OBJS=parrando.o ../common/utils.o
 
 include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO tea-cipher.out
+	-$(TARGET_DIFF) FOO parrando.out
 	rm -f FOO
 

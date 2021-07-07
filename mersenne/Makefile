@@ -3,7 +3,7 @@ LOCAL_CFLAGS=
 LOCAL_LIBS=
 
 PROG=mersenne
-OBJS=mersenne.o
+OBJS=mersenne.o ../common/utils.o
 
 include ../Makefile
 
