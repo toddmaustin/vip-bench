@@ -5,6 +5,7 @@
 // TODO: make this an optional flag in the Makefile
 #define PERF_OUTPUT_ONLY
 // end TODO
+#include "common/utils.h"
 
 #if defined(VIP_NA_MODE)
 

@@ -71,14 +71,8 @@ Print information on simulations of Parrondo's paradoxical game.\n\n\
 #define HELP USAGE
 #endif
 
-
-#ifdef _NO_RANDOM
-#define RANDOM rand
-#define SRANDOM srand
-#else
-#define RANDOM random
-#define SRANDOM srandom
-#endif
+#define RANDOM myrand
+#define SRANDOM mysrand
 
 #define MAX_ITERATIONS 1000L   //Iterations per trial
 #define TRIALS 100             //Trials per run
@@ -214,7 +208,7 @@ main(void)
         if(VIP_DEC(done))
           break;
 #else
-				done = VIP_CMOV(!done && ((fortune >= MAX_FORTUNE)||(fortune <= -MAX_FORTUNE)), true, done); 
+				done = VIP_CMOV(!done && ((fortune >= MAX_FORTUNE)||(fortune <= -MAX_FORTUNE)), (VIP_ENCBOOL)true, done); 
 #endif
         // Document site visits 
 #ifndef VIP_DO_MODE

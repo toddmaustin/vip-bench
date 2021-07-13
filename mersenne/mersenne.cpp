@@ -71,9 +71,9 @@ void sgenrand(VIP_ENCUINT seed)
   for (i=0;i<N;i++)
     {
       mt[i] = seed & 0xffff0000;
-      seed = 69069 * seed + 1;
+      seed = (VIP_ENCUINT)69069 * seed + 1;
       mt[i] = mt[i] | ((seed & 0xffff0000) >> 16);
-      seed = 69069 * seed + 1;
+      seed = (VIP_ENCUINT)69069 * seed + 1;
     }
   mti = N;
 }

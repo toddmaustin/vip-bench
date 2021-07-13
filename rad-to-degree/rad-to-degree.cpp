@@ -16,13 +16,13 @@ using namespace std;
 VIP_ENCDOUBLE
 rad2deg(VIP_ENCDOUBLE rad)
 {
-  return (180.0 * rad / (PI));
+      return ((VIP_ENCDOUBLE)180.0 * rad / (PI));
 }
 
 VIP_ENCDOUBLE
 deg2rad(VIP_ENCDOUBLE deg)
 {
-  return (PI * deg / 180.0);
+      return ((VIP_ENCDOUBLE)PI * deg / 180.0);
 }
 
 int main(void)
