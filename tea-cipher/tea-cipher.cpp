@@ -13,8 +13,8 @@ encipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
   while (n-->0)
   {
     sum = sum + delta;
-    y = y + ((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
-    z = z + ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
+    y = y + (((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b));
+    z = z + (((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d));
   }
   out[0]=y; out[1]=z;
 }
@@ -29,8 +29,8 @@ decipher(VIP_ENCUINT *in, VIP_ENCUINT *out, VIP_ENCUINT *key)
   /* sum = delta<<5, in general sum = delta * n */
   while (n-->0)
   {
-    z = z - ((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d);
-    y = y -((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b);
+    z = z - (((y << 4)+c) ^ (y+sum) ^ ((y >> 5)+d));
+    y = y - (((z << 4)+a) ^ (z+sum) ^ ((z >> 5)+b));
     sum = sum - delta;
   }
   out[0]=y; out[1]=z;
