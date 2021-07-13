@@ -2,6 +2,8 @@
 // Mesosphere privacy enhanced execution configuration
 //
 
+#include "common/utils.h"
+
 #if defined(VIP_NA_MODE)
 
 #define VIP_INIT
