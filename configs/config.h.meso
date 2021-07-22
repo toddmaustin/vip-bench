@@ -35,7 +35,7 @@
 
 #include "meso.h"
 
-#define VIP_INIT        MesoInit()
+#define VIP_INIT        MesoInit(NULL, false)
 
 #define VIP_ENCCHAR     MesoSealedChar
 #define VIP_ENCINT      MesoSealedInt32

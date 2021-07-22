@@ -1,85 +1,10 @@
-Solve Kepler's Eq via	simple iteration for test parameters...
-n = 1	E = 0.590000
-n = 2	E = 0.479153
-n = 3	E = 0.455211
-n = 4	E = 0.449841
-n = 5	E = 0.448628
-n = 6	E = 0.448354
-n = 7	E = 0.448292
-n = 8	E = 0.448277
-n = 9	E = 0.448274
-n = 10	E = 0.448274
-n = 11	E = 0.448273
-n = 12	E = 0.448273
-n = 13	E = 0.448273
-n = 14	E = 0.448273
-n = 15	E = 0.448273
-n = 16	E = 0.448273
-Solve Kepler's Eq via	Newton's method for SpaceX Tesla...
-n = 1	E = -0.501360
-n = 2	E = -0.329838
-n = 3	E = -0.327499
-n = 4	E = -0.327496
-n = 5	E = -0.327496
-n = 6	E = -0.327496
-n = 7	E = -0.327496
-n = 8	E = -0.327496
-n = 9	E = -0.327496
-n = 10	E = -0.327496
-n = 11	E = -0.327496
-n = 12	E = -0.327496
-n = 13	E = -0.327496
-n = 14	E = -0.327496
-n = 15	E = -0.327496
-n = 16	E = -0.327496
-Solve Kepler's Eq via	binary search for Haley's comet...
-n = 1	E = 2.356194
-n = 2	E = 1.963495
-n = 3	E = 1.767146
-n = 4	E = 1.668971
-n = 5	E = 1.619884
-n = 6	E = 1.644427
-n = 7	E = 1.632156
-n = 8	E = 1.638291
-n = 9	E = 1.635224
-n = 10	E = 1.633690
-n = 11	E = 1.634457
-n = 12	E = 1.634840
-n = 13	E = 1.635032
-n = 14	E = 1.634936
-n = 15	E = 1.634984
-n = 16	E = 1.635008
-Solve Kepler's Eq via	power series for Earth's orbit...
-n = 1	E = -0.024138
-n = 2	E = -0.024536
-n = 3	E = -0.024543
-n = 4	E = -0.024543
-n = 5	E = -0.024543
-n = 6	E = -0.024543
-n = 7	E = -0.024543
-n = 8	E = -0.024543
-n = 9	E = -0.024543
-n = 10	E = -0.024543
-n = 11	E = -0.024543
-n = 12	E = -0.024543
-n = 13	E = -0.024543
-n = 14	E = -0.024543
-n = 15	E = -0.024543
-n = 16	E = -0.024543
-Solve Kepler's Eq via	Fourier Bessel series for Pluto's orbit...
-n = 1	E = 0.253596
-n = 2	E = 0.315282
-n = 3	E = 0.330006
-n = 4	E = 0.333855
-n = 5	E = 0.334888
-n = 6	E = 0.335166
-n = 7	E = 0.335240
-n = 8	E = 0.335259
-n = 9	E = 0.335264
-n = 10	E = 0.335265
-n = 11	E = 0.335265
-n = 12	E = 0.335265
-n = 13	E = 0.335265
-n = 14	E = 0.335265
-n = 15	E = 0.335265
-n = 16	E = 0.335265
+Solve Kepler's Eq via simple iteration for test parameters...
+E = 0.448274
+Solve Kepler's Eq via Newton's method for SpaceX Tesla...
+E = -0.327496
+Solve Kepler's Eq via binary search for Haley's comet...
+E = 1.635018
+Solve Kepler's Eq via power series for Earth's orbit...
+E = -0.024543
+Solve Kepler's Eq via Fourier Bessel series for Pluto's orbit...
+E = 0.335265

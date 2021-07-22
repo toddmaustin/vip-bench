@@ -32,6 +32,9 @@ benchmarks.
 
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
 
+## Prerequisites
+
+The "numdiff" utility must be installed, as it is used to compare results that may be slightly imprecise (e.g., kepler-calc in DO mode). This tool lets the test-runs verify that the answer is within a specific tolerance of the expected value.
 
 ## Building and Running the VIP Benchmarks
 

@@ -300,7 +300,7 @@ main(void)
 	VIP_INIT;
 
   // test parameters
-  printf("Solve Kepler's Eq via	simple iteration for test parameters...\n"); 
+  printf("Solve Kepler's Eq via simple iteration for test parameters...\n"); 
   {
     int argc=5;
     const char *argv[] = { "kepler", "-m", "1", "0.34", "0.25" };
@@ -309,7 +309,7 @@ main(void)
   }
 
   // SpaceX Tesla orbit
-  printf("Solve Kepler's Eq via	Newton's method for SpaceX Tesla...\n"); 
+  printf("Solve Kepler's Eq via Newton's method for SpaceX Tesla...\n"); 
   {
     int argc=5;
     const char *argv[] = { "kepler", "-m", "2", "6.037831992006549", "0.25600674983752" };
@@ -318,7 +318,7 @@ main(void)
   }
 
   // Haley's comet
-  printf("Solve Kepler's Eq via	binary search for Haley's comet...\n"); 
+  printf("Solve Kepler's Eq via binary search for Haley's comet...\n"); 
   {
     int argc=5;
     const char *argv[] = { "kepler", "-m", "3", "0.66985737", "0.96714" };
@@ -327,7 +327,7 @@ main(void)
   }
 
   // Earth's orbit
-  printf("Solve Kepler's Eq via	power series for Earth's orbit...\n"); 
+  printf("Solve Kepler's Eq via power series for Earth's orbit...\n"); 
   {
     int argc=5;
     const char *argv[] = { "kepler", "-m", "4", "6.259047404", "0.0167086" };
@@ -336,7 +336,7 @@ main(void)
   }
 
   // Pluto's orbit
-  printf("Solve Kepler's Eq via	Fourier Bessel series for Pluto's orbit...\n"); 
+  printf("Solve Kepler's Eq via Fourier Bessel series for Pluto's orbit...\n"); 
   {
     int argc=5;
     const char *argv[] = { "kepler", "-m", "5", "0.25359634", "0.2488" };
@@ -350,7 +350,7 @@ main(void)
 int
 newmain(int argc, const char **argv)
 {
-	int n = 1,i=1;
+	int i=1;
 	int m=1;
 	VIP_ENCDOUBLE sign = 1.0;
 	VIP_ENCDOUBLE M = 0.0;
@@ -439,14 +439,14 @@ newmain(int argc, const char **argv)
     {
       E = method(E_old, e, M, 0);
 		  E_old = E;
-		  printf("n = %d\tE = %f\n",n++,VIP_DEC(sign*E));
 	  }
+		printf("E = %f\n",VIP_DEC(sign*E));
 #else /* !VIP_DO_MODE */
 	while(myfabs(E_old - (E = method(E_old,e,M,0))) >= derror)
   {
 		E_old = E;
-		printf("n = %d\tE = %lf\n",n++,sign*E);
 	}
+  printf("E = %lf\n",sign*E);
 #endif /* VIP_DO_MODE */
 }
 	return 0;

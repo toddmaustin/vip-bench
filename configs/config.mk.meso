@@ -15,7 +15,7 @@ DO_SIM =
 DO_DIFF = diff
 
 ENC_CFLAGS = -I../../mesosphere -DTARGET_EMUL
-ENC_LIBS = ../../mesosphere/mesolib.a
+ENC_LIBS = ../../mesosphere/mesolib.a -lssl -lcrypto
 ENC_SIM =
 ENC_DIFF = diff
 
