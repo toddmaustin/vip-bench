@@ -56,12 +56,16 @@ main(void)
   for (int i=0; i < 2; i++)
     plaintext[i] = _plaintext[i];
 
-  encipher(plaintext, ciphertext, keytext);
-  if (VIP_DEC(ciphertext[0]) != cipherref[0] || VIP_DEC(ciphertext[1]) != cipherref[1])
-    return 1;
-  decipher(ciphertext, newplain, keytext);
-  if (VIP_DEC(newplain[0]) != _plaintext[0] || VIP_DEC(newplain[1]) != _plaintext[1])
-    return 1;
+  {
+    Stopwatch s("VIP_Bench Runtime");
+
+    encipher(plaintext, ciphertext, keytext);
+    if (VIP_DEC(ciphertext[0]) != cipherref[0] || VIP_DEC(ciphertext[1]) != cipherref[1])
+      return 1;
+    decipher(ciphertext, newplain, keytext);
+    if (VIP_DEC(newplain[0]) != _plaintext[0] || VIP_DEC(newplain[1]) != _plaintext[1])
+      return 1;
+  }
   
   printf("TEA Cipher results:\n");
   printf("  plaintext:  0x%08x 0x%08x\n", VIP_DEC(plaintext[0]), VIP_DEC(plaintext[1]));

@@ -36,7 +36,7 @@ floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR replace
   }
 
   // for as many times as worst-case runtime (probably not this bad!)
-  for (int i=0; i < 100; i++)
+  for (int i=0; i < N*M; i++)
   {
     // for all x values
     for (int ix=0; ix < M; ix++)

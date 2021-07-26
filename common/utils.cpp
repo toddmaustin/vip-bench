@@ -22,6 +22,8 @@ static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
 double Stopwatch::timeTaken=0;
 bool Stopwatch::precision=true;
 int Stopwatch::numIter=1;
+int Stopwatch::nSlots=1;
+bool Stopwatch::tableFormat=false;
 
 
 /* Initializing the array with a seed */
