@@ -82,8 +82,10 @@ main()
   VIP_ENCINT max_sum, ends_at;
  
   fprintf(stdout, "Array size= %d\n", n);
-  max_sum = kadane(arr, n, ends_at);
-
+  {
+    Stopwatch s("VIP_Bench Runtime");
+    max_sum = kadane(arr, n, ends_at);
+  }
   fprintf(stdout, "The maximum sum of a contiguous subarray is %d (ending at index %d)\n", VIP_DEC(max_sum), VIP_DEC(ends_at));
   return 0;
 }
