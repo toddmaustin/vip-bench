@@ -27,6 +27,9 @@
 
 #include "../config.h"
 
+// precision of the primality test, there p_failure = 1/4^K
+#define K 256
+
 enum primality_t {
   composite = 0,
   prime = 1,
@@ -68,10 +71,20 @@ void split_int(uint64_t *s, uint64_t *d, const uint64_t n)
 	*s = 0;
 	*d = n - 1;
 
-	while ((*d & 1) == 0) {
+#ifdef VIP_DO_MODE
+  for (int i=0; i < 32; i++)
+  {
+    VIP_ENCBOOL _pred = ((*d & 1) == 0);
+		*s = *s + 1;
+    *d = *d / 2;
+	}
+#else /* !VIP_DO_MODE */
+	while ((*d & 1) == 0)
+  {
 		(*s)++;
 		*d /= 2;
 	}
+#endif /* VIP_DO_MODE */
 }
 /*
  * This function checks whether a given number n is a prime or not, using the
@@ -117,7 +130,6 @@ miller_rabin_int(const uint32_t n, const uint32_t k)
 			continue;
 
 		for (uint64_t r = 1; r <= s; r++) {
-			//x = powm(x, 2, n);
 			x = (x * x) % n;
 			if (x == 1)
 				return composite;
@@ -132,23 +144,44 @@ miller_rabin_int(const uint32_t n, const uint32_t k)
 	return prime_likely;
 }
 
-#define K 32
+// blind queue for results
+#define Q_SIZE 64
+struct {
+  uint32_t val;
+  enum primality_t prim;
+} q[Q_SIZE];
+int q_head = 0;
+
 int
 main(void)
 {
-  uint32_t val = 3;
-  for (int i=0; i < 100; i++)
+  // locate primes in a stream of random numbers
   {
-    enum primality_t prim = miller_rabin_int(val, K);
+    Stopwatch s("VIP_Bench Runtime");
 
-    if (prim != composite)
+    uint32_t val = 3;
+    for (int i=0; i < 1000; i++)
     {
-      if (prim == prime)
-        fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", val);
-      else if (prim == prime_likely)
-        fprintf(stdout, "Value %u is `likely prime' with failure probability (1 in %le)\n", val, pow(4.0, K));
-    }
-    val = myrand();
+      enum primality_t prim = miller_rabin_int(val, K);
+      if (prim != composite)
+      {
+        q[q_head].val = val;
+        q[q_head].prim = prim;
+        if (q_head+1 < Q_SIZE)
+          q_head++;
+      }
+      val = myrand();
+    } 
+  }
+
+  // print out the primes that were found
+  fprintf(stdout, "Primality tests found %d primes...\n", q_head);
+  for (int i=0; i < q_head; i++)
+  {
+    if (q[i].prim == prime)
+      fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", q[i].val);
+    else if (q[i].prim == prime_likely)
+      fprintf(stdout, "Value %u is `likely prime' with failure probability (1 in %le)\n", q[i].val, pow(4.0, K));
   }
   return 0;
 }
