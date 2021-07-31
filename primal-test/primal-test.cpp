@@ -30,11 +30,11 @@
 // precision of the primality test, there p_failure = 1/4^K
 #define K 256
 
-enum primality_t {
-  composite = 0,
-  prime = 1,
-  prime_likely = 2
-};
+// primality results
+#define PT_COMPOSITE    0
+#define PT_PRIME        1
+#define PT_PRIME_LIKELY 2
+
 /*
  * Raise b to the e'th power modulo m.  This uses 64-bit registers to hold the
  * results of the multipliations.  Therefore, the results will be wrong if m is
@@ -44,12 +44,24 @@ static uint64_t powm(uint64_t b, uint64_t e, unsigned m)
 {
 	uint64_t result = 1;
 
+#ifdef VIP_DO_MODE
+  VIP_ENCBOOL _done = false;
+  for (int i=0; i < 64; i++)
+  {
+    _done = _done | (e == 0);
+    VIP_ENCBOOL _pred = ((e & 1) == 1);
+    result = VIP_CMOV(!_done && _pred, (result * b) % m, result);
+		b = VIP_CMOV(!_done, (b * b) % m, b);
+		e = VIP_CMOV(!_done, e / 2, e);
+  }
+#else /* !VIP_DO_MODE */
 	while (e != 0) {
 		if ((e & 1) == 1)
 			result = (result * b) % m;
 		b = (b * b) % m;
 		e /= 2;
 	}
+#endif /* VIP_DO_MODE */
 	return result;
 }
 
@@ -72,11 +84,13 @@ void split_int(uint64_t *s, uint64_t *d, const uint64_t n)
 	*d = n - 1;
 
 #ifdef VIP_DO_MODE
-  for (int i=0; i < 32; i++)
+  VIP_ENCBOOL _done = false;
+  for (int i=0; i < 64; i++)
   {
     VIP_ENCBOOL _pred = ((*d & 1) == 0);
-		*s = *s + 1;
-    *d = *d / 2;
+    _done = _done | !_pred;
+		*s = VIP_CMOV(!_done && _pred, *s + 1, *s);
+    *d = VIP_CMOV(!_done && _pred, *d / 2, *d);
 	}
 #else /* !VIP_DO_MODE */
 	while ((*d & 1) == 0)
@@ -100,19 +114,78 @@ void split_int(uint64_t *s, uint64_t *d, const uint64_t n)
  * The function returns `probably_prime` if it found no evidence, that n might
  * be composite and `composite` if it did find a counter example.
  */
-primality_t
+int
 miller_rabin_int(const uint32_t n, const uint32_t k)
 {
 	uint64_t s;
 	uint64_t a, d, x, nm1;
+#ifdef VIP_DO_MODE
+  VIP_ENCBOOL _done = false;
+  VIP_ENCINT _retval = -1;
 
+  VIP_ENCBOOL _pred = ((n & 1) == 0);
+  VIP_ENCINT _val = VIP_CMOV(n == 2, PT_PRIME, PT_COMPOSITE);
+  _retval = VIP_CMOV(!_done && _pred, _val, _retval);
+  _done = _done | _pred;
+
+  VIP_ENCBOOL _pred1 = (n == 3);
+  _retval = VIP_CMOV(!_done && _pred1, PT_PRIME, _retval);
+  _done = _done | _pred1;
+
+  VIP_ENCBOOL _pred2 = (n < 3);
+  _retval = VIP_CMOV(!_done && _pred2, PT_COMPOSITE, _retval);
+  _done = _done | _pred2;
+
+	nm1 = n - 1;
+
+	/* compute s and d s.t. n-1=2^s*d */
+	split_int(&s, &d, n);
+
+  if (_done)
+    return _retval;
+
+	/* Repeat the test itself k times to increase the accuracy */
+	for (unsigned i = 0; i < k; i++)
+  {
+		a = get_random_int(2, n - 2);
+
+		/* compute a^d mod n */
+		x = powm(a, d, n);
+
+		if (x == 1 || x == nm1)
+			continue;
+
+    for (int ii=0; ii < 64; ii++)
+    {
+      VIP_ENCBOOL _pred = (r <= s);
+      x = VIP_CMOV(!_done && _pred, (x * x) % n, x);
+      VIP_ENCBOOL _pred1 = (x == 1);
+      _retval = VIP_CMOV(!_done & _pred && _pred1, PT_COMPOSITE, _retval);
+      _done = _done | (_pred && _pred1);
+
+      
+    }
+		for (uint64_t r = 1; r <= s; r++) {
+			x = (x * x) % n;
+			if (x == 1)
+				return PT_COMPOSITE;
+			if (x == nm1)
+				break;
+		}
+
+		if (x != nm1)
+			return PT_COMPOSITE;
+	}
+
+	return PT_PRIME_LIKELY;
+#else /* !VIP_DO_MODE */
 	/* We need an odd integer greater than 3 */
 	if ((n & 1) == 0)
-		return n == 2 ? prime : composite;
+		return n == 2 ? PT_PRIME : PT_COMPOSITE;
 	if (n == 3)
-		return prime;
+		return PT_PRIME;
 	else if (n < 3)
-		return composite;
+		return PT_COMPOSITE;
 
 	nm1 = n - 1;
 
@@ -132,23 +205,24 @@ miller_rabin_int(const uint32_t n, const uint32_t k)
 		for (uint64_t r = 1; r <= s; r++) {
 			x = (x * x) % n;
 			if (x == 1)
-				return composite;
+				return PT_COMPOSITE;
 			if (x == nm1)
 				break;
 		}
 
 		if (x != nm1)
-			return composite;
+			return PT_COMPOSITE;
 	}
 
-	return prime_likely;
+	return PT_PRIME_LIKELY;
+#endif /* VIP_DO_MODE */
 }
 
 // blind queue for results
 #define Q_SIZE 64
 struct {
   uint32_t val;
-  enum primality_t prim;
+  int prim;
 } q[Q_SIZE];
 int q_head = 0;
 
@@ -162,8 +236,8 @@ main(void)
     uint32_t val = 3;
     for (int i=0; i < 1000; i++)
     {
-      enum primality_t prim = miller_rabin_int(val, K);
-      if (prim != composite)
+      int prim = miller_rabin_int(val, K);
+      if (prim != PT_COMPOSITE)
       {
         q[q_head].val = val;
         q[q_head].prim = prim;
@@ -178,9 +252,9 @@ main(void)
   fprintf(stdout, "Primality tests found %d primes...\n", q_head);
   for (int i=0; i < q_head; i++)
   {
-    if (q[i].prim == prime)
+    if (q[i].prim == PT_PRIME)
       fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", q[i].val);
-    else if (q[i].prim == prime_likely)
+    else if (q[i].prim == PT_PRIME_LIKELY)
       fprintf(stdout, "Value %u is `likely prime' with failure probability (1 in %le)\n", q[i].val, pow(4.0, K));
   }
   return 0;
