@@ -46,11 +46,12 @@ class Stopwatch
 		    pe.exclude_hv = 1;
 		    fd = perf_event_open(&pe, 0, -1, -1, 0);
 		    if (fd == -1) {
-		        fprintf(stderr, "Error opening leader %llx\n", pe.config);
-		        exit(EXIT_FAILURE);
+		        fprintf(stderr, "WARNING: could not access performance monitoring kernel facility (leader %llx).\n", pe.config);
 		    }
-		    ioctl(fd, PERF_EVENT_IOC_RESET, 0);
-		    ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
+        else {
+		      ioctl(fd, PERF_EVENT_IOC_RESET, 0);
+		      ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
+        }
       }
       ~Stopwatch()
       {
@@ -69,10 +70,12 @@ class Stopwatch
           std::cerr<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles<<std::endl;
         // Print Linux Perf Event Utility to Measure Instruction Count
         long long count;
-		    ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
-        read(fd, &count, sizeof(long long));
-        fprintf(stderr, "[VIP] Executed %lld instructions\n", count);
-		    close(fd);
+        if (fd != -1) {
+		      ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
+          read(fd, &count, sizeof(long long));
+          fprintf(stderr, "[VIP] Executed %lld instructions\n", count);
+		      close(fd);
+        }
       }
     private: 
       std::string name_;
