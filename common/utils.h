@@ -7,6 +7,19 @@ unsigned int myrand(void);
 #include<iostream>
 #include<chrono>
 #include<string>
+#include<stdio.h>
+#include<sys/mman.h>
+#include<unistd.h>
+#include<assert.h>
+#include<linux/perf_event.h>
+#include<sys/syscall.h>
+#include<asm/unistd.h>
+#include<sys/ioctl.h>
+#include<string.h>
+
+
+long perf_event_open(perf_event_attr*, int, int, int, unsigned long);
+//int  record_mem();
 
 class Stopwatch
   {
@@ -16,10 +29,28 @@ class Stopwatch
       static int numIter;
       static int nSlots;
       static bool tableFormat;
+      struct perf_event_attr pe;
+	    int fd;
       Stopwatch(std::string timer_name):name_(timer_name), start_time_(std::chrono::high_resolution_clock::now())
       {
         __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
         cycles=((uint64_t)hi << 32) | lo;
+
+        // Linux Perf Event Utility to Measure Instruction Count
+        memset(&pe, 0, sizeof(struct perf_event_attr));
+		    pe.type = PERF_TYPE_HARDWARE;
+		    pe.size = sizeof(struct perf_event_attr);
+		    pe.config = PERF_COUNT_HW_INSTRUCTIONS;
+		    pe.disabled = 1;
+		    pe.exclude_kernel = 1;
+		    pe.exclude_hv = 1;
+		    fd = perf_event_open(&pe, 0, -1, -1, 0);
+		    if (fd == -1) {
+		        fprintf(stderr, "Error opening leader %llx\n", pe.config);
+		        exit(EXIT_FAILURE);
+		    }
+		    ioctl(fd, PERF_EVENT_IOC_RESET, 0);
+		    ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
       }
       ~Stopwatch()
       {
@@ -33,9 +64,15 @@ class Stopwatch
         else
           timeTaken=duration_millis.count();
         if(!tableFormat)
-        std::cerr<<name_<<" : "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles"<<std::endl;
+          std::cerr<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles"<<std::endl;
         else
-        std::cerr<<name_<<" : "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles<<std::endl;
+          std::cerr<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles<<std::endl;
+        // Print Linux Perf Event Utility to Measure Instruction Count
+        long long count;
+		    ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
+        read(fd, &count, sizeof(long long));
+        fprintf(stderr, "[VIP] Executed %lld instructions\n", count);
+		    close(fd);
       }
     private: 
       std::string name_;

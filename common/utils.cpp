@@ -81,3 +81,26 @@ myrand(void)
   return y; 
 }
 
+long
+perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags)
+{
+  int ret;
+  ret = syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
+  return ret;
+} 
+
+/*int record_mem(){
+	// if (mem_count > 100) return;
+	// mem_count++;
+
+	char system_cmd[1024];
+  int sprintf_ret = snprintf(
+          system_cmd,
+          sizeof(system_cmd),
+          "ps -o pid,vsz,rss | awk '{if (NR == 1 || $1 == \"%ju\") print}' >> mem.out",  
+          (uintmax_t)getpid()
+  );
+  assert(sprintf_ret >= 0);
+  assert((size_t)sprintf_ret < sizeof(system_cmd));
+  return system(system_cmd);
+}*/
