@@ -35,7 +35,9 @@ main(void)
 { 
   VIP_INIT; 
   size_t poly_modulus_degree = 8192;
-  int iterations = 1;
+
+    /*** Initialize data vectors, similar to HE ***/
+    /**********************************************/
     VIP_ENCINT v0[poly_modulus_degree], v1[poly_modulus_degree], v2[poly_modulus_degree], v3[poly_modulus_degree];
     create_vector(poly_modulus_degree, poly_modulus_degree, 0, 4, 1, v0);           //[Mod!] Init by passing by reference
     create_vector(poly_modulus_degree, poly_modulus_degree, 0, 4, 1, v1);           //[Mod!] Init by passing byreference
@@ -43,14 +45,18 @@ main(void)
     create_projected_vector(poly_modulus_degree, poly_modulus_degree, 0, 4, 1, v3); //[Mod!] Init by passing by reference         
     VIP_VEC_ENCINT c0(v0, poly_modulus_degree), c1(v1, poly_modulus_degree), c2(v2, poly_modulus_degree), c3(v3, poly_modulus_degree);
     VIP_VEC_ENCINT c4, c5, c_result;
+
+    /*** Benchmark ***/
+    /*****************/
     {
         Stopwatch s("Linear Regression");
-        for(int i=0;i<iterations;i++){
         c4 = c2 * c0;
         c5 = c1 - c4;
         c_result = c5 - c3;
-        }
     }
+
+    /*** Print results, "Native" code now removed ***/
+    /************************************************/
     // std::cout<<c_result;
     // realRes=(std::vector<int64_t>)c_result;
     int64_t N=poly_modulus_degree;
@@ -65,14 +71,15 @@ main(void)
     //         }
     //     }
     // }            
-    
-    bool correct = true;
+
+    // bool correct = true;
     for (int i = 0; i < N; i++) {
         // correct &= (golden[i] == realRes[i]);
         // if (!correct && i < 5){
             std::cout << i << " golden result " << VIP_DEC(c_result[i]) << " " << /*realRes[i] <<*/ std::endl;
         // }
     }
-    // std::cout<<"Correct "<<correct<<std::endl;        
+    // std::cout<<"Correct "<<correct<<std::endl;
+
     return 0;
 }
