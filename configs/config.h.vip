@@ -18,6 +18,7 @@
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
 #define VIP_VEC_ENCDOUBLE std::valarray<double>
+#define VIP_VEC_ENCINT    std::valarray<int>
 #define VIP_DEC(X)      (X)
 
 #elif defined(VIP_DO_MODE)
@@ -35,6 +36,7 @@
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
 #define VIP_VEC_ENCDOUBLE std::valarray<double>
+#define VIP_VEC_ENCINT    std::valarray<int>
 #define VIP_DEC(X)      (X)
 #define VIP_CMOV(P,A,B) ((P) ? (A) : (B))
 
@@ -56,6 +58,7 @@ using namespace enc_lib;
 #define VIP_ENCFLOAT    enc_float
 #define VIP_ENCDOUBLE   enc_double
 #define VIP_VEC_ENCDOUBLE std::valarray<enc_double>
+#define VIP_VEC_ENCINT    std::valarray<enc_int>
 #define VIP_DEC(X)      ((X).GET_DECRYPTED_VALUE()) //This is not a "legal" operation
 #define VIP_CMOV(P,A,B) CMOV((P), (A), (B))
 
