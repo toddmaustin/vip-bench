@@ -1,0 +1,897 @@
+--------------------------------
+bubble-sort
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 16810 microseconds, 43704666 processor cycles
+[VIP] Executed 531331 instructions
+INFO: 16547 swaps executed.
+Run 2
+[VIP] Time taken: 328 microseconds, 853890 processor cycles
+[VIP] Executed 530976 instructions
+INFO: 16547 swaps executed.
+Run 3
+[VIP] Time taken: 314 microseconds, 817130 processor cycles
+[VIP] Executed 530981 instructions
+INFO: 16547 swaps executed.
+Run 4
+[VIP] Time taken: 311 microseconds, 809474 processor cycles
+[VIP] Executed 530954 instructions
+INFO: 16547 swaps executed.
+Run 5
+[VIP] Time taken: 313 microseconds, 813584 processor cycles
+[VIP] Executed 530978 instructions
+INFO: 16547 swaps executed.
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 337 microseconds, 876404 processor cycles
+[VIP] Executed 546831 instructions
+INFO: 65025 swaps executed.
+Run 2
+[VIP] Time taken: 345 microseconds, 896794 processor cycles
+[VIP] Executed 546826 instructions
+INFO: 65025 swaps executed.
+Run 3
+[VIP] Time taken: 335 microseconds, 870628 processor cycles
+[VIP] Executed 546829 instructions
+INFO: 65025 swaps executed.
+Run 4
+[VIP] Time taken: 275 microseconds, 715728 processor cycles
+[VIP] Executed 546830 instructions
+INFO: 65025 swaps executed.
+Run 5
+[VIP] Time taken: 391 microseconds, 1016002 processor cycles
+[VIP] Executed 546828 instructions
+INFO: 65025 swaps executed.
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 60402 microseconds, 157045584 processor cycles
+[VIP] Executed 364923792 instructions
+INFO: 65025 swaps executed.
+Run 2
+[VIP] Time taken: 59888 microseconds, 155710208 processor cycles
+[VIP] Executed 364923819 instructions
+INFO: 65025 swaps executed.
+Run 3
+[VIP] Time taken: 59841 microseconds, 155587346 processor cycles
+[VIP] Executed 364923808 instructions
+INFO: 65025 swaps executed.
+Run 4
+[VIP] Time taken: 59523 microseconds, 154760832 processor cycles
+[VIP] Executed 364923823 instructions
+INFO: 65025 swaps executed.
+Run 5
+[VIP] Time taken: 59131 microseconds, 153742288 processor cycles
+[VIP] Executed 364923792 instructions
+INFO: 65025 swaps executed.
+
+--------------------------------
+edit-distance
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 72081 microseconds, 187411572 processor cycles
+[VIP] Executed 144206332 instructions
+Run 2
+[VIP] Time taken: 68685 microseconds, 178580328 processor cycles
+[VIP] Executed 144206362 instructions
+Run 3
+[VIP] Time taken: 67962 microseconds, 176703118 processor cycles
+[VIP] Executed 144206355 instructions
+Run 4
+[VIP] Time taken: 67685 microseconds, 175982482 processor cycles
+[VIP] Executed 144206365 instructions
+Run 5
+[VIP] Time taken: 67435 microseconds, 175333028 processor cycles
+[VIP] Executed 144206365 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 72105 microseconds, 187473560 processor cycles
+[VIP] Executed 144206333 instructions
+Run 2
+[VIP] Time taken: 70010 microseconds, 182025882 processor cycles
+[VIP] Executed 144206289 instructions
+Run 3
+[VIP] Time taken: 67958 microseconds, 176690658 processor cycles
+[VIP] Executed 144206362 instructions
+Run 4
+[VIP] Time taken: 67639 microseconds, 175862164 processor cycles
+[VIP] Executed 144206360 instructions
+Run 5
+[VIP] Time taken: 68085 microseconds, 177020670 processor cycles
+[VIP] Executed 144206351 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 3.87994e+06 microseconds, 10087888490 processor cycles
+[VIP] Executed 37238598415 instructions
+Run 2
+[VIP] Time taken: 3.87635e+06 microseconds, 10078537084 processor cycles
+[VIP] Executed 37238598457 instructions
+Run 3
+[VIP] Time taken: 3.72632e+06 microseconds, 9688453164 processor cycles
+[VIP] Executed 37238598387 instructions
+Run 4
+[VIP] Time taken: 3.71953e+06 microseconds, 9670798210 processor cycles
+[VIP] Executed 37238598387 instructions
+Run 5
+[VIP] Time taken: 3.7574e+06 microseconds, 9769260174 processor cycles
+[VIP] Executed 37238598371 instructions
+
+--------------------------------
+eulers-number-approx
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 46 microseconds, 118630 processor cycles
+[VIP] Executed 25123 instructions
+Run 2
+[VIP] Time taken: 38 microseconds, 98956 processor cycles
+[VIP] Executed 25111 instructions
+Run 3
+[VIP] Time taken: 39 microseconds, 100412 processor cycles
+[VIP] Executed 25123 instructions
+Run 4
+[VIP] Time taken: 37 microseconds, 95800 processor cycles
+[VIP] Executed 25111 instructions
+Run 5
+[VIP] Time taken: 36 microseconds, 92966 processor cycles
+[VIP] Executed 25120 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 21 microseconds, 55324 processor cycles
+[VIP] Executed 25098 instructions
+Run 2
+[VIP] Time taken: 23 microseconds, 61104 processor cycles
+[VIP] Executed 25115 instructions
+Run 3
+[VIP] Time taken: 37 microseconds, 97058 processor cycles
+[VIP] Executed 25115 instructions
+Run 4
+[VIP] Time taken: 34 microseconds, 87742 processor cycles
+[VIP] Executed 25116 instructions
+Run 5
+[VIP] Time taken: 37 microseconds, 95854 processor cycles
+[VIP] Executed 25115 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 75 microseconds, 194680 processor cycles
+[VIP] Executed 115491 instructions
+Run 2
+[VIP] Time taken: 74 microseconds, 193518 processor cycles
+[VIP] Executed 115491 instructions
+Run 3
+[VIP] Time taken: 74 microseconds, 193084 processor cycles
+[VIP] Executed 115490 instructions
+Run 4
+[VIP] Time taken: 49 microseconds, 127202 processor cycles
+[VIP] Executed 115443 instructions
+Run 5
+[VIP] Time taken: 38 microseconds, 100108 processor cycles
+[VIP] Executed 115448 instructions
+
+--------------------------------
+fft-int
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 56 microseconds, 145514 processor cycles
+[VIP] Executed 71647 instructions
+[VIP] Time taken: 44 microseconds, 115934 processor cycles
+[VIP] Executed 89179 instructions
+Run 2
+[VIP] Time taken: 57 microseconds, 146982 processor cycles
+[VIP] Executed 71645 instructions
+[VIP] Time taken: 45 microseconds, 116696 processor cycles
+[VIP] Executed 89179 instructions
+Run 3
+[VIP] Time taken: 55 microseconds, 143694 processor cycles
+[VIP] Executed 71643 instructions
+[VIP] Time taken: 44 microseconds, 115994 processor cycles
+[VIP] Executed 89175 instructions
+Run 4
+[VIP] Time taken: 55 microseconds, 142002 processor cycles
+[VIP] Executed 71645 instructions
+[VIP] Time taken: 44 microseconds, 115778 processor cycles
+[VIP] Executed 89179 instructions
+Run 5
+[VIP] Time taken: 59 microseconds, 152798 processor cycles
+[VIP] Executed 71637 instructions
+[VIP] Time taken: 45 microseconds, 117832 processor cycles
+[VIP] Executed 89171 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 36 microseconds, 93612 processor cycles
+[VIP] Executed 71630 instructions
+[VIP] Time taken: 28 microseconds, 74968 processor cycles
+[VIP] Executed 89178 instructions
+Run 2
+[VIP] Time taken: 57 microseconds, 147860 processor cycles
+[VIP] Executed 71643 instructions
+[VIP] Time taken: 45 microseconds, 117430 processor cycles
+[VIP] Executed 89192 instructions
+Run 3
+[VIP] Time taken: 51 microseconds, 132680 processor cycles
+[VIP] Executed 71629 instructions
+[VIP] Time taken: 40 microseconds, 104078 processor cycles
+[VIP] Executed 89158 instructions
+Run 4
+[VIP] Time taken: 57 microseconds, 148088 processor cycles
+[VIP] Executed 71641 instructions
+[VIP] Time taken: 45 microseconds, 118664 processor cycles
+[VIP] Executed 89191 instructions
+Run 5
+[VIP] Time taken: 52 microseconds, 135842 processor cycles
+[VIP] Executed 71642 instructions
+[VIP] Time taken: 44 microseconds, 115138 processor cycles
+[VIP] Executed 89191 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 4330 microseconds, 11257686 processor cycles
+[VIP] Executed 25830342 instructions
+[VIP] Time taken: 9061 microseconds, 23559550 processor cycles
+[VIP] Executed 61562410 instructions
+Run 2
+[VIP] Time taken: 4087 microseconds, 10628150 processor cycles
+[VIP] Executed 25830365 instructions
+[VIP] Time taken: 9074 microseconds, 23593900 processor cycles
+[VIP] Executed 61562426 instructions
+Run 3
+[VIP] Time taken: 4072 microseconds, 10587854 processor cycles
+[VIP] Executed 25830365 instructions
+[VIP] Time taken: 9073 microseconds, 23590588 processor cycles
+[VIP] Executed 61562426 instructions
+Run 4
+[VIP] Time taken: 4307 microseconds, 11199188 processor cycles
+[VIP] Executed 25830360 instructions
+[VIP] Time taken: 9070 microseconds, 23582936 processor cycles
+[VIP] Executed 61562389 instructions
+Run 5
+[VIP] Time taken: 4109 microseconds, 10684100 processor cycles
+[VIP] Executed 25830369 instructions
+[VIP] Time taken: 9103 microseconds, 23668060 processor cycles
+[VIP] Executed 61562430 instructions
+
+--------------------------------
+kepler-calc
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 56 microseconds, 145206 processor cycles
+[VIP] Executed 28690 instructions
+[VIP] Time taken: 26 microseconds, 67518 processor cycles
+[VIP] Executed 10660 instructions
+[VIP] Time taken: 22 microseconds, 56958 processor cycles
+[VIP] Executed 11035 instructions
+[VIP] Time taken: 22 microseconds, 57588 processor cycles
+[VIP] Executed 10249 instructions
+[VIP] Time taken: 22 microseconds, 58204 processor cycles
+[VIP] Executed 12019 instructions
+Run 2
+[VIP] Time taken: 26 microseconds, 68068 processor cycles
+[VIP] Executed 28677 instructions
+[VIP] Time taken: 12 microseconds, 31544 processor cycles
+[VIP] Executed 10657 instructions
+[VIP] Time taken: 9 microseconds, 23990 processor cycles
+[VIP] Executed 11023 instructions
+[VIP] Time taken: 9 microseconds, 24464 processor cycles
+[VIP] Executed 10237 instructions
+[VIP] Time taken: 9 microseconds, 25740 processor cycles
+[VIP] Executed 12007 instructions
+Run 3
+[VIP] Time taken: 37 microseconds, 97762 processor cycles
+[VIP] Executed 28677 instructions
+[VIP] Time taken: 15 microseconds, 41198 processor cycles
+[VIP] Executed 10656 instructions
+[VIP] Time taken: 13 microseconds, 33730 processor cycles
+[VIP] Executed 11031 instructions
+[VIP] Time taken: 13 microseconds, 34062 processor cycles
+[VIP] Executed 10245 instructions
+[VIP] Time taken: 13 microseconds, 33852 processor cycles
+[VIP] Executed 12015 instructions
+Run 4
+[VIP] Time taken: 46 microseconds, 119722 processor cycles
+[VIP] Executed 28695 instructions
+[VIP] Time taken: 25 microseconds, 66552 processor cycles
+[VIP] Executed 10664 instructions
+[VIP] Time taken: 21 microseconds, 54772 processor cycles
+[VIP] Executed 11027 instructions
+[VIP] Time taken: 21 microseconds, 54352 processor cycles
+[VIP] Executed 10241 instructions
+[VIP] Time taken: 21 microseconds, 56026 processor cycles
+[VIP] Executed 12011 instructions
+Run 5
+[VIP] Time taken: 35 microseconds, 92444 processor cycles
+[VIP] Executed 28673 instructions
+[VIP] Time taken: 15 microseconds, 38864 processor cycles
+[VIP] Executed 10652 instructions
+[VIP] Time taken: 13 microseconds, 34450 processor cycles
+[VIP] Executed 11027 instructions
+[VIP] Time taken: 12 microseconds, 32706 processor cycles
+[VIP] Executed 10241 instructions
+[VIP] Time taken: 12 microseconds, 33320 processor cycles
+[VIP] Executed 12011 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 43 microseconds, 113410 processor cycles
+[VIP] Executed 29016 instructions
+[VIP] Time taken: 24 microseconds, 64204 processor cycles
+[VIP] Executed 12275 instructions
+[VIP] Time taken: 20 microseconds, 51962 processor cycles
+[VIP] Executed 10370 instructions
+[VIP] Time taken: 28 microseconds, 74344 processor cycles
+[VIP] Executed 23854 instructions
+[VIP] Time taken: 21 microseconds, 56556 processor cycles
+[VIP] Executed 14790 instructions
+Run 2
+[VIP] Time taken: 59 microseconds, 152968 processor cycles
+[VIP] Executed 29013 instructions
+[VIP] Time taken: 27 microseconds, 70668 processor cycles
+[VIP] Executed 12271 instructions
+[VIP] Time taken: 21 microseconds, 56580 processor cycles
+[VIP] Executed 10387 instructions
+[VIP] Time taken: 31 microseconds, 80416 processor cycles
+[VIP] Executed 23838 instructions
+[VIP] Time taken: 23 microseconds, 60656 processor cycles
+[VIP] Executed 14798 instructions
+Run 3
+[VIP] Time taken: 58 microseconds, 149842 processor cycles
+[VIP] Executed 29012 instructions
+[VIP] Time taken: 28 microseconds, 72696 processor cycles
+[VIP] Executed 12271 instructions
+[VIP] Time taken: 22 microseconds, 57140 processor cycles
+[VIP] Executed 10399 instructions
+[VIP] Time taken: 31 microseconds, 81250 processor cycles
+[VIP] Executed 23838 instructions
+[VIP] Time taken: 24 microseconds, 63110 processor cycles
+[VIP] Executed 14798 instructions
+Run 4
+[VIP] Time taken: 50 microseconds, 129218 processor cycles
+[VIP] Executed 28975 instructions
+[VIP] Time taken: 24 microseconds, 64616 processor cycles
+[VIP] Executed 12267 instructions
+[VIP] Time taken: 20 microseconds, 52252 processor cycles
+[VIP] Executed 10362 instructions
+[VIP] Time taken: 28 microseconds, 73386 processor cycles
+[VIP] Executed 23846 instructions
+[VIP] Time taken: 21 microseconds, 55620 processor cycles
+[VIP] Executed 14782 instructions
+Run 5
+[VIP] Time taken: 48 microseconds, 123834 processor cycles
+[VIP] Executed 29016 instructions
+[VIP] Time taken: 22 microseconds, 57546 processor cycles
+[VIP] Executed 12275 instructions
+[VIP] Time taken: 18 microseconds, 47896 processor cycles
+[VIP] Executed 10403 instructions
+[VIP] Time taken: 26 microseconds, 68056 processor cycles
+[VIP] Executed 23854 instructions
+[VIP] Time taken: 20 microseconds, 51992 processor cycles
+[VIP] Executed 14769 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 656 microseconds, 1705534 processor cycles
+[VIP] Executed 2059047 instructions
+[VIP] Time taken: 1083 microseconds, 2817012 processor cycles
+[VIP] Executed 4107556 instructions
+[VIP] Time taken: 562 microseconds, 1462562 processor cycles
+[VIP] Executed 2132309 instructions
+[VIP] Time taken: 3139 microseconds, 8162708 processor cycles
+[VIP] Executed 9662657 instructions
+[VIP] Time taken: 1475 microseconds, 3835080 processor cycles
+[VIP] Executed 3722599 instructions
+Run 2
+[VIP] Time taken: 1001 microseconds, 2601274 processor cycles
+[VIP] Executed 2059164 instructions
+[VIP] Time taken: 1618 microseconds, 4207146 processor cycles
+[VIP] Executed 4107571 instructions
+[VIP] Time taken: 844 microseconds, 2195514 processor cycles
+[VIP] Executed 2132309 instructions
+[VIP] Time taken: 3761 microseconds, 9779900 processor cycles
+[VIP] Executed 9662645 instructions
+[VIP] Time taken: 1488 microseconds, 3870308 processor cycles
+[VIP] Executed 3722600 instructions
+Run 3
+[VIP] Time taken: 876 microseconds, 2278344 processor cycles
+[VIP] Executed 2059054 instructions
+[VIP] Time taken: 1476 microseconds, 3837970 processor cycles
+[VIP] Executed 4107576 instructions
+[VIP] Time taken: 795 microseconds, 2066552 processor cycles
+[VIP] Executed 2132315 instructions
+[VIP] Time taken: 3436 microseconds, 8933486 processor cycles
+[VIP] Executed 9662663 instructions
+[VIP] Time taken: 1501 microseconds, 3901868 processor cycles
+[VIP] Executed 3722577 instructions
+Run 4
+[VIP] Time taken: 972 microseconds, 2525848 processor cycles
+[VIP] Executed 2059055 instructions
+[VIP] Time taken: 1613 microseconds, 4195934 processor cycles
+[VIP] Executed 4107576 instructions
+[VIP] Time taken: 841 microseconds, 2186928 processor cycles
+[VIP] Executed 2132302 instructions
+[VIP] Time taken: 2651 microseconds, 6892418 processor cycles
+[VIP] Executed 9662650 instructions
+[VIP] Time taken: 736 microseconds, 1915978 processor cycles
+[VIP] Executed 3722443 instructions
+Run 5
+[VIP] Time taken: 719 microseconds, 1870260 processor cycles
+[VIP] Executed 2059060 instructions
+[VIP] Time taken: 1244 microseconds, 3235420 processor cycles
+[VIP] Executed 4107578 instructions
+[VIP] Time taken: 649 microseconds, 1688672 processor cycles
+[VIP] Executed 2132317 instructions
+[VIP] Time taken: 2882 microseconds, 7493264 processor cycles
+[VIP] Executed 9662664 instructions
+[VIP] Time taken: 1144 microseconds, 2974536 processor cycles
+[VIP] Executed 3722608 instructions
+
+--------------------------------
+mersenne
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 971 microseconds, 2525128 processor cycles
+[VIP] Executed 891421 instructions
+Run 2
+[VIP] Time taken: 974 microseconds, 2532418 processor cycles
+[VIP] Executed 891430 instructions
+Run 3
+[VIP] Time taken: 424 microseconds, 1103558 processor cycles
+[VIP] Executed 891435 instructions
+Run 4
+[VIP] Time taken: 411 microseconds, 1069916 processor cycles
+[VIP] Executed 891416 instructions
+Run 5
+[VIP] Time taken: 644 microseconds, 1674076 processor cycles
+[VIP] Executed 891436 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 958 microseconds, 2490310 processor cycles
+[VIP] Executed 891435 instructions
+Run 2
+[VIP] Time taken: 1013 microseconds, 2631876 processor cycles
+[VIP] Executed 891582 instructions
+Run 3
+[VIP] Time taken: 789 microseconds, 2049820 processor cycles
+[VIP] Executed 891441 instructions
+Run 4
+[VIP] Time taken: 953 microseconds, 2476430 processor cycles
+[VIP] Executed 891440 instructions
+Run 5
+[VIP] Time taken: 949 microseconds, 2466494 processor cycles
+[VIP] Executed 891435 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 9049 microseconds, 23526888 processor cycles
+[VIP] Executed 24991139 instructions
+Run 2
+[VIP] Time taken: 7901 microseconds, 20542442 processor cycles
+[VIP] Executed 24991089 instructions
+Run 3
+[VIP] Time taken: 9974 microseconds, 25931764 processor cycles
+[VIP] Executed 24991164 instructions
+Run 4
+[VIP] Time taken: 9716 microseconds, 25262304 processor cycles
+[VIP] Executed 24991158 instructions
+Run 5
+[VIP] Time taken: 4139 microseconds, 10761490 processor cycles
+[VIP] Executed 24991107 instructions
+
+--------------------------------
+nonlinear-nn
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 11057 microseconds, 28749102 processor cycles
+[VIP] Executed 10537617 instructions
+Run 2
+[VIP] Time taken: 10877 microseconds, 28279892 processor cycles
+[VIP] Executed 10521623 instructions
+Run 3
+[VIP] Time taken: 5369 microseconds, 13959988 processor cycles
+[VIP] Executed 10521424 instructions
+Run 4
+[VIP] Time taken: 12741 microseconds, 33127614 processor cycles
+[VIP] Executed 10521625 instructions
+Run 5
+[VIP] Time taken: 9913 microseconds, 25774314 processor cycles
+[VIP] Executed 10521478 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 10824 microseconds, 28143310 processor cycles
+[VIP] Executed 10521631 instructions
+Run 2
+[VIP] Time taken: 11587 microseconds, 30126102 processor cycles
+[VIP] Executed 10537630 instructions
+Run 3
+[VIP] Time taken: 11292 microseconds, 29359624 processor cycles
+[VIP] Executed 10537631 instructions
+Run 4
+[VIP] Time taken: 12074 microseconds, 31394012 processor cycles
+[VIP] Executed 10521622 instructions
+Run 5
+[VIP] Time taken: 11528 microseconds, 29971602 processor cycles
+[VIP] Executed 10521627 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 13380 microseconds, 34788346 processor cycles
+[VIP] Executed 20086445 instructions
+Run 2
+[VIP] Time taken: 12353 microseconds, 32117646 processor cycles
+[VIP] Executed 20070483 instructions
+Run 3
+[VIP] Time taken: 14061 microseconds, 36559164 processor cycles
+[VIP] Executed 20086451 instructions
+Run 4
+[VIP] Time taken: 12880 microseconds, 33488158 processor cycles
+[VIP] Executed 20070448 instructions
+Run 5
+[VIP] Time taken: 12884 microseconds, 33499476 processor cycles
+[VIP] Executed 20070475 instructions
+
+--------------------------------
+nr-solver
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 369 microseconds, 959522 processor cycles
+[VIP] Executed 340001 instructions
+Run 2
+[VIP] Time taken: 317 microseconds, 824802 processor cycles
+[VIP] Executed 339998 instructions
+Run 3
+[VIP] Time taken: 310 microseconds, 806970 processor cycles
+[VIP] Executed 339947 instructions
+Run 4
+[VIP] Time taken: 320 microseconds, 832672 processor cycles
+[VIP] Executed 339966 instructions
+Run 5
+[VIP] Time taken: 316 microseconds, 822214 processor cycles
+[VIP] Executed 339997 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 315 microseconds, 819114 processor cycles
+[VIP] Executed 344410 instructions
+Run 2
+[VIP] Time taken: 314 microseconds, 816434 processor cycles
+[VIP] Executed 344407 instructions
+Run 3
+[VIP] Time taken: 218 microseconds, 567144 processor cycles
+[VIP] Executed 344406 instructions
+Run 4
+[VIP] Time taken: 309 microseconds, 803418 processor cycles
+[VIP] Executed 344389 instructions
+Run 5
+[VIP] Time taken: 317 microseconds, 823620 processor cycles
+[VIP] Executed 344401 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 4982 microseconds, 12952826 processor cycles
+[VIP] Executed 12663977 instructions
+Run 2
+[VIP] Time taken: 4173 microseconds, 10850254 processor cycles
+[VIP] Executed 12663967 instructions
+Run 3
+[VIP] Time taken: 4974 microseconds, 12931862 processor cycles
+[VIP] Executed 12663972 instructions
+Run 4
+[VIP] Time taken: 4554 microseconds, 11840382 processor cycles
+[VIP] Executed 12663968 instructions
+Run 5
+[VIP] Time taken: 4963 microseconds, 12902214 processor cycles
+[VIP] Executed 12663977 instructions
+
+--------------------------------
+parrando
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 7694 microseconds, 20004934 processor cycles
+[VIP] Executed 25045703 instructions
+Run 2
+[VIP] Time taken: 10924 microseconds, 28403074 processor cycles
+[VIP] Executed 25045901 instructions
+Run 3
+[VIP] Time taken: 8483 microseconds, 22056380 processor cycles
+[VIP] Executed 25045746 instructions
+Run 4
+[VIP] Time taken: 8747 microseconds, 22743090 processor cycles
+[VIP] Executed 25045747 instructions
+Run 5
+[VIP] Time taken: 9333 microseconds, 24267374 processor cycles
+[VIP] Executed 25045739 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 24137 microseconds, 62756438 processor cycles
+[VIP] Executed 143641354 instructions
+Run 2
+[VIP] Time taken: 23990 microseconds, 62374242 processor cycles
+[VIP] Executed 143641344 instructions
+Run 3
+[VIP] Time taken: 23861 microseconds, 62037874 processor cycles
+[VIP] Executed 143641355 instructions
+Run 4
+[VIP] Time taken: 23827 microseconds, 61951694 processor cycles
+[VIP] Executed 143641372 instructions
+Run 5
+[VIP] Time taken: 24188 microseconds, 62887516 processor cycles
+[VIP] Executed 143641371 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 7.84425e+06 microseconds, 20395111246 processor cycles
+[VIP] Executed 78906992850 instructions
+Run 2
+[VIP] Time taken: 7.78397e+06 microseconds, 20238388762 processor cycles
+[VIP] Executed 78906992802 instructions
+Run 3
+[VIP] Time taken: 7.74343e+06 microseconds, 20132994510 processor cycles
+[VIP] Executed 78906992770 instructions
+Run 4
+[VIP] Time taken: 7.7184e+06 microseconds, 20067898520 processor cycles
+[VIP] Executed 78906992779 instructions
+Run 5
+[VIP] Time taken: 7.8353e+06 microseconds, 20371828260 processor cycles
+[VIP] Executed 78906992819 instructions
+
+--------------------------------
+rad-to-degree
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 5326 microseconds, 13848208 processor cycles
+[VIP] Executed 4358223 instructions
+Run 2
+[VIP] Time taken: 5271 microseconds, 13705398 processor cycles
+[VIP] Executed 4363985 instructions
+Run 3
+[VIP] Time taken: 2790 microseconds, 7253564 processor cycles
+[VIP] Executed 4369728 instructions
+Run 4
+[VIP] Time taken: 3455 microseconds, 8982430 processor cycles
+[VIP] Executed 4358211 instructions
+Run 5
+[VIP] Time taken: 5254 microseconds, 13660988 processor cycles
+[VIP] Executed 4358224 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 5265 microseconds, 13687536 processor cycles
+[VIP] Executed 4363993 instructions
+Run 2
+[VIP] Time taken: 5266 microseconds, 13691400 processor cycles
+[VIP] Executed 4369777 instructions
+Run 3
+[VIP] Time taken: 2561 microseconds, 6660540 processor cycles
+[VIP] Executed 4369749 instructions
+Run 4
+[VIP] Time taken: 4256 microseconds, 11064452 processor cycles
+[VIP] Executed 4364003 instructions
+Run 5
+[VIP] Time taken: 5624 microseconds, 14620806 processor cycles
+[VIP] Executed 4364001 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 5469 microseconds, 14218332 processor cycles
+[VIP] Executed 6262226 instructions
+Run 2
+[VIP] Time taken: 6089 microseconds, 15830090 processor cycles
+[VIP] Executed 6256432 instructions
+Run 3
+[VIP] Time taken: 3400 microseconds, 8839866 processor cycles
+[VIP] Executed 6262138 instructions
+Run 4
+[VIP] Time taken: 6029 microseconds, 15675512 processor cycles
+[VIP] Executed 6262203 instructions
+Run 5
+[VIP] Time taken: 5946 microseconds, 15458760 processor cycles
+[VIP] Executed 6262216 instructions
+
+--------------------------------
+lda
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 118 microseconds, 308294 processor cycles
+[VIP] Executed 184037 instructions
+[VIP] Time taken: 25 microseconds, 67064 processor cycles
+[VIP] Executed 19770 instructions
+Run 2
+[VIP] Time taken: 119 microseconds, 310254 processor cycles
+[VIP] Executed 184037 instructions
+[VIP] Time taken: 24 microseconds, 62018 processor cycles
+[VIP] Executed 19770 instructions
+Run 3
+[VIP] Time taken: 121 microseconds, 314064 processor cycles
+[VIP] Executed 184017 instructions
+[VIP] Time taken: 24 microseconds, 62808 processor cycles
+[VIP] Executed 19762 instructions
+Run 4
+[VIP] Time taken: 116 microseconds, 302600 processor cycles
+[VIP] Executed 184034 instructions
+[VIP] Time taken: 24 microseconds, 63782 processor cycles
+[VIP] Executed 19767 instructions
+Run 5
+[VIP] Time taken: 117 microseconds, 303888 processor cycles
+[VIP] Executed 184031 instructions
+[VIP] Time taken: 24 microseconds, 63104 processor cycles
+[VIP] Executed 19762 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 118 microseconds, 306908 processor cycles
+[VIP] Executed 184030 instructions
+[VIP] Time taken: 25 microseconds, 65780 processor cycles
+[VIP] Executed 20970 instructions
+Run 2
+[VIP] Time taken: 120 microseconds, 312168 processor cycles
+[VIP] Executed 184000 instructions
+[VIP] Time taken: 25 microseconds, 64644 processor cycles
+[VIP] Executed 20974 instructions
+Run 3
+[VIP] Time taken: 111 microseconds, 289068 processor cycles
+[VIP] Executed 184009 instructions
+[VIP] Time taken: 23 microseconds, 60302 processor cycles
+[VIP] Executed 20974 instructions
+Run 4
+[VIP] Time taken: 117 microseconds, 304304 processor cycles
+[VIP] Executed 184033 instructions
+[VIP] Time taken: 24 microseconds, 64168 processor cycles
+[VIP] Executed 20974 instructions
+Run 5
+[VIP] Time taken: 123 microseconds, 319268 processor cycles
+[VIP] Executed 184030 instructions
+[VIP] Time taken: 25 microseconds, 65324 processor cycles
+[VIP] Executed 20970 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 13502 microseconds, 35104462 processor cycles
+[VIP] Executed 67834768 instructions
+[VIP] Time taken: 2445 microseconds, 6357966 processor cycles
+[VIP] Executed 17021996 instructions
+Run 2
+[VIP] Time taken: 14592 microseconds, 37939646 processor cycles
+[VIP] Executed 67834776 instructions
+[VIP] Time taken: 2355 microseconds, 6124598 processor cycles
+[VIP] Executed 17021992 instructions
+Run 3
+[VIP] Time taken: 10547 microseconds, 27423204 processor cycles
+[VIP] Executed 67834767 instructions
+[VIP] Time taken: 2367 microseconds, 6155692 processor cycles
+[VIP] Executed 17021998 instructions
+Run 4
+[VIP] Time taken: 12981 microseconds, 33751568 processor cycles
+[VIP] Executed 67834772 instructions
+[VIP] Time taken: 2348 microseconds, 6105056 processor cycles
+[VIP] Executed 17021998 instructions
+Run 5
+[VIP] Time taken: 14138 microseconds, 36758224 processor cycles
+[VIP] Executed 67834770 instructions
+[VIP] Time taken: 2380 microseconds, 6188202 processor cycles
+[VIP] Executed 17021961 instructions
+
+--------------------------------
+triangle-count
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 53 microseconds, 137908 processor cycles
+[VIP] Executed 63522 instructions
+Run 2
+[VIP] Time taken: 50 microseconds, 130650 processor cycles
+[VIP] Executed 63493 instructions
+Run 3
+[VIP] Time taken: 52 microseconds, 134898 processor cycles
+[VIP] Executed 63522 instructions
+Run 4
+[VIP] Time taken: 50 microseconds, 129168 processor cycles
+[VIP] Executed 63490 instructions
+Run 5
+[VIP] Time taken: 47 microseconds, 121446 processor cycles
+[VIP] Executed 63523 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 50 microseconds, 130106 processor cycles
+[VIP] Executed 63484 instructions
+Run 2
+[VIP] Time taken: 49 microseconds, 128760 processor cycles
+[VIP] Executed 63526 instructions
+Run 3
+[VIP] Time taken: 46 microseconds, 119530 processor cycles
+[VIP] Executed 63519 instructions
+Run 4
+[VIP] Time taken: 52 microseconds, 134612 processor cycles
+[VIP] Executed 63525 instructions
+Run 5
+[VIP] Time taken: 52 microseconds, 134872 processor cycles
+[VIP] Executed 63527 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 4290 microseconds, 11151650 processor cycles
+[VIP] Executed 10528272 instructions
+Run 2
+[VIP] Time taken: 4310 microseconds, 11206174 processor cycles
+[VIP] Executed 10528258 instructions
+Run 3
+[VIP] Time taken: 4354 microseconds, 11320384 processor cycles
+[VIP] Executed 10528303 instructions
+Run 4
+[VIP] Time taken: 2520 microseconds, 6553388 processor cycles
+[VIP] Executed 10528248 instructions
+Run 5
+[VIP] Time taken: 2712 microseconds, 7051030 processor cycles
+[VIP] Executed 10528292 instructions
+
+--------------------------------
+mnist-cnn
+--------------------------------
+MODE=na -----
+Run 1
+[VIP] Time taken: 48505 microseconds, 126111016 processor cycles
+[VIP] Executed 205343396 instructions
+Run 2
+[VIP] Time taken: 38163 microseconds, 99223326 processor cycles
+[VIP] Executed 205343384 instructions
+Run 3
+[VIP] Time taken: 49428 microseconds, 128513232 processor cycles
+[VIP] Executed 205343402 instructions
+Run 4
+[VIP] Time taken: 48383 microseconds, 125796026 processor cycles
+[VIP] Executed 205343402 instructions
+Run 5
+[VIP] Time taken: 50363 microseconds, 130942160 processor cycles
+[VIP] Executed 205343393 instructions
+
+MODE=do -----
+Run 1
+[VIP] Time taken: 48527 microseconds, 126169708 processor cycles
+[VIP] Executed 205533729 instructions
+Run 2
+[VIP] Time taken: 49808 microseconds, 129499442 processor cycles
+[VIP] Executed 205533713 instructions
+Run 3
+[VIP] Time taken: 48542 microseconds, 126210160 processor cycles
+[VIP] Executed 205533725 instructions
+Run 4
+[VIP] Time taken: 48015 microseconds, 124838628 processor cycles
+[VIP] Executed 205533703 instructions
+Run 5
+[VIP] Time taken: 47773 microseconds, 124208012 processor cycles
+[VIP] Executed 205533724 instructions
+
+MODE=enc -----
+Run 1
+[VIP] Time taken: 5.71588e+06 microseconds, 14861322548 processor cycles
+[VIP] Executed 54256579419 instructions
+Run 2
+[VIP] Time taken: 6.03634e+06 microseconds, 15694538818 processor cycles
+[VIP] Executed 54256579443 instructions
+Run 3
+[VIP] Time taken: 5.79617e+06 microseconds, 15070090428 processor cycles
+[VIP] Executed 54256579409 instructions
+Run 4
+[VIP] Time taken: 5.86227e+06 microseconds, 15241950796 processor cycles
+[VIP] Executed 54256579404 instructions
+Run 5
+[VIP] Time taken: 5.74837e+06 microseconds, 14945805250 processor cycles
+[VIP] Executed 54256579404 instructions
+

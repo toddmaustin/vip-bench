@@ -44,6 +44,8 @@ count(VIP_ENCINT trace)
 
 int main()
 {
+	VIP_INIT; 
+		
 	VIP_ENCINT graph[SIZE][SIZE] = {
   {0,1,0,0,1,0,0,0,0,0,0,0,0},
 	{1,0,1,1,0,0,0,0,0,0,0,0,0},
@@ -59,10 +61,14 @@ int main()
 	{0,0,0,0,0,0,0,0,0,1,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,1,0,0}};
 	//{{0,1,1,0},{1,0,1,1},{1,1,0,1},{0,1,1,0}};
-	multiply(graph,graph,squared);
-	multiply(squared,graph,cubed);
-	VIP_ENCINT diagonal = trace(cubed);
-	VIP_ENCINT triangleCount = count(diagonal);
+	VIP_ENCINT triangleCount;
+	{
+		Stopwatch s("VIP_Bench Runtime");
+		multiply(graph,graph,squared);
+		multiply(squared,graph,cubed);
+		VIP_ENCINT diagonal = trace(cubed);
+		triangleCount = count(diagonal);
+	}
 	cout<<"The number of triangles is: "<<VIP_DEC(triangleCount)<<endl;
   return 0;
 }

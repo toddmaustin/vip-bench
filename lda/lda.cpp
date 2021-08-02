@@ -8,8 +8,9 @@
 #include<iomanip>
 
 #include "../config.h"
-#include "utils.h"
-#include "mathlib.h"
+#include "../common/utils.h"
+#include "../common/mathlib.h"
+#include <vector>
 
 using namespace std;
 
@@ -44,8 +45,8 @@ VIP_ENCDOUBLE datayC2test[sizec2];
 VIP_ENCINT classPrediction[sizet];
 
 //These are constants that represent the model
-VIP_ENCDOUBLE b0=0;
-VIP_ENCDOUBLE b1=0;
+VIP_ENCDOUBLE b0;
+VIP_ENCDOUBLE b1;
 
 //These arrays hold the scores of each data, scores are helpful for separating the classes
 VIP_ENCDOUBLE scorec1[sizec1];
@@ -76,7 +77,10 @@ void initializeData(double cond1,double cond2){
 			
 		dataxC2test[i] = myrand()%40;
 		datayC2test[i] = (VIP_ENCDOUBLE)cond1*dataxC2test[i] + cond2 - myrand()%40;
-	}	    
+	}	 
+	datax[sizet-1] = 0; //Weird Bug, off-by-1 matrix init error between enc and unenc
+	datay[sizet-1] = 0; //Weird Bug, off-by-1 matrix init error between enc and unenc
+	// ^^ This fix keeps it consistent with the original output in lda.out
 }
 
 //calculates the mean of an array
@@ -91,7 +95,7 @@ VIP_ENCDOUBLE mean(VIP_ENCDOUBLE* data,int size){
 }
 
 //calculates the variance of an array
-VIP_ENCDOUBLE varaince(VIP_ENCDOUBLE data[],VIP_ENCDOUBLE mean,int size){
+VIP_ENCDOUBLE varaince(VIP_ENCDOUBLE* data,VIP_ENCDOUBLE mean,int size){
 
 	VIP_ENCDOUBLE sum = 0;
 	VIP_ENCDOUBLE dev = 0;
@@ -104,7 +108,7 @@ VIP_ENCDOUBLE varaince(VIP_ENCDOUBLE data[],VIP_ENCDOUBLE mean,int size){
 }
 
 //calculates the covariance between two arrays
-VIP_ENCDOUBLE covariance (VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],VIP_ENCDOUBLE meanx,VIP_ENCDOUBLE meany,int size){
+VIP_ENCDOUBLE covariance (VIP_ENCDOUBLE* datax,VIP_ENCDOUBLE* datay,VIP_ENCDOUBLE meanx,VIP_ENCDOUBLE meany,int size){
 
 	VIP_ENCDOUBLE sum = 0;
 	VIP_ENCDOUBLE devx = 0;
@@ -119,16 +123,14 @@ VIP_ENCDOUBLE covariance (VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],VIP_ENCDOU
 }
 
 //Builds the variance-covaraince matrix between two arrays
-VIP_ENCDOUBLE** varcovmatrix(VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],int size){	
+vector<vector<VIP_ENCDOUBLE>> varcovmatrix(VIP_ENCDOUBLE* datax,VIP_ENCDOUBLE* datay,int size){	
 	VIP_ENCDOUBLE meanx = mean(datax,size);	
 	VIP_ENCDOUBLE meany = mean(datay,size);
 	VIP_ENCDOUBLE varx = varaince(datax,meanx,size);
 	VIP_ENCDOUBLE vary = varaince(datay,meany,size);
 	VIP_ENCDOUBLE cov = covariance(datax,datay,meanx,meany,size);
 
-	VIP_ENCDOUBLE** out = new VIP_ENCDOUBLE*[2];
-	out[0] = new VIP_ENCDOUBLE [2];
-	out[1] = new VIP_ENCDOUBLE [2];
+	vector<vector<VIP_ENCDOUBLE>> out(2, vector<VIP_ENCDOUBLE>(2));
 	out[0][0] = varx;
 	out[0][1] = cov;
 	out[1][0] = cov;
@@ -137,17 +139,14 @@ VIP_ENCDOUBLE** varcovmatrix(VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],int siz
 }
 
 //calculates the within group covaraince, which is like the average between two variance-covaraince matrix
-VIP_ENCDOUBLE** wgcov(VIP_ENCDOUBLE dataxc1[],VIP_ENCDOUBLE datayc1[],VIP_ENCDOUBLE dataxc2[],VIP_ENCDOUBLE datayc2[],int sizec1,int sizec2){	
+vector<vector<VIP_ENCDOUBLE>> wgcov(VIP_ENCDOUBLE dataxc1[],VIP_ENCDOUBLE datayc1[],VIP_ENCDOUBLE dataxc2[],VIP_ENCDOUBLE datayc2[],int sizec1,int sizec2){	
 	
 	//var-cov matrix of class1
-	VIP_ENCDOUBLE** c1 = varcovmatrix(dataxc1,datayc1,sizec1);		
+	vector<vector<VIP_ENCDOUBLE>> c1 = varcovmatrix(dataxc1,datayc1,sizec1);		
 	//var-cov matric of class2
-	VIP_ENCDOUBLE** c2 = varcovmatrix(dataxc2,datayc2,sizec2);
+	vector<vector<VIP_ENCDOUBLE>> c2 = varcovmatrix(dataxc2,datayc2,sizec2);
 
-	VIP_ENCDOUBLE** out = new VIP_ENCDOUBLE*[2];
-	out[0] = new VIP_ENCDOUBLE [2];
-	out[1] = new VIP_ENCDOUBLE [2];
-
+	vector<vector<VIP_ENCDOUBLE>> out(2, vector<VIP_ENCDOUBLE>(2));
 	for(int i = 0;i<2;i++){
 		for(int j = 0;j<2;j++){
 			out[i][j] = (c1[i][j]*(sizec1-1)+c2[i][j]*(sizec2-1))/(sizec1+sizec2-2);
@@ -159,14 +158,11 @@ VIP_ENCDOUBLE** wgcov(VIP_ENCDOUBLE dataxc1[],VIP_ENCDOUBLE datayc1[],VIP_ENCDOU
 
 //calculates the between group covairance, which is the difference between the total var-cov matrix
 //and the within-group covaraince
-VIP_ENCDOUBLE** bgcov(VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],VIP_ENCDOUBLE** wgcova,int size){
+vector<vector<VIP_ENCDOUBLE>> bgcov(VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],vector<vector<VIP_ENCDOUBLE>> wgcova,int size){
 	
 	//var-cov matrix of the overall data	
-	VIP_ENCDOUBLE** totcov = varcovmatrix(datax,datay,size);	
-
-	VIP_ENCDOUBLE** out = new VIP_ENCDOUBLE*[2];
-	out[0] = new VIP_ENCDOUBLE [2];
-	out[1] = new VIP_ENCDOUBLE [2];
+	vector<vector<VIP_ENCDOUBLE>> totcov = varcovmatrix(datax,datay,size);	
+	vector<vector<VIP_ENCDOUBLE>> out(2, vector<VIP_ENCDOUBLE>(2));
 
 	for(int i = 0;i<2;i++){
 		for(int j = 0;j<2;j++){
@@ -178,16 +174,14 @@ VIP_ENCDOUBLE** bgcov(VIP_ENCDOUBLE datax[],VIP_ENCDOUBLE datay[],VIP_ENCDOUBLE*
 }
 
 //calculates the determinant of 2x2 matrix
-VIP_ENCDOUBLE determinant(VIP_ENCDOUBLE** matr){
+VIP_ENCDOUBLE determinant(vector<vector<VIP_ENCDOUBLE>> matr){
 	return matr[0][0]*matr[1][1] - matr[0][1]*matr[1][0];
 }
 
 //calculates the inverse of a 2x2 matrix
-VIP_ENCDOUBLE** inverse(VIP_ENCDOUBLE** matr){
+vector<vector<VIP_ENCDOUBLE>> inverse(vector<vector<VIP_ENCDOUBLE>> matr){
 	
-	VIP_ENCDOUBLE** out = new VIP_ENCDOUBLE*[2];
-	out[0] = new VIP_ENCDOUBLE [2];
-	out[1] = new VIP_ENCDOUBLE [2];
+	vector<vector<VIP_ENCDOUBLE>> out(2, vector<VIP_ENCDOUBLE>(2));
 
 	out[0][0] = matr[1][1]/determinant(matr);
 	out[0][1] = -matr[0][1]/determinant(matr);
@@ -198,12 +192,10 @@ VIP_ENCDOUBLE** inverse(VIP_ENCDOUBLE** matr){
 }
 
 //multiplies 2 matrices with equal size
-VIP_ENCDOUBLE** multiply(VIP_ENCDOUBLE** matr1,VIP_ENCDOUBLE** matr2){
+vector<vector<VIP_ENCDOUBLE>> multiply(vector<vector<VIP_ENCDOUBLE>> matr1, vector<vector<VIP_ENCDOUBLE>> matr2){
 	
-	VIP_ENCDOUBLE** out = new VIP_ENCDOUBLE*[2];
-	out[0] = new VIP_ENCDOUBLE [2];
-	out[1] = new VIP_ENCDOUBLE [2];
-	
+	vector<vector<VIP_ENCDOUBLE>> out(2, vector<VIP_ENCDOUBLE>(2));
+
 	for(int i = 0; i < 2; ++i){
 		for(int j = 0; j < 2; ++j){
 			out[i][j] = 0;
@@ -216,13 +208,13 @@ VIP_ENCDOUBLE** multiply(VIP_ENCDOUBLE** matr1,VIP_ENCDOUBLE** matr2){
 }
 
 //calculates the eignevalue of a 2x2 matrix
-VIP_ENCDOUBLE* eignevalue(VIP_ENCDOUBLE** matr){
+vector<VIP_ENCDOUBLE> eignevalue(vector<vector<VIP_ENCDOUBLE>> matr){
 	
 	int a = 1;
 	VIP_ENCDOUBLE b = -(matr[0][0]+matr[1][1]);	
 	VIP_ENCDOUBLE c = matr[0][0]*matr[1][1] - matr[0][1]*matr[1][0];	
 
-	VIP_ENCDOUBLE* out = new VIP_ENCDOUBLE[2];
+	vector<VIP_ENCDOUBLE> out(2);
 	out[0] = (-b+mysqrt(mypow(b,2)-c*4*a))/(2*a);
 	out[1] = (-b-mysqrt(mypow(b,2)-c*4*a))/(2*a);
 	
@@ -230,8 +222,8 @@ VIP_ENCDOUBLE* eignevalue(VIP_ENCDOUBLE** matr){
 }
 
 //calculates an eignevector given an eignevalue and a 2x2 matrix
-VIP_ENCDOUBLE* eignevector(VIP_ENCDOUBLE** matr, VIP_ENCDOUBLE eigneval){
-	VIP_ENCDOUBLE* out = new VIP_ENCDOUBLE[2];
+vector<VIP_ENCDOUBLE> eignevector(vector<vector<VIP_ENCDOUBLE>> matr, VIP_ENCDOUBLE eigneval){
+	vector<VIP_ENCDOUBLE> out(2);
 	out[0] = matr[0][1]/mysqrt(mypow((matr[0][0]-eigneval),2)+mypow(matr[0][1],2));
 	out[1] = -(matr[0][0]-eigneval)/mysqrt(mypow((matr[0][0]-eigneval),2)+mypow(matr[0][1],2));
 	return out;
@@ -291,26 +283,29 @@ void displayOutput(int size){
 }
 int main(void){	
 	
+	VIP_INIT;
+	b0 = 0.0; // Must instatiate after VIP_INIT so that values are encrypted under the correct scheme
+	b1 = 0.0; // Must instatiate after VIP_INIT so that values are encrypted under the correct scheme
+	
 	initializeData(3,4);		
 	VIP_ENCDOUBLE meanx = mean(datax,sizet);
 	VIP_ENCDOUBLE meany = mean(datay,sizet);
-	
+
 	//This variable tells the model which path to take
 	//Path 1 tells that positive score means CLASS1 and negative means CLASS2
 	//Path 2 tells that positive score means CLASS2 and negative score means CLASS1
 	VIP_ENCINT path = 0;
 	{		
-		Stopwatch start("VIP Bench Runtime for Train");		
-		
-		VIP_ENCDOUBLE** wg = wgcov(dataxC1,datayC1,dataxC2,datayC2,sizec1,sizec2);
-		VIP_ENCDOUBLE** bg = bgcov(datax,datay,wg,sizet);			
-		
+		Stopwatch start("VIP Bench Runtime for Train");			
+		vector<vector<VIP_ENCDOUBLE>> wg = wgcov(dataxC1,datayC1,dataxC2,datayC2,sizec1,sizec2);
+		vector<vector<VIP_ENCDOUBLE>> bg = bgcov(datax,datay,wg,sizet);			
+
 		//This matrix hold the ratio of the between group and within group covariance
 		//Ideally we want this value to be maximum to have great separation
-		VIP_ENCDOUBLE** s = multiply(inverse(wg),bg);
+		vector<vector<VIP_ENCDOUBLE>> s = multiply(inverse(wg),bg);
 		
-		VIP_ENCDOUBLE* e = eignevalue(s);		
-		VIP_ENCDOUBLE* ev = eignevector(s,e[0]);
+		vector<VIP_ENCDOUBLE> e = eignevalue(s);		
+		vector<VIP_ENCDOUBLE> ev = eignevector(s,e[0]);
 		
 		b0=ev[0];
 		b1=ev[1];		
