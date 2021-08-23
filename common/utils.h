@@ -19,6 +19,8 @@ unsigned int myrand(void);
 
 
 long perf_event_open(perf_event_attr*, int, int, int, unsigned long);
+void record_mem();
+void record_mem(std::string fileName );
 //int  record_mem();
 
 class Stopwatch
@@ -31,11 +33,9 @@ class Stopwatch
       static bool tableFormat;
       struct perf_event_attr pe;
 	    int fd;
-      Stopwatch(std::string timer_name):name_(timer_name), start_time_(std::chrono::high_resolution_clock::now())
+      Stopwatch(std::string timer_name):name_(timer_name)
       {
-        __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-        cycles=((uint64_t)hi << 32) | lo;
-
+        
         // Linux Perf Event Utility to Measure Instruction Count
         memset(&pe, 0, sizeof(struct perf_event_attr));
 		    pe.type = PERF_TYPE_HARDWARE;
@@ -52,6 +52,14 @@ class Stopwatch
 		      ioctl(fd, PERF_EVENT_IOC_RESET, 0);
 		      ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
         }
+        std::cout<<"\t";
+        //start memory usage measurement
+        record_mem();
+        //start the high resolution timer
+        start_time_=(std::chrono::high_resolution_clock::now());
+        //start processor cycle counter
+        __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+        cycles=((uint64_t)hi << 32) | lo;
       }
       ~Stopwatch()
       {
@@ -65,17 +73,22 @@ class Stopwatch
         else
           timeTaken=duration_millis.count();
         if(!tableFormat)
-          std::cerr<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles"<<std::endl;
+          std::cout<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles";
         else
-          std::cerr<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles<<std::endl;
+          std::cout<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles;
         // Print Linux Perf Event Utility to Measure Instruction Count
         long long count;
         if (fd != -1) {
 		      ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
           read(fd, &count, sizeof(long long));
-          fprintf(stderr, "[VIP] Executed %lld instructions\n", count);
+          if(!tableFormat)
+            fprintf(stdout, " %lld instructions executed\t", count);
+          else
+          fprintf(stderr, " \t %lld \n", count);
 		      close(fd);
         }
+        record_mem();
+        std::cout<<std::endl;
       }
     private: 
       std::string name_;
