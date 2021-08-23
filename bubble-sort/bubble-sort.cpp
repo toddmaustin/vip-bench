@@ -86,7 +86,7 @@ main(void)
       return -1;
     }
   }
-  fprintf(stderr, "INFO: %lu swaps executed.\n", swaps);
+  fprintf(stdout, "INFO: %lu swaps executed.\n", swaps);
   fprintf(stdout, "INFO: data is properly sorted.\n");
   return 0;
 }

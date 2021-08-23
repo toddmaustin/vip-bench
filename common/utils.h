@@ -73,16 +73,16 @@ class Stopwatch
         else
           timeTaken=duration_millis.count();
         if(!tableFormat)
-          std::cout<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles";
+          std::cerr<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles";
         else
-          std::cout<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles;
+          std::cerr<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles;
         // Print Linux Perf Event Utility to Measure Instruction Count
         long long count;
         if (fd != -1) {
 		      ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
           read(fd, &count, sizeof(long long));
           if(!tableFormat)
-            fprintf(stdout, " %lld instructions executed\t", count);
+            fprintf(stderr, " %lld instructions executed\t", count);
           else
           fprintf(stderr, " \t %lld \n", count);
 		      close(fd);
