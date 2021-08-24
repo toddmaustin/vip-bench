@@ -29,7 +29,7 @@ def aggregate( dir, iters, mode ):
     line = fp.readline() # Skip header
     line = fp.readline() # Skip newline
     line = fp.readline()
-    this_pid = 0
+    this_pid = "XXX"
     this_vsz = 0
     this_rss = 0
     this_cnt = 1
@@ -37,14 +37,14 @@ def aggregate( dir, iters, mode ):
     rss = 0
     while line:
         line = re.sub('\s+',' ',line) # Clean up ps prints
-        if "0 0" not in line:
+        if " 0 0" not in line:
             values = line.split(' ')
-            if (int(values[0])!= this_pid):
+            if (values[0] != this_pid):
                 # Moving to next pid, record vsz and rss average for this pid
                 vsz += (this_vsz/this_cnt)
                 rss += (this_rss/this_cnt)
                 # Move to next pid and save current line
-                this_pid = int(values[0])
+                this_pid = values[0]
                 this_vsz = float(values[1])
                 this_rss = float(values[2])
                 this_cnt = 1
