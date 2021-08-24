@@ -37,6 +37,7 @@ def aggregate( dir, iters, mode ):
     rss = 0
     while line:
         line = re.sub('\s+',' ',line) # Clean up ps prints
+        line = line.lstrip() #remove leading whitespace
         if " 0 0" not in line:
             values = line.split(' ')
             if (values[0] != this_pid):
