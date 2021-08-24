@@ -26,7 +26,7 @@ double Stopwatch::timeTaken=0;
 bool Stopwatch::precision=true;
 int Stopwatch::numIter=1;
 int Stopwatch::nSlots=1;
-bool Stopwatch::tableFormat=false;
+bool Stopwatch::tableFormat=true;
 
 
 /* Initializing the array with a seed */

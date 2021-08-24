@@ -1,5 +1,5 @@
 
-BENCHMARK_DIRS="bubble-sort edit-distance eulers-number-approx fft-int kepler-calc mersenne nonlinear-nn nr-solver parrando rad-to-degree lda triangle-count mnist-cnn"
+BENCHMARK_DIRS="test-linear-reg bubble-sort edit-distance eulers-number-approx fft-int kepler-calc mersenne nonlinear-nn nr-solver parrando rad-to-degree lda triangle-count mnist-cnn"
 # BENCHMARK_DIRS="boyer-moore-search mnist-cnn scalar-gwas-chi2 vector-gwas-chi2"
 
 curDIR=$PWD

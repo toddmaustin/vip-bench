@@ -54,7 +54,7 @@ class Stopwatch
         }
         std::cout<<"\t";
         //start memory usage measurement
-        record_mem();
+        // record_mem();
         //start the high resolution timer
         start_time_=(std::chrono::high_resolution_clock::now());
         //start processor cycle counter
@@ -73,9 +73,9 @@ class Stopwatch
         else
           timeTaken=duration_millis.count();
         if(!tableFormat)
-          std::cerr<<"[VIP] Time taken: "<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles";
+          std::cerr<<"[VIP] Time taken:"<<timeTaken/numIter<<(precision?" microseconds, ":" milliseconds, ")<<cycles<<" processor cycles";
         else
-          std::cerr<<"[VIP] Time taken: "<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles;
+          std::cerr<<"[VIP] Time taken:\t"<</*timeTaken/numIter*/duration_millis.count()<<"\t"<<(timeTaken/numIter)/nSlots<<"\t"<<cycles;
         // Print Linux Perf Event Utility to Measure Instruction Count
         long long count;
         if (fd != -1) {
@@ -84,10 +84,10 @@ class Stopwatch
           if(!tableFormat)
             fprintf(stderr, " %lld instructions executed\t", count);
           else
-          fprintf(stderr, " \t %lld \n", count);
+          fprintf(stderr, "\t%lld\n", count);
 		      close(fd);
         }
-        record_mem();
+        // record_mem();
         std::cout<<std::endl;
       }
     private: 
