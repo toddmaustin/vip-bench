@@ -33,6 +33,7 @@ def aggregate( dir, iters, mode ):
     this_vsz = 0
     this_rss = 0
     this_cnt = 1
+    total_cnt = 0
     vsz = 0
     rss = 0
     while line:
@@ -49,6 +50,7 @@ def aggregate( dir, iters, mode ):
                 this_vsz = float(values[1])
                 this_rss = float(values[2])
                 this_cnt = 1
+                total_cnt += 1
             else:
                 this_vsz += float(values[1])
                 this_rss += float(values[2])
@@ -57,14 +59,17 @@ def aggregate( dir, iters, mode ):
     vsz += (this_vsz/this_cnt)
     rss += (this_rss/this_cnt)
     fp.close()
+    
+    if(total_cnt != iters):
+        print("WARNING:: Too few memory measurments (MODE="+mode+")")
 
     # Average results over iters
     runtime_ms = runtime_ms/iters
     runtime_us = runtime_us/iters
     cycles = cycles/iters
     insns = insns/iters
-    vsz = vsz/iters
-    rss = rss/iters
+    vsz = vsz/total_cnt
+    rss = rss/total_cnt
     # print results in table format
     print(dir + '-MODE=' + mode, end='')
     print(",\t{0},\t{1}".format(runtime_ms, runtime_us), end='')
