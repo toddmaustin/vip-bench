@@ -98,7 +98,7 @@ perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_
                 int sprintf_ret = snprintf(
                         system_cmd,
                         sizeof(system_cmd),
-                        "ps -o pid,vsz,rss | awk '{if (NR == 1 || $1 == \"%ju\") print}' > mem.out",
+                        "grep -E 'VmPeak|VmRSS|VmSize' /proc/%ju/status >> mem.out",
                         (uintmax_t)getpid()
                );
                assert(sprintf_ret >= 0);

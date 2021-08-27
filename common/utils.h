@@ -87,7 +87,7 @@ class Stopwatch
           fprintf(stderr, "\t%lld\n", count);
 		      close(fd);
         }
-        // record_mem();
+        record_mem();
         std::cout<<std::endl;
       }
     private: 
