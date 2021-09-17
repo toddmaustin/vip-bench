@@ -1,13 +1,13 @@
-# VIP Benchmark Suite
+# VIP-Bench Benchmark Suite
 
 
 ## Introduction
 
-This is the VIP Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
+This is the VIP-Bench Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
 A privacy-enhance computation framework is one in which encrypted data can be directly processed without sofware needing to decrypt it.
 These systems naturally enhance privacy since hacking into a system using privacy-enhanced computation only gives the attacker access
 to ciphertext. Examples of privacy-enhanced computation frameworks that this benchmark suite wants to server are: homomorphic encryption,
-sequestered encryption, runtime encryption, confidential computing, etc.
+runtime encryption, multi-party computation, etc.
 
 *Why do we need a privacy-oriented benchmark suite?* Privacy-oriented programming has two primary impacts on software algorithms: first,
 the algorithms become less heuristic since they can no longer inspect the data they are operating on; and second, the core datatypes will
@@ -20,6 +20,11 @@ computation, perhaps you can benchmark without that particular application. Sinc
 these benchmarks, we felt it was important to take a great-common-demoninator approach to selecting benchmarks, rather than a
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
 
+To learn more about VIP-Bench's design and implementation, please read the VIP-Bench paper: https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing
+
+If you use this benchmark in your research and publications, please site the VIP-Bench paper:
+
+Lauren Biernacki, Meron Zerihun Demissie, Kidus Birkayehu Workneh, Galane Basha Namomsa, Plato Gebremedhin, Fitsum Assamnew Andargie, Brandon Reagen, and Todd Austin, VIP-Bench: A Benchmark Suite for Evaluating Privacy-Enhanced Computation Frameworks, in the 2021 IEEE International Symposium on Secure and Private Execution Environment Design (SEED-2021), September 2021.
 
 ## VIP Benchmarks
 
