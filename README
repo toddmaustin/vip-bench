@@ -35,7 +35,44 @@ benchmarks.
 
 - **Edit Distance** - Computes the edit distance between short genetic sequences. The genetic data and computed edit distance is privatized.
 
+- **Eulers Number Approximation** - Calculate e=2.718, using an interative approximation.
+
+- **FFT Integer** - Computes an integer Fast Fourier Transform computation.
+
+- **Flood Fill** - Performs a graphical flood fill operation on a 2D privatized image.
+
+- **Gradient Descent** - Computes the Gradient Descent of a fixed data set.
+
+- **Kadanes Algorithm** - Finds the maximum sum of a contiguous subarray in a given privatized integer array.
+
+- **Keplers Equation Calculator** - Performs orbital trajectory calculations using five Kepler's Equation solvers.
+
+- **Linear Discriminant Analysis** - Performs linear discriminant anaylsis of a privatized fixed data set.
+
+- **Mersenne Twister** - A privatized random number generator based on Mersenne's Twister.
+
+- **NMIST CNN** - A 7-layer CNN model performing training and inference on the MNIST handwriting data set.
+
+- **Nonlinear NN** - A collection of popular non-linear activation functions utilized in neural networks (e.g., LeakyReLU).
+
+- **Parrondo's paradox** - A game theory based solver that simulates Parrondo's paradox.
+
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
+
+- **Parrondo's Paradox** - A game theory based solver that simulates Parrondo's paradox.
+
+- **Miller-Rabin Primality Test - Performs the Miller-Rabin stochastic primarility test to extremely high certainty.
+
+- **Radians to Degrees - Converts a vector of radian measurements to degrees.
+
+- **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm.
+
+- **TEA Cipher** - A TEA (Tiny Encryption Algorithm) cipher that runs on privatized data.
+
+- **Linear Regression** - Performs linear regression on a fixed privatized data set.
+
+- **Triangle Count** - Computes the triangle count for a fixed privatized graph.
+
 
 ## Prerequisites
 
@@ -110,7 +147,7 @@ data-oblivious manner.
 
 ## Licensing Details
 
-The portions of the benchmark suite that was build by the VIP Benchmark team are (C) 2019-2020 and available for use under
+The portions of the benchmark suite that was build by the VIP Benchmark team are (C) 2019-2021 and available for use under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 
 ## VIP Benchmark Suite Authors
