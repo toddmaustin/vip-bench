@@ -61,9 +61,9 @@ benchmarks.
 
 - **Parrondo's Paradox** - A game theory based solver that simulates Parrondo's paradox.
 
-- **Miller-Rabin Primality Test - Performs the Miller-Rabin stochastic primarility test to extremely high certainty.
+- **Miller-Rabin Primality Test** - Performs the Miller-Rabin stochastic primarility test to extremely high certainty.
 
-- **Radians to Degrees - Converts a vector of radian measurements to degrees.
+- **Radians to Degrees** - Converts a vector of radian measurements to degrees.
 
 - **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm.
 
@@ -80,10 +80,10 @@ The "numdiff" utility must be installed, as it is used to compare results that m
 
 ## Building and Running the VIP Benchmarks
 
-First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. For example, to configure the benchmarks for Agita Labs' Mesosphere encrypted computation library, execute the following commands:
+First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. If you have your own PEC framework, you will have to create the associated configuration files. We've included configuration files for the VIP Functional Library, which is a reference implementation of the VIP Computational Model using Intel's AES-NI instructions. You can configure the VIP-Bench to utilize this library with the following commands:
 ```
-ln -sf configs/config.mk.meso config.mk
-ln -sf configs/config.h.meso config.h
+ln -sf configs/config.mk.vip config.mk
+ln -sf configs/config.h.vip config.h
 ```
 
 Then, one can build, run and test the benchmarks in each of their respective directories. All benchmarks can be build in three distinct execution modes:
