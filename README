@@ -22,9 +22,9 @@ least-common-demoninator approach.  In any event, please help us build in suppor
 
 To learn more about VIP-Bench's design and implementation, please read the VIP-Bench paper: https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing
 
-If you use this benchmark in your research and publications, please site the VIP-Bench paper:
+If you use this benchmark in your research and publications, please cite the VIP-Bench paper:
 
-Lauren Biernacki, Meron Zerihun Demissie, Kidus Birkayehu Workneh, Galane Basha Namomsa, Plato Gebremedhin, Fitsum Assamnew Andargie, Brandon Reagen, and Todd Austin, VIP-Bench: A Benchmark Suite for Evaluating Privacy-Enhanced Computation Frameworks, in the 2021 IEEE International Symposium on Secure and Private Execution Environment Design (SEED-2021), September 2021.
+> Lauren Biernacki, Meron Zerihun Demissie, Kidus Birkayehu Workneh, Galane Basha Namomsa, Plato Gebremedhin, Fitsum Assamnew Andargie, Brandon Reagen, and Todd Austin, VIP-Bench: A Benchmark Suite for Evaluating Privacy-Enhanced Computation Frameworks, in the 2021 IEEE International Symposium on Secure and Private Execution Environment Design (SEED-2021), September 2021.
 
 ## VIP Benchmarks
 
