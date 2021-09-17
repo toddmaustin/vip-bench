@@ -112,7 +112,7 @@ perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_
                loc=command_output.find("\n");
                loc2=command_output.substr(loc+1).find("\n");
                
-               std::cout << command_output.substr(loc+1,loc2)<<"\t";
+               //std::cerr << "[VIP] " << command_output.substr(loc+1,loc2)<<"\n";
                
 }
 
