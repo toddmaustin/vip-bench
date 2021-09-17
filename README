@@ -20,7 +20,7 @@ computation, perhaps you can benchmark without that particular application. Sinc
 these benchmarks, we felt it was important to take a great-common-demoninator approach to selecting benchmarks, rather than a
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
 
-To learn more about VIP-Bench's design and implementation, please read the VIP-Bench paper: https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing
+To learn more about VIP-Bench's design and implementation, please read the [VIP-Bench paper](https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing).
 
 If you use this benchmark in your research and publications, please cite the VIP-Bench paper:
 
