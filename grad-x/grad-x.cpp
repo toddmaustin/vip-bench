@@ -64,7 +64,7 @@ main(void)
     result=(VIP_VEC)c_result; //decrypt result
 
     for(int i=0; i < result.size(); i++)
-        std::cout << .at(i) << ' ';
+        std::cout << result.at(i) << ' ';
 
 #else
     /*** Native/DO mode  ***/
