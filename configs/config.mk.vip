@@ -15,7 +15,7 @@ DO_SIM =
 DO_DIFF = diff
 
 ENC_CFLAGS = 
-ENC_LIBS = ../vip-functional-library.cpp ../vip-functional-library/interface/interface.cpp ../vip-functional-library/datatypes/enc_impl.cpp ../vip-functional-library/interface/parameters.cpp ../vip-functional-library/rng/rng_interface.cpp ../vip-functional-library/rng/mersenne-twister-1/mersenne-twister.cpp ../vip-functional-library/ciphers/aes/aes_interface.cpp ../vip-functional-library/ciphers/xor/xor_interface.cpp
+ENC_LIBS = ../lib/vip-functional-library/vip-functional-library.cpp ../lib/vip-functional-library/interface/interface.cpp ../lib/vip-functional-library/datatypes/enc_impl.cpp ../lib/vip-functional-library/interface/parameters.cpp ../lib/vip-functional-library/rng/rng_interface.cpp ../lib/vip-functional-library/rng/mersenne-twister-1/mersenne-twister.cpp ../lib/vip-functional-library/ciphers/aes/aes_interface.cpp ../lib/vip-functional-library/ciphers/xor/xor_interface.cpp
 
 ENC_SIM =
 ENC_DIFF = diff

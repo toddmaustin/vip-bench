@@ -11,3 +11,4 @@ FOO
 FOO1
 *.enc
 *.na
+*/bin/*
