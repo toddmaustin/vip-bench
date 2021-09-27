@@ -1,0 +1,18 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license.
+
+prefix=/home/fandargi/vipBench/vip-bench/include
+libdir=${prefix}/lib
+includedir=${prefix}/include/SEAL-3.6
+
+Name: Microsoft SEAL
+Version: 3.6.6
+Description: An easy-to-use homomorphic encryption library
+
+Requires: 
+Requires: 
+Requires: 
+Requires: 
+
+Libs: -L${libdir} -lseal-3.6
+Cflags: -std=c++17 -I${includedir}
