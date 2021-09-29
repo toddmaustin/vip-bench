@@ -51,34 +51,29 @@
 /*****************************************/
 #elif defined(VIP_ENC_MODE)
 
-#include "lib/SEAL/seal.h"
+#include "lib/SEAL/seal-3.4.h"
 #include "lib/SEAL/wrapper/SEALWrapper.h"
 #include <valarray>
 
-using namespace he;
+using namespace he_lib;
 
-#define VIP_INIT        SEAL_BFV_Init()
-//#define VIP_INIT        SEAL_CKKS_Init()
-// TODO: Add logic to select scheme
+#define VIP_INIT            SEAL_BFV_Init()
 
-#define VIP_ENCCHAR         char
+#define VIP_ENCCHAR         #error
 #define VIP_ENCINT          SEALCipherText
 #define VIP_ENCUINT         SEALCipherText
-#define VIP_ENCUINT64       uint64_t
-#define VIP_ENCLONG         long
-#define VIP_ENCULONG        unsigned long
-#define VIP_ENCBOOL         bool
-#define VIP_ENCFLOAT        float
-#define VIP_ENCDOUBLE       SEALCipherText
-#define VIP_VEC_ENCDOUBLE   std::vector<VIP_ENCDOUBLE>
+#define VIP_ENCUINT64       #error
+#define VIP_ENCLONG         #error
+#define VIP_ENCULONG        #error
+#define VIP_ENCBOOL         #error
+#define VIP_ENCFLOAT        #error
+#define VIP_ENCDOUBLE       #error
+#define VIP_VEC_ENCDOUBLE   #error
 #define VIP_VEC_ENCINT      SEALCipherText
-#define VIP_DEC(X)          ((X).GET_DECRYPTED_VALUE()) 
-#define VIP_CMOV(P,A,B)     CMOV((P), (A), (B))
+#define VIP_DEC(X)          (X) 
+//#define VIP_CMOV(P,A,B)     (#error)
 
-#define VIP_VEC    std::vector<int64_t>
-#define VIP_VEC_TYPE        int64_t
 
-// TODO: Reconcile vector types
 
 #undef  VIP_DO_MODE
 #define VIP_DO_MODE

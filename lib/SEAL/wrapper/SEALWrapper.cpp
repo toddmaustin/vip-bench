@@ -1,7 +1,11 @@
-#include "SEALWrapper.h"
-//#include "benchmark_framework/utilities.h"
+#ifndef SEAL_WRAPPER_CPP
+#define SEAL_WRAPPER_CPP
 
-       namespace he{
+#include "SEALWrapper.h"
+
+using namespace he_lib;
+using namespace seal;
+
         seal::scheme_type  SEALCipherText::scheme;
         std::shared_ptr<SEALContext>  SEALCipherText::context;
         seal::Evaluator*  SEALCipherText::evaluator;
@@ -20,7 +24,7 @@
         {
             if(batchEncoder!=NULL)
                 {
-                    //printf("Batching enabled!\n ");
+                //     printf("Batching enabled!\n ");
                     batchingEnabled=true;
                 }
                 else
@@ -1611,5 +1615,4 @@ inline void print_parameterz(std::shared_ptr<seal::SEALContext> context)
     std::cout << "\\" << std::endl;
 }
 
-
-       }
+#endif

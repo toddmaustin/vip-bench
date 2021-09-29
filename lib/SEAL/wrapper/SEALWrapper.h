@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SEAL_WRAPPER_H
+#define SEAL_WRAPPER_H
+
 #include <cstddef>
 #include <iostream>
 #include <fstream>
@@ -14,10 +16,10 @@
 #include <algorithm>
 #include <numeric>
 
-#include "seal/seal.h"
-//#include "seal/seal.h"
-using namespace seal;
-namespace he{
+#include "seal.h" 
+
+namespace he_lib
+{
     
 class SEALCipherText{
     
@@ -26,9 +28,9 @@ class SEALCipherText{
 
     public:
         seal::Ciphertext cipher;
-
+        
         static seal::scheme_type scheme;
-        static std::shared_ptr<SEALContext> context;
+        static std::shared_ptr<seal::SEALContext> context;
         static seal::Evaluator* evaluator;
         static seal::Encryptor* encryptor;
         static seal::Decryptor* decryptor;
@@ -64,7 +66,7 @@ class SEALCipherText{
         
         SEALCipherText(std::vector<double>& d1, int size);
                 
-        SEALCipherText(Plaintext plain);
+        SEALCipherText(seal::Plaintext plain);
         
         SEALCipherText(SEALCipherText &c1);
         
@@ -82,7 +84,7 @@ class SEALCipherText{
        
         SEALCipherText& operator += (SEALCipherText &c1);
         
-        SEALCipherText& operator += (Plaintext &p1);
+        SEALCipherText& operator += (seal::Plaintext &p1);
 
         SEALCipherText& operator += (int p1);
 
@@ -90,7 +92,7 @@ class SEALCipherText{
         
         SEALCipherText& operator -= (SEALCipherText &c1);
         
-        SEALCipherText& operator -= (Plaintext &p1);
+        SEALCipherText& operator -= (seal::Plaintext &p1);
 
         SEALCipherText& operator -= (int p1);
 
@@ -98,7 +100,7 @@ class SEALCipherText{
        
         SEALCipherText& operator *= (SEALCipherText &c1);
         
-        SEALCipherText& operator *= (Plaintext &p1);
+        SEALCipherText& operator *= (seal::Plaintext &p1);
 
         SEALCipherText& operator *= (int p1);
 
@@ -108,19 +110,19 @@ class SEALCipherText{
         
         SEALCipherText& operator -(SEALCipherText &c1);
         
-        SEALCipherText& operator -(Plaintext &p1);
+        SEALCipherText& operator -(seal::Plaintext &p1);
         
         SEALCipherText& operator -(double d1);
 
         SEALCipherText& operator -(std::vector<double> d1);
         
-        friend SEALCipherText& operator -(Plaintext &p1, SEALCipherText &c1);
+        friend SEALCipherText& operator -(seal::Plaintext &p1, SEALCipherText &c1);
         
         friend SEALCipherText& operator -(double d1, SEALCipherText &c1);
         
         SEALCipherText& operator +(SEALCipherText &c1);
                 
-        SEALCipherText& operator +(Plaintext &p1);
+        SEALCipherText& operator +(seal::Plaintext &p1);
         
         SEALCipherText& operator +(double d1);
 
@@ -128,13 +130,13 @@ class SEALCipherText{
         
         SEALCipherText& operator +(std::vector<double> d1);
         
-        friend SEALCipherText& operator +(Plaintext &p1, SEALCipherText &c1);
+        friend SEALCipherText& operator +(seal::Plaintext &p1, SEALCipherText &c1);
         
         friend SEALCipherText& operator +(double d1, SEALCipherText &c1);
         
         SEALCipherText& operator *(SEALCipherText &c1);
         
-        SEALCipherText& operator *(Plaintext &p1);
+        SEALCipherText& operator *(seal::Plaintext &p1);
 
         SEALCipherText& operator *(int i1);
 
@@ -156,17 +158,17 @@ class SEALCipherText{
         
         friend SEALCipherText& operator ^(SEALCipherText c1,double i1);
         
-        friend void operator <<(Plaintext p1,int i1);
+        friend void operator <<(seal::Plaintext p1,int i1);
 
-        friend void operator >>(Plaintext p1,int i1);
+        friend void operator >>(seal::Plaintext p1,int i1);
 
 
         
-        friend SEALCipherText& operator *(Plaintext &p1, SEALCipherText &c1);
+        friend SEALCipherText& operator *(seal::Plaintext &p1, SEALCipherText &c1);
 
         //friend SEALCipherText& operator *(std::vector<int64_t> i1, SEALCipherText &c1);
         //friend SEALCipherText& operator *(std::vector<double> p1, SEALCipherText &c1);
-        friend SEALCipherText& operator *(Plaintext &p1, SEALCipherText &c1);
+        friend SEALCipherText& operator *(seal::Plaintext &p1, SEALCipherText &c1);
         
         friend SEALCipherText& operator *(int i1, SEALCipherText &c1);
         
@@ -180,5 +182,8 @@ class SEALCipherText{
 
 
 };
-inline void print_parameterz(std::shared_ptr<seal::SEALContext> context);
+
 }
+inline void print_parameterz(std::shared_ptr<seal::SEALContext> context);
+
+#endif
