@@ -6,6 +6,7 @@
 using namespace seal; 
 using namespace he_lib;
 
+
 void SEAL_BFV_Init()
 {
     SEALCipherText::scheme=scheme_type::BFV;
@@ -20,14 +21,18 @@ void SEAL_BFV_Init()
         SEALCipherText::context=context;
         KeyGenerator keygen(context);
 
-        SEALCipherText::public_key=keygen.public_key();
-        SEALCipherText::secret_key=keygen.secret_key();
-        SEALCipherText::relin_keys=keygen.relin_keys();
-        SEALCipherText::galois_keys=keygen.galois_keys();
+        SEALCipherText::public_key = new seal::PublicKey();
+        SEALCipherText::secret_key = new seal::SecretKey();
+        SEALCipherText::relin_keys = new seal::RelinKeys();
+        SEALCipherText::galois_keys = new seal::GaloisKeys();
+        *SEALCipherText::public_key=keygen.public_key();
+        *SEALCipherText::secret_key=keygen.secret_key();
+        *SEALCipherText::relin_keys=keygen.relin_keys();
+        *SEALCipherText::galois_keys=keygen.galois_keys();
 
         SEALCipherText::evaluator=new Evaluator(context);
-        SEALCipherText::decryptor=new Decryptor(context, SEALCipherText::secret_key);
-        SEALCipherText::encryptor=new Encryptor(context, SEALCipherText::public_key);
+        SEALCipherText::decryptor=new Decryptor(context, *SEALCipherText::secret_key);
+        SEALCipherText::encryptor=new Encryptor(context, *SEALCipherText::public_key);
         SEALCipherText::intEncoder=new IntegerEncoder(context);
         SEALCipherText::batchEncoder=new BatchEncoder(context);    
 }
@@ -46,15 +51,19 @@ void  SEAL_CKKS_Init(){
         SEALCipherText::context=context;
 
         KeyGenerator keygen(SEALCipherText::context);
-        
-        SEALCipherText::public_key=keygen.public_key();
-        SEALCipherText::secret_key=keygen.secret_key();
-        SEALCipherText::relin_keys=keygen.relin_keys();
-        SEALCipherText::galois_keys=keygen.galois_keys();
+            
+        SEALCipherText::public_key = new seal::PublicKey();
+        SEALCipherText::secret_key = new seal::SecretKey();
+        SEALCipherText::relin_keys = new seal::RelinKeys();
+        SEALCipherText::galois_keys = new seal::GaloisKeys();
+        *SEALCipherText::public_key=keygen.public_key();
+        *SEALCipherText::secret_key=keygen.secret_key();
+        *SEALCipherText::relin_keys=keygen.relin_keys();
+        *SEALCipherText::galois_keys=keygen.galois_keys();
 
         SEALCipherText::evaluator=new Evaluator(context);
-        SEALCipherText::decryptor=new Decryptor(context, SEALCipherText::secret_key);
-        SEALCipherText::encryptor=new Encryptor(context, SEALCipherText::public_key);
+        SEALCipherText::decryptor=new Decryptor(context, *SEALCipherText::secret_key);
+        SEALCipherText::encryptor=new Encryptor(context, *SEALCipherText::public_key);
         SEALCipherText::scale=pow(2,scaleBits);
         SEALCipherText::ckksEncoder=new CKKSEncoder(context);
 

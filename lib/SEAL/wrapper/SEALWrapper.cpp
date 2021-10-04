@@ -11,10 +11,10 @@ using namespace seal;
         seal::Evaluator*  SEALCipherText::evaluator;
         seal::Encryptor*  SEALCipherText::encryptor;
         seal::Decryptor*  SEALCipherText::decryptor;
-        seal::PublicKey  SEALCipherText::public_key;
-        seal::SecretKey  SEALCipherText::secret_key;
-        seal::RelinKeys  SEALCipherText::relin_keys;
-        seal::GaloisKeys  SEALCipherText::galois_keys;
+        seal::PublicKey*  SEALCipherText::public_key;
+        seal::SecretKey*  SEALCipherText::secret_key;
+        seal::RelinKeys*  SEALCipherText::relin_keys;
+        seal::GaloisKeys*  SEALCipherText::galois_keys;
         double  SEALCipherText::scale=1; 
         seal::IntegerEncoder* SEALCipherText::intEncoder;
         seal::BatchEncoder* SEALCipherText::batchEncoder;
@@ -547,7 +547,7 @@ using namespace seal;
                     evaluator->mod_switch_to_inplace(cipher,c1.cipher.parms_id());
             }
             evaluator->multiply_inplace(cipher,c1.cipher);
-            evaluator->relinearize_inplace(cipher,relin_keys);
+            evaluator->relinearize_inplace(cipher,*relin_keys);
             if(scheme==scheme_type::CKKS)
             {  
                 evaluator->rescale_to_next_inplace(cipher);
@@ -563,7 +563,7 @@ using namespace seal;
                 evaluator->mod_switch_to_inplace(p1,cipher.parms_id());
             }
             evaluator->multiply_plain_inplace(cipher,p1);
-            evaluator->relinearize_inplace(cipher,relin_keys);
+            evaluator->relinearize_inplace(cipher,*relin_keys);
             if(scheme==scheme_type::CKKS)
              {
                     evaluator->rescale_to_next_inplace(cipher);
@@ -600,7 +600,7 @@ using namespace seal;
             }
             
             evaluator->multiply_plain_inplace(cipher,p1);
-            evaluator->relinearize_inplace(cipher,relin_keys);
+            evaluator->relinearize_inplace(cipher,*relin_keys);
             if(scheme==scheme_type::CKKS)
              {
                     
@@ -639,7 +639,7 @@ using namespace seal;
             }
             
             evaluator->multiply_plain_inplace(cipher,p1);
-            evaluator->relinearize_inplace(cipher,relin_keys);
+            evaluator->relinearize_inplace(cipher,*relin_keys);
             if(scheme==scheme_type::CKKS)
              {
                     
@@ -1004,7 +1004,7 @@ using namespace seal;
             
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                
                //std::cout<<"C1 Sclae:"<<res->cipher.scale()<<" P1 Sclae:"<<p1.scale()<<" System Sclae:"<<scale<<std::endl;
@@ -1058,10 +1058,10 @@ using namespace seal;
             else    
                evaluator->multiply_inplace(res->cipher,temp->cipher);//:evaluator->multiply_inplace(res->cipher,c1.cipher);
             //std::cout<<*this<<"  "<<c1<<" "<<*res<<" isC1:"<<isC1<<std::endl;
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS )
             {  
-                 //evaluator->relinearize_inplace(res->cipher,relin_keys);
+                 //evaluator->relinearize_inplace(res->cipher,*relin_keys);
                  
                  evaluator->rescale_to_next_inplace(res->cipher);
                  res->cipher.scale()=c1.scale;
@@ -1081,7 +1081,7 @@ using namespace seal;
 
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                 
                 evaluator->rescale_to_next_inplace(res->cipher);
@@ -1099,7 +1099,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             c1.evaluator->multiply_plain(c1.cipher,p1,res->cipher);
-            c1.evaluator->relinearize_inplace(res->cipher,c1.relin_keys);
+            c1.evaluator->relinearize_inplace(res->cipher,*c1.relin_keys);
             if(c1.scheme==scheme_type::CKKS){
                 
                 c1.evaluator->rescale_to_next_inplace(res->cipher);
@@ -1135,7 +1135,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                 
                 evaluator->rescale_to_next_inplace(res->cipher);
@@ -1177,7 +1177,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                
                //std::cout<<"C1 Sclae:"<<res->cipher.scale()<<" P1 Sclae:"<<p1.scale()<<" System Sclae:"<<scale<<std::endl;
@@ -1209,7 +1209,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                
                //std::cout<<"C1 Sclae:"<<res->cipher.scale()<<" P1 Sclae:"<<p1.scale()<<" System Sclae:"<<scale<<std::endl;
@@ -1246,7 +1246,7 @@ using namespace seal;
             
             SEALCipherText *res= new SEALCipherText();
             evaluator->multiply_plain(cipher,p1,res->cipher);
-            evaluator->relinearize_inplace(res->cipher,relin_keys);
+            evaluator->relinearize_inplace(res->cipher,*relin_keys);
             if(scheme==scheme_type::CKKS){
                
                //std::cout<<"C1 Sclae:"<<res->cipher.scale()<<" P1 Sclae:"<<p1.scale()<<" System Sclae:"<<scale<<std::endl;
@@ -1291,7 +1291,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             c1.evaluator->multiply_plain(c1.cipher,p1,res->cipher);
-            c1.evaluator->relinearize_inplace(res->cipher,c1.relin_keys);
+            c1.evaluator->relinearize_inplace(res->cipher,*c1.relin_keys);
             if(c1.scheme==scheme_type::CKKS){
                 
                 c1.evaluator->rescale_to_next_inplace(res->cipher);
@@ -1331,7 +1331,7 @@ using namespace seal;
             }
             SEALCipherText *res= new SEALCipherText();
             c1.evaluator->multiply_plain(c1.cipher,p1,res->cipher);
-            c1.evaluator->relinearize_inplace(res->cipher,c1.relin_keys);
+            c1.evaluator->relinearize_inplace(res->cipher,*c1.relin_keys);
             if(c1.scheme==scheme_type::CKKS){
                //std::cout<<"C1 Sclae:"<<res->cipher.scale()<<" P1 Sclae:"<<p1.scale()<<" System Sclae:"<<c1.scale<<std::endl;
                 c1.evaluator->rescale_to_next_inplace(res->cipher);
@@ -1343,17 +1343,17 @@ using namespace seal;
 
         void SEALCipherText::operator <<=(int i1)
         {
-            //if(galois_keys!=NULL)
+            //if(*galois_keys!=NULL)
             {
                 
                  if(scheme==scheme_type::BFV)
                 {
                    //std::cout<<"Ciphertext rotation is not supported in BFV scheme. Only Plaintext can be rotated"<<std::endl;
-                   evaluator->rotate_rows_inplace(cipher,-i1,galois_keys);
+                   evaluator->rotate_rows_inplace(cipher,-i1,*galois_keys);
                 }
                 else if (scheme==scheme_type::CKKS)
                 {
-                    evaluator->rotate_vector_inplace(cipher,i1,galois_keys);
+                    evaluator->rotate_vector_inplace(cipher,i1,*galois_keys);
                 } 
                 
             }
@@ -1373,11 +1373,11 @@ using namespace seal;
                  if(scheme==scheme_type::BFV)
                 {
                    std::cout<<"Ciphertext rotation is not supported in BFV scheme. Only Plaintext can be rotated"<<std::endl;
-                   evaluator->rotate_rows_inplace(cipher,i1,galois_keys);
+                   evaluator->rotate_rows_inplace(cipher,i1,*galois_keys);
                 }
                 else if (scheme==scheme_type::CKKS)
                 {
-                    evaluator->rotate_vector_inplace(cipher,-i1,galois_keys);
+                    evaluator->rotate_vector_inplace(cipher,-i1,*galois_keys);
                 } 
                 
             }
@@ -1391,20 +1391,20 @@ using namespace seal;
         SEALCipherText& SEALCipherText::operator <<(int i1)
         {
             
-           // if(galois_keys!=NULL)
+           // if(*galois_keys!=NULL)
             {
                 
                  if(scheme==scheme_type::BFV)
                 {
                    //std::cout<<"Ciphertext rotation is not supported in BFV scheme. Only Plaintext can be rotated"<<std::endl;
                    SEALCipherText* res=new SEALCipherText();
-                   evaluator->rotate_rows(cipher,i1,galois_keys,res->cipher);
+                   evaluator->rotate_rows(cipher,i1,*galois_keys,res->cipher);
                    return *res;
                 }
                 else if (scheme==scheme_type::CKKS)
                 {
                     SEALCipherText* res=new SEALCipherText();
-                    evaluator->rotate_vector(cipher,i1,galois_keys,res->cipher);
+                    evaluator->rotate_vector(cipher,i1,*galois_keys,res->cipher);
                     return *res;
                 }
                 
@@ -1419,20 +1419,20 @@ using namespace seal;
 
         SEALCipherText& SEALCipherText::operator >>(int i1)
         {
-           // if(galois_keys!=NULL)
+           // if(*galois_keys!=NULL)
             {
                  
                  if(scheme==scheme_type::BFV)
                 {
                    //std::cout<<"Ciphertext rotation is not supported in BFV scheme. Only Plaintext can be rotated"<<std::endl;
                    SEALCipherText* res=new SEALCipherText();
-                   evaluator->rotate_rows(cipher,-i1,galois_keys,res->cipher);
+                   evaluator->rotate_rows(cipher,-i1,*galois_keys,res->cipher);
                    return *res;
                 }
                 else if (scheme==scheme_type::CKKS)
                 {
                    SEALCipherText* res=new SEALCipherText();
-                 evaluator->rotate_vector(cipher,-i1,galois_keys,res->cipher);
+                 evaluator->rotate_vector(cipher,-i1,*galois_keys,res->cipher);
                  return *res;
                 } 
                 
@@ -1447,7 +1447,7 @@ using namespace seal;
         }
         void operator <<(Plaintext p1,int i1)
         {
-             //if(SEALCipherText::galois_keys!=NULL)
+             //if(SEALCipherText::*galois_keys!=NULL)
             {
                  
                  if(SEALCipherText::scheme==scheme_type::CKKS)
@@ -1457,7 +1457,7 @@ using namespace seal;
                 else if (SEALCipherText::scheme==scheme_type::BFV)
                 {
                     //SEALCipherText* res=new SEALCipherText();
-                    //SEALCipherText::evaluator->rotate_vector_inplace(p1,-i1,*SEALCipherText::galois_keys);
+                    //SEALCipherText::evaluator->rotate_vector_inplace(p1,-i1,*SEALCipherText::*galois_keys);
                  
                 } 
                 
@@ -1471,13 +1471,13 @@ using namespace seal;
         SEALCipherText& operator ^(SEALCipherText c1,int i1)
         {
                  SEALCipherText* res=new SEALCipherText();
-                 c1.evaluator->exponentiate(c1.cipher,i1,SEALCipherText::relin_keys,res->cipher);
+                 c1.evaluator->exponentiate(c1.cipher,i1,*SEALCipherText::relin_keys,res->cipher);
                  return *res;
         }
         SEALCipherText& operator ^(SEALCipherText c1,double i1)
         {
                  SEALCipherText* res=new SEALCipherText();
-                 c1.evaluator->exponentiate(c1.cipher,(int)i1,SEALCipherText::relin_keys,res->cipher);
+                 c1.evaluator->exponentiate(c1.cipher,(int)i1,*SEALCipherText::relin_keys,res->cipher);
                  return *res;
         }
         void operator >>(Plaintext p1,int i1);

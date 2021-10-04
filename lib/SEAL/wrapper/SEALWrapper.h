@@ -34,10 +34,10 @@ class SEALCipherText{
         static seal::Evaluator* evaluator;
         static seal::Encryptor* encryptor;
         static seal::Decryptor* decryptor;
-        static seal::PublicKey public_key;
-        static seal::SecretKey secret_key;
-        static seal::RelinKeys relin_keys;
-        static seal::GaloisKeys galois_keys;
+        static seal::PublicKey* public_key;
+        static seal::SecretKey* secret_key;
+        static seal::RelinKeys* relin_keys;
+        static seal::GaloisKeys* galois_keys;
         static double scale;
         static seal::IntegerEncoder* intEncoder;
         static seal::BatchEncoder* batchEncoder;
