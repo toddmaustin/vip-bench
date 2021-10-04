@@ -14,8 +14,8 @@ DO_LIBS =
 DO_SIM =
 DO_DIFF = diff
 
-ENC_CFLAGS= -I../lib/SEAL/SEAL/native/src/seal/ -I../lib/SEAL/SEAL/native/src/ 
-ENC_LIBS= ../lib/SEAL/wrapper/SEALWrapper.cpp ../lib/SEAL/seal-3.4.cpp -L../lib/SEAL/SEAL/native/lib/ -lseal-3.4 -lpthread -lz
+ENC_CFLAGS= -I../lib/SEAL-3.4/SEAL/native/src/seal/ -I../lib/SEAL-3.4/SEAL/native/src/ 
+ENC_LIBS= ../lib/SEAL-3.4/wrapper/SEALWrapper.cpp ../lib/SEAL-3.4/seal-3.4.cpp -L../lib/SEAL-3.4/SEAL/native/lib/ -lseal-3.4 -lpthread -lz
 
 
 ENC_SIM =

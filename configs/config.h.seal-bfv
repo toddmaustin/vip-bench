@@ -51,8 +51,8 @@
 /*****************************************/
 #elif defined(VIP_ENC_MODE)
 
-#include "lib/SEAL/seal-3.4.h"
-#include "lib/SEAL/wrapper/SEALWrapper.h"
+#include "lib/SEAL-3.4/seal-3.4.h"
+#include "lib/SEAL-3.4/wrapper/SEALWrapper.h"
 #include <valarray>
 
 using namespace he_lib;
