@@ -78,6 +78,18 @@ benchmarks.
 
 The "numdiff" utility must be installed, as it is used to compare results that may be slightly imprecise (e.g., kepler-calc in DO mode). This tool lets the test-runs verify that the answer is within a specific tolerance of the expected value.
 
+## Building SEAL-3.4 Library
+To use VIP-Bench with SEAL-3.4, you must first install and build the SEAL submodule repository:
+```
+git submodule update --init --recursive
+cd lib/SEAL-3.4/SEAL/native/src
+cmake .
+make
+
+```
+Then you can continue building and runnign the VIP benchmarks from the parent directory. 
+
+
 ## Building and Running the VIP Benchmarks
 
 First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. If you have your own PEC framework, you will have to create the associated configuration files. We've included configuration files for the VIP Functional Library, which is a reference implementation of the VIP Computational Model using Intel's AES-NI instructions. You can configure the VIP-Bench to utilize this library with the following commands:
