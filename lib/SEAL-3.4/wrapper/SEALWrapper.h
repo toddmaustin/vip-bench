@@ -15,6 +15,7 @@
 #include <limits>
 #include <algorithm>
 #include <numeric>
+#include <valarray>
 
 #include "seal.h" 
 
@@ -77,8 +78,10 @@ class SEALCipherText{
         operator SEALCipherText();
 
         //SEALCipherText& operator = (SEALCipherText &c1);
+        std::valarray<int64_t> decrypt_bfv(); 
         operator std::vector<int64_t> ();
         operator std::vector<double> ();
+        std::valarray<double> decrypt_ckks(); 
         //friend std::vector<double>& operator = (SEALCipherText &c1);
         //friend std::vector<int64_t>& operator = (SEALCipherText &c1);
        

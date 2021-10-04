@@ -10,7 +10,7 @@
 
 #define VIP_INIT
 #define VIP_ENCCHAR         char
-#define VIP_ENCINT          int
+#define VIP_ENCINT          int64_t
 #define VIP_ENCUINT         unsigned int
 #define VIP_ENCUINT64       uint64_t
 #define VIP_ENCLONG         long
@@ -22,8 +22,9 @@
 #define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)          (X)
 
-#define VIP_VEC    std::vector<int64_t>
-#define VIP_VEC_TYPE        int64_t
+inline VIP_VEC_ENCINT   operator<<   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(rhs); }
+inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(-rhs); }
+
 
 /*****************************************/
 #elif defined(VIP_DO_MODE)
@@ -32,7 +33,7 @@
 
 #define VIP_INIT   
 #define VIP_ENCCHAR         char
-#define VIP_ENCINT          int
+#define VIP_ENCINT          int64_t
 #define VIP_ENCUINT         unsigned int
 #define VIP_ENCUINT64       uint64_t
 #define VIP_ENCLONG         long
@@ -45,8 +46,9 @@
 #define VIP_DEC(X)          (X)
 #define VIP_CMOV(P,A,B)     ((P) ? (A) : (B))
 
-#define VIP_VEC    std::vector<int64_t>
-#define VIP_VEC_TYPE        int64_t
+inline VIP_VEC_ENCINT   operator<<   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(rhs); }
+inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(-rhs); }
+
 
 /*****************************************/
 #elif defined(VIP_ENC_MODE)
@@ -70,9 +72,8 @@ using namespace he_lib;
 #define VIP_ENCDOUBLE       #error
 #define VIP_VEC_ENCDOUBLE   #error
 #define VIP_VEC_ENCINT      SEALCipherText
-#define VIP_DEC(X)          (X) 
-//#define VIP_CMOV(P,A,B)     (#error)
-
+#define VIP_DEC(X)          (X.decrypt_bfv()) 
+//#define VIP_CMOV(P,A,B)   (#error)
 
 
 #undef  VIP_DO_MODE

@@ -338,6 +338,38 @@ using namespace seal;
             return *this;
         }
 
+
+        std::valarray<int64_t> SEALCipherText::decrypt_bfv() 
+        {
+            Plaintext result;
+            std::vector<int64_t> realRes;   //printf("Debug 1\n");        
+            SEALCipherText::decryptor->decrypt(cipher,result);
+            //printf("Debug 2\n");
+            if(scheme==seal::scheme_type::BFV)
+            { 
+                 int64_t val;
+                if(isBatchingEnabled())
+                {
+                    //printf("Debug 2-1\n");
+                    batchEncoder->decode(result,realRes);
+                    val=realRes[0];
+                }
+                else
+                {
+                    //printf("Debug 2-2\n");
+                    IntegerEncoder *encoder;
+                    encoder=new IntegerEncoder(context);
+                    val=encoder->decode_int32(result);
+                    realRes.push_back(val);
+                }
+                
+            }
+             //printf("Debug 3\n");
+             std::valarray<int64_t> ret(realRes.size());
+             std::copy(realRes.begin(), realRes.end(), std::begin(ret));  
+             return ret;
+        }
+
         SEALCipherText::operator std::vector<int64_t> () 
         {
             Plaintext result;
@@ -387,6 +419,29 @@ using namespace seal;
              
              
         }
+
+        std::valarray<double> SEALCipherText::decrypt_ckks()
+        {
+            Plaintext result;
+            std::vector<double> realRes;           
+            SEALCipherText::decryptor->decrypt(cipher,result);
+            
+                if(ckksEncoder!=NULL)
+                {
+                    
+                    ckksEncoder->decode(result,realRes);
+                    
+                }
+                else
+                {
+                    std::cout<<"CKKS encoder needs to be instantiated"<<std::endl;
+                }
+            
+            std::valarray<double> ret(realRes.size());
+            std::copy(realRes.begin(), realRes.end(), std::begin(ret));  
+            return ret;
+        }
+
          SEALCipherText& SEALCipherText::operator += (int i1)
         {
             Plaintext p1;
