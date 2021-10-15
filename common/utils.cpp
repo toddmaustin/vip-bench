@@ -19,6 +19,7 @@
 #define TEMPERING_SHIFT_T(y)  (y << 15)
 #define TEMPERING_SHIFT_L(y)  (y >> 18)
 
+static bool mt_initialized = false;
 static unsigned int mt[N]; /* the array for the state vector  */
 static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
 
@@ -35,6 +36,7 @@ mysrand(unsigned int seed)
 {
   int i;
 
+  mt_initialized = true;
   for (i=0;i<N;i++)
   {
     mt[i] = seed & 0xffff0000;
@@ -48,6 +50,12 @@ mysrand(unsigned int seed)
 unsigned int 
 myrand(void)
 {
+  if (!mt_initialized)
+  {
+    fprintf(stderr, "ERROR: rng is not initialized, call srand()!\n");
+    exit(1);
+  }
+
   unsigned int y;
   static unsigned int mag01[2]={0x0, MATRIX_A};
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
@@ -108,10 +116,9 @@ perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_
                std::ostringstream ss;
                ss<< std::ifstream("mem.out").rdbuf();
                std::string command_output=ss.str();
-               size_t loc=0, loc2;
-               loc=command_output.find("\n");
-               loc2=command_output.substr(loc+1).find("\n");
-               
+               // size_t loc=0, loc2;
+               // loc=command_output.find("\n");
+               // loc2=command_output.substr(loc+1).find("\n");
                //std::cerr << "[VIP] " << command_output.substr(loc+1,loc2)<<"\n";
                
 }

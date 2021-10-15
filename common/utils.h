@@ -52,7 +52,7 @@ class Stopwatch
 		      ioctl(fd, PERF_EVENT_IOC_RESET, 0);
 		      ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);
         }
-        std::cout<<"\t";
+        std::cerr<<"\t";
         //start memory usage measurement
         // record_mem();
         //start the high resolution timer
@@ -88,7 +88,7 @@ class Stopwatch
 		      close(fd);
         }
         record_mem();
-        std::cout<<std::endl;
+        std::cerr<<std::endl;
       }
     private: 
       std::string name_;

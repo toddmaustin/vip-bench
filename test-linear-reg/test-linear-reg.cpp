@@ -34,6 +34,7 @@ int
 main(void) 
 { 
   VIP_INIT; 
+  mysrand(42);
   size_t poly_modulus_degree = 8192;
 
     /*** Initialize data vectors, similar to HE ***/

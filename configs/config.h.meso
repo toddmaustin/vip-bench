@@ -3,6 +3,7 @@
 //
 
 #include "../common/utils.h"
+#include <valarray>
 
 #if defined(VIP_NA_MODE)
 
@@ -15,6 +16,8 @@
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      (X)
 
 #elif defined(VIP_DO_MODE)
@@ -28,6 +31,8 @@
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      (X)
 #define VIP_CMOV(P,A,B) ((P) ? (A) : (B))
 
@@ -45,6 +50,8 @@
 #define VIP_ENCBOOL     MesoSealedBool
 #define VIP_ENCFLOAT    MesoSealedFloat
 #define VIP_ENCDOUBLE   MesoSealedDouble
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      ((X).asval())
 #define VIP_CMOV(P,A,B) MesoCMOV((P), (A), (B))
 
