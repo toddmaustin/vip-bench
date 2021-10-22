@@ -42,19 +42,16 @@ minVal(VIP_ENCINT dist[V],VIP_ENCBOOL known[V])
 		known[i] = VIP_CMOV(condition,VIP_ENCBOOL(true),known[i]);
 	}
 #else	
-	for(int i=0;i<V;i++){
-		if(distVal>dist[i] && !known[i]){
+	for (int i=0; i<V; i++)
+  {
+		if (distVal>dist[i] && !known[i])
+    {
 			distVal = dist[i];
 			min = i;
 		}					
 	}
 				
-	for(int i=0;i<V;i++){
-		if(min == i){
-			known[i] = true;
-			break;
-		}
-	}
+  known[min] = true;
 #endif
   return min;
 }
@@ -94,19 +91,26 @@ minSpanTree(VIP_ENCINT graph[V][V],VIP_ENCINT path[V])
 		min = minVal(dist, known);
 	}
 #else		
-	for(int i=0;i<V;i++){
-		if(min == i){
+	for (int i=0; i<V; i++)
+  {
+		if (min == i)
+    {
 			dist[i] = 0;
 			known[i] = true;
-		}else{
+		}
+    else
+    {
 			dist[i] = INT_MAX;
 			known[i] = false;
 		}
 	}
 		
-	for(int i=0;i<V;i++){
-		for(int j = 0;j<V;j++){
-			if(!known[j] && graph[min][j]!=0 && (graph[min][j] < dist[j])){
+	for (int i=0;i<V;i++)
+  {
+		for (int j = 0;j<V;j++)
+    {
+			if (!known[j] && (graph[min][j] != 0) && (graph[min][j] < dist[j]))
+      {
 				dist[j] = graph[min][j];
 				path[j] = min;				
 			}
@@ -121,44 +125,52 @@ void
 initializeData(VIP_ENCINT graph[V][V])
 {
 	mysrand(10);
-	for (int i=0; i < V; i++){
-		for(int j=0;j<V;j++){
-			if(i>j){
+	for (int i=0; i < V; i++)
+  {
+		for (int j=0;j<V;j++)
+    {
+			if (i>j)
 				graph[i][j] = graph[j][i];
-			}else if(i==j){
-				graph[i][j]=0;
-			}else{
-				if(myrand()%5 == myrand()%5){
-					graph[i][j]=0;	
-				}else
-					graph[i][j]=myrand()%10;			
+			else if (i==j)
+				graph[i][j] = 0;
+			else
+      {
+				if (myrand() % 5 == myrand() % 5)
+					graph[i][j] = 0;	
+				else
+					graph[i][j] = myrand() % 10;			
 			}
-		}		
-	}	   
+		}
+	}
 }
 
 void
 displayGraph(VIP_ENCINT graph[V][V])
 {
 	int index = 0;
-	for(int i=-1;i<V;i++){
-		for(int j=-1;j<V;j++){
-			if(i==-1){
-				if(j==-1){
+	for (int i=-1;i<V;i++)
+  {
+		for (int j=-1;j<V;j++)
+    {
+			if (i==-1)
+      {
+				if (j==-1)
 					cout<<std::setw(7)<<" ";
-				}else{
+				else
 					cout<<std::setw(8)<<vertName[j];
-				}
-			}else{
-				if(j==-1){
+			}
+      else
+      {
+				if(j==-1)
+        {
 					cout<<std::setw(8)<<vertName[index];
 					index++;
-				}else{						
-					cout<<std::setw(8)<<VIP_DEC(graph[i][j]);
 				}
+        else
+					cout<<std::setw(8)<<VIP_DEC(graph[i][j]);
 			}
 		}
-			cout<<endl;
+    cout<<endl;
 	}
 	cout<<endl<<endl;
 }
