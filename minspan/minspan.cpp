@@ -17,14 +17,14 @@ using std::endl;
 // 
 
 // V represents the number of vertex in the graph G
-const int V = 5/* 10 */;
+const int V = 10;
 
 // this are the names(representation) of each vertex
-const std::string vertName[V] = {"Home","z-mall","st.pet","office","school" /*,"motel","restr.","library","airport","barber"*/};
+const std::string vertName[V] = {"Home","z-mall","st.pet","office","school","motel","restr.","library","airport","barber"};
 
 // find the vertex with min distance from the unknown vertexes
 VIP_ENCINT
-minVal(VIP_ENCINT dist[V],VIP_ENCBOOL known[V])
+minVal(VIP_ENCINT dist[V], VIP_ENCBOOL known[V])
 {
 	VIP_ENCINT min = -1;
 	VIP_ENCINT distVal = INT_MAX;
@@ -34,7 +34,7 @@ minVal(VIP_ENCINT dist[V],VIP_ENCBOOL known[V])
 	for(int i=0;i<V;i++){
 		condition = (distVal>dist[i])&&!known[i];
 		distVal = VIP_CMOV(condition,dist[i],distVal);
-		min = VIP_CMOV(condition,i,min);					
+		min = VIP_CMOV(condition, (VIP_ENCINT)i, min);					
 	}
 		
 	for(int i=0;i<V;i++){
@@ -58,7 +58,7 @@ minVal(VIP_ENCINT dist[V],VIP_ENCBOOL known[V])
 
 // find the shortest path from the source to all other vertexes
 void
-minSpanTree(VIP_ENCINT graph[V][V],VIP_ENCINT path[V])
+minSpanTree(VIP_ENCINT graph[V][V], VIP_ENCINT path[V])
 {
 	VIP_ENCINT dist[V];
 
@@ -83,7 +83,7 @@ minSpanTree(VIP_ENCINT graph[V][V],VIP_ENCINT path[V])
 				//This states if the ith element is the min vertex from the unknowns and 
 				//if it has a connection with element j(graph[i][j]!=0) and if the distance is smaller than
 				//the previous distance then update the path and the distance					 
-				condition = (i==min) && !known[j] && (graph[i][j]!=0) && (graph[i][j] < dist[j]);
+				condition = (min==i) && !known[j] && (graph[i][j]!=0) && (graph[i][j] < dist[j]);
 				dist[j]=VIP_CMOV(condition,graph[i][j],dist[j]);
 				path[j]=VIP_CMOV(condition,min,path[j]);
 			}
@@ -175,9 +175,40 @@ displayGraph(VIP_ENCINT graph[V][V])
 	cout<<endl<<endl;
 }
 
+void
+displayGraph1(VIP_ENCINT graph[V][V], VIP_ENCINT path[V])
+{
+	int index = 0;
+	for (int i=-1;i<V;i++)
+  {
+		for (int j=-1;j<V;j++)
+    {
+			if (i==-1)
+      {
+				if (j==-1)
+					cout<<std::setw(7)<<" ";
+				else
+					cout<<std::setw(8)<<vertName[j];
+			}
+      else
+      {
+				if(j==-1)
+        {
+					cout<<std::setw(8)<<vertName[index];
+					index++;
+				}
+        else
+					cout<<std::setw(8)<<VIP_DEC(graph[i][j]) << "/" << VIP_DEC(path[i]);
+			}
+		}
+    cout<<endl;
+	}
+	cout<<endl<<endl;
+}
+
 //Displays the path from source to destination
 void
-displayPath(VIP_ENCINT source,VIP_ENCINT destination,VIP_ENCINT path[V])
+displayPath(VIP_ENCINT source, VIP_ENCINT destination, VIP_ENCINT path[V])
 {
 	static int sourceF = VIP_DEC(source);
 	static int destF = VIP_DEC(destination);
@@ -199,11 +230,25 @@ displayPath(VIP_ENCINT source,VIP_ENCINT destination,VIP_ENCINT path[V])
 	}
 }
 
+// display the minimum spanning tree
+void
+displayTree(VIP_ENCINT graph[V][V], VIP_ENCINT path[V])
+{
+  int cost = 0;
+  fprintf(stdout, "minimum spanning tree:\n");
+  for (int i=1; i < V; i++)
+  {
+    fprintf(stdout, "  %8s <-%d-> %8s\n", vertName[i].c_str(), VIP_DEC(graph[i][VIP_DEC(path[i])]), vertName[VIP_DEC(path[i])].c_str());
+    cost += VIP_DEC(graph[i][VIP_DEC(path[i])]);
+  }
+  fprintf(stdout, "total cost = %d\n", cost);
+}
+
 int
 main()
 {
-	VIP_ENCINT source = 0;
-	VIP_ENCINT destination = 1;
+	// VIP_ENCINT source = 0;
+	// VIP_ENCINT destination = 1;
 	VIP_ENCINT graph[V][V];
 	VIP_ENCINT path[V];	
 	for(int i=0;i<V;i++){
@@ -215,6 +260,8 @@ main()
 		Stopwatch start("VIP_BENCH_RUN_TIME");
 		minSpanTree(graph,path);
 	}
-	displayPath(source,destination,path);
+	// displayPath(source,destination,path);
+	// displayGraph1(graph, path);
+	displayTree(graph, path);
 }
 
