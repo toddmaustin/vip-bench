@@ -62,5 +62,5 @@ $(TARGET_EXE): $(OBJS)
 	$(LD) $(CFLAGS) -o $@ $(notdir $^) $(LIBS)
 
 clean:
-	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core FOO
+	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core mem.out FOO
 
