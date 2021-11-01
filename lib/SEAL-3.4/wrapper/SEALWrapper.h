@@ -74,11 +74,12 @@ class SEALCipherText{
         ~SEALCipherText();
 
         bool isBatchingEnabled();
+        void initFromVector(std::vector<int>& i1);
 
         operator SEALCipherText();
 
         //SEALCipherText& operator = (SEALCipherText &c1);
-        std::valarray<int64_t> decrypt_bfv(); 
+        std::valarray<int> decrypt_bfv(); 
         operator std::vector<int64_t> ();
         operator std::vector<double> ();
         std::valarray<double> decrypt_ckks(); 
