@@ -9,6 +9,6 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO edit-distance.out
+	$(TARGET_DIFF) FOO edit-distance.out
 	rm -f FOO
 

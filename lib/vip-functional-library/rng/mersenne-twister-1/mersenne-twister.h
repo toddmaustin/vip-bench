@@ -31,6 +31,7 @@ extern "C" {
 /*
  * Maximum number you can get from rand().
  */
+#undef  RAND_MAX
 #define RAND_MAX INT32_MAX
 
 /*

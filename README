@@ -29,9 +29,11 @@ If you use the VIP-Bench benchmarks in your research and/or publications, please
 ## VIP Benchmarks
 
 The VIP benchmarks were selected for their (mostly) obvious demands for data privacy. Currently, the benchmark suite supports the following
-benchmarks.
+benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on most homomorphic encryption frameworks because they have only linear operators and shallow computations. The remaining benchmarks are classified as HE-hard, since they would likely require deep computations and non-linear operator support.
 
 - **Bubble Sort** - Sorts an array of integers using the bubble sort algorithm. The sort operation is completely privatized.
+
+- **Distinctness - Tests an array of integers to see if they are all disinct, returns the first duplicate. The array and distinctness results are privatized.
 
 - **Edit Distance** - Computes the edit distance between short genetic sequences. The genetic data and computed edit distance is privatized.
 
@@ -43,19 +45,23 @@ benchmarks.
 
 - **Gradient Descent** - Computes the Gradient Descent of a fixed data set.
 
+- **Gradient of X** - Computes the gradient of vector X (HE-friendly).
+
 - **Kadanes Algorithm** - Finds the maximum sum of a contiguous subarray in a given privatized integer array.
 
 - **Keplers Equation Calculator** - Performs orbital trajectory calculations using five Kepler's Equation solvers.
 
 - **Linear Discriminant Analysis** - Performs linear discriminant anaylsis of a privatized fixed data set.
 
+- **Linear Regression** - Performs linear regression on a fixed privatized vector data set (HE-friendly).
+
 - **Mersenne Twister** - A privatized random number generator based on Mersenne's Twister.
 
-- **NMIST CNN** - A 7-layer CNN model performing training and inference on the MNIST handwriting data set.
+- **Minimum Spanning Tree** - Finds the minimal spanning tree of a graph (via Kruscal's algorithm over the graph's adjacency matrix). The graph and the discovered minimal spanning tree are privatized.
+
+- **NMIST CNN** - A 7-layer CNN model performing training and inference on the MNIST handwriting data set. The CNN weights and inputs are privatized.
 
 - **Nonlinear NN** - A collection of popular non-linear activation functions utilized in neural networks (e.g., LeakyReLU).
-
-- **Parrondo's paradox** - A game theory based solver that simulates Parrondo's paradox.
 
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
 
@@ -68,8 +74,6 @@ benchmarks.
 - **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm.
 
 - **TEA Cipher** - A TEA (Tiny Encryption Algorithm) cipher that runs on privatized data.
-
-- **Linear Regression** - Performs linear regression on a fixed privatized data set.
 
 - **Triangle Count** - Computes the triangle count for a fixed privatized graph.
 

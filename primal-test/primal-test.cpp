@@ -50,7 +50,7 @@ static VIP_ENCULONG powm(VIP_ENCULONG b, VIP_ENCULONG e, VIP_ENCUINT m)
   {
     _done = _done || (e == 0);
     VIP_ENCBOOL _pred = ((e & 1) == 1);
-    result = VIP_CMOV(!_done && _pred, (result * b) % m, result);
+    result = VIP_CMOV(!_done && _pred, (result * b) % (VIP_ENCULONG)m, result);
 		b = VIP_CMOV(!_done, (b * b) % m, b);
 		e = VIP_CMOV(!_done, e / 2, e);
   }
@@ -124,7 +124,7 @@ VIP_ENCINT
 miller_rabin_int(VIP_ENCUINT n, uint32_t k)
 {
 	VIP_ENCULONG s;
-	VIP_ENCULONG a, d, x, nm1;
+	VIP_ENCULONG a = 0, d, x, nm1;
 #ifdef VIP_DO_MODE
   VIP_ENCBOOL _done = false;
   VIP_ENCINT _retval = -1;
@@ -167,7 +167,7 @@ miller_rabin_int(VIP_ENCUINT n, uint32_t k)
     {
      VIP_ENCBOOL _pred = (r <= s);
 
-		 x = VIP_CMOV(!_done && !_continued && !_breakout && _pred, (x * x) % n, x);
+		 x = VIP_CMOV(!_done && !_continued && !_breakout && _pred, (x * x) % (VIP_ENCULONG)n, x);
 
       VIP_ENCBOOL _pred1 = (x == 1);
       _retval = VIP_CMOV(!_done && !_continued && !_breakout && _pred && _pred1, (VIP_ENCINT)PT_COMPOSITE, _retval);
@@ -237,6 +237,9 @@ int q_head = 0;
 int
 main(void)
 {
+  // initialize the RNG
+  mysrand(42);
+
   // locate primes in a stream of random numbers
   {
     Stopwatch s("VIP_Bench Runtime");

@@ -5,7 +5,7 @@
 #include <string.h>
 #include <iostream>
 
-typedef struct bit128_t{
+struct bit128_t{
 
 public: //SHOULD BE PRIVATE
     uint8_t value[16]; 

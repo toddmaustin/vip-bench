@@ -31,7 +31,7 @@ TARGET_DIFF = $(NA_DIFF)
 TARGET_EXE = $(PROG).na
 endif
 
-CFLAGS = -std=c++11 -Wall $(OPT_CFLAGS) $(TARGET_CFLAGS) $(LOCAL_CFLAGS)
+CFLAGS = -std=c++11 -Wall $(OPT_CFLAGS) -Wno-strict-aliasing $(TARGET_CFLAGS) $(LOCAL_CFLAGS)
 LIBS = $(LOCAL_LIBS) $(TARGET_LIBS)
 
 build: $(TARGET_EXE)

@@ -9,6 +9,6 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO gradient-descent.out
+	$(TARGET_DIFF) FOO gradient-descent.out
 	rm -f FOO
 

@@ -13,6 +13,6 @@ ENC_DIFF=$(DO_DIFF)
 
 test:
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO kepler-calc.out
+	$(TARGET_DIFF) FOO kepler-calc.out
 	rm -f FOO
 

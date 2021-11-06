@@ -20,7 +20,7 @@
 #define TEMPERING_SHIFT_L(y)  (y >> 18)
 
 static bool mt_initialized = false;
-static unsigned int mt[N]; /* the array for the state vector  */
+static unsigned int mt[N+1]; /* the array for the state vector  */
 static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
 
 double Stopwatch::timeTaken=0;
@@ -112,7 +112,11 @@ perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_
                assert(sprintf_ret >= 0);
                assert((size_t)sprintf_ret < sizeof(system_cmd));
                //puts(system_cmd);
-               system(system_cmd);
+               if (system(system_cmd))
+               {
+                 fprintf(stderr, "Cannot start memory monitor.\n");
+                 exit(1);
+               }
                std::ostringstream ss;
                ss<< std::ifstream("mem.out").rdbuf();
                std::string command_output=ss.str();
@@ -141,7 +145,11 @@ void record_mem(std::string fileName ){
                assert(sprintf_ret >= 0);
                assert((size_t)sprintf_ret < sizeof(system_cmd));
                //puts(system_cmd);
-               system(system_cmd);
+               if (system(system_cmd))
+               {
+                 fprintf(stderr, "Cannot start memory monitor.\n");
+                 exit(1);
+               }
                //puts("");
 }
 /*int record_mem(){

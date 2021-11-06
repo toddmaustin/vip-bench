@@ -13,6 +13,6 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO grad-x.out
+	$(TARGET_DIFF) FOO grad-x.out
 	rm -f FOO
 

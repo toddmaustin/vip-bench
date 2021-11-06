@@ -80,7 +80,11 @@ class Stopwatch
         long long count;
         if (fd != -1) {
 		      ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
-          read(fd, &count, sizeof(long long));
+          if (read(fd, &count, sizeof(long long)) != sizeof(long long))
+          {
+            fprintf(stderr, "Cannot read perf counters.\n");
+            exit(1);
+          }
           if(!tableFormat)
             fprintf(stderr, " %lld instructions executed\t", count);
           else

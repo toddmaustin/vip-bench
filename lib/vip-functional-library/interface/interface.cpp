@@ -15,6 +15,7 @@ bit128_t encrypt_64_128(uint64_t* value){
     switch(CIPHER){
         case XOR:       return xor_encrypt_128(plaintext);
         case AES128:    return aes128_encrypt_128(plaintext);
+        default:        abort();
     }
 }
 
@@ -22,6 +23,7 @@ uint64_t decrypt_128_64(bit128_t ciphertext){
     switch(CIPHER){
         case XOR:       return xor_decrypt_128(ciphertext).getUpperValue_64b();
         case AES128:    return aes128_decrypt_128(ciphertext).getUpperValue_64b();
+        default:        abort();
     }
 }
 
@@ -35,6 +37,7 @@ bit128_t encrypt_8_128(uint8_t* value){
     switch(CIPHER){
         case XOR:       return xor_encrypt_128(plaintext);
         case AES128:    return aes128_encrypt_128(plaintext);
+        default:        abort();
     }
 }
 
@@ -42,6 +45,7 @@ uint8_t decrypt_128_8(bit128_t ciphertext){
     switch(CIPHER){
         case XOR:       return xor_decrypt_128(ciphertext).getUpperValue_8b();
         case AES128:    return aes128_decrypt_128(ciphertext).getUpperValue_8b();
+        default:        abort();
     }
 }
 

@@ -35,7 +35,7 @@ static const unsigned SIZE   = 624;
 static const unsigned PERIOD = 397;
 static const unsigned DIFF   = SIZE-PERIOD;
 
-static uint32_t MT[SIZE];
+static uint32_t MT[SIZE+1];
 static unsigned index = 0;
 
 #define M32(x) (0x80000000 & x) // 32nd Most Significant Bit

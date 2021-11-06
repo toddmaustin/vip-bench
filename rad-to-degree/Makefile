@@ -9,6 +9,6 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO rad-to-degree.out
+	$(TARGET_DIFF) FOO rad-to-degree.out
 	rm -f FOO
 

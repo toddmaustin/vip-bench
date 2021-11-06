@@ -30,7 +30,7 @@ struct aes128 {
     ctx->k[i] = _mm_xor_si128(key, gen)
 
 extern "C" {
-static void
+extern inline void
 aes128_init(struct aes128 *ctx, const void *k)
 {
     __m128i key, gen;
@@ -58,7 +58,7 @@ aes128_init(struct aes128 *ctx, const void *k)
 }
 
 extern "C" {
-static void
+extern inline void
 aes128_encrypt(struct aes128 *ctx, void *pt, const void *ct)
 {
     __m128i m = _mm_loadu_si128((__m128i*)ct);
@@ -78,7 +78,7 @@ aes128_encrypt(struct aes128 *ctx, void *pt, const void *ct)
 }
 
 extern "C" {
-static void
+extern inline void
 aes128_decrypt(struct aes128 *ctx, void *ct, const void *pt)
 {
     __m128i m = _mm_loadu_si128((__m128i*)pt);

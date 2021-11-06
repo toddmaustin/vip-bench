@@ -940,11 +940,13 @@ struct enc_double;
         inline friend enc_long   operator-   (enc_long lhs, long rhs)            __attribute__((always_inline))  { return enc_long(lhs.decrypt_long() - rhs); }
         inline friend enc_long   operator*   (enc_long lhs, long rhs)            __attribute__((always_inline))  { return enc_long(lhs.decrypt_long() * rhs); }
         inline friend enc_long   operator/   (enc_long lhs, long rhs)            __attribute__((always_inline))  { return enc_long(lhs.decrypt_long() / rhs); }
+        inline friend enc_long   operator%   (enc_long lhs, long rhs)            __attribute__((always_inline))  { return enc_long(lhs.decrypt_long() % rhs); }
         // // Arithmetic, Plaintext-Enc Op
         inline friend enc_long   operator+   (long lhs, enc_long rhs)            __attribute__((always_inline))  { return enc_long(lhs + rhs.decrypt_long()); }
         inline friend enc_long   operator-   (long lhs, enc_long rhs)            __attribute__((always_inline))  { return enc_long(lhs - rhs.decrypt_long()); }
         inline friend enc_long   operator*   (long lhs, enc_long rhs)            __attribute__((always_inline))  { return enc_long(lhs * rhs.decrypt_long()); }
         inline friend enc_long   operator/   (long lhs, enc_long rhs)            __attribute__((always_inline))  { return enc_long(lhs / rhs.decrypt_long()); }
+        inline friend enc_long   operator%   (long lhs, enc_long rhs)            __attribute__((always_inline))  { return enc_long(lhs % rhs.decrypt_long()); }
         // // Logic, Enc-Enc Op          
         inline friend enc_bool     operator==  (enc_long lhs, enc_long rhs)        __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_long()) == (rhs.decrypt_long())));   }
         inline friend enc_bool     operator!=  (enc_long lhs, enc_long rhs)        __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_long()) != (rhs.decrypt_long())));   }
@@ -1063,11 +1065,13 @@ struct enc_double;
         inline friend enc_ulong   operator-   (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() - rhs.decrypt_ulong()); }
         inline friend enc_ulong   operator*   (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() * rhs.decrypt_ulong()); }   
         inline friend enc_ulong   operator/   (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() / rhs.decrypt_ulong()); }
+        inline friend enc_ulong   operator%   (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() % rhs.decrypt_ulong()); }
         // Arithmetic, Enc-Plaintext Op
         inline friend enc_ulong   operator+   (enc_ulong lhs, unsigned long rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() + rhs); }
         inline friend enc_ulong   operator-   (enc_ulong lhs, unsigned long rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() - rhs); }
         inline friend enc_ulong   operator*   (enc_ulong lhs, unsigned long rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() * rhs); }
         inline friend enc_ulong   operator/   (enc_ulong lhs, unsigned long rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() / rhs); }
+        inline friend enc_ulong   operator%   (enc_ulong lhs, unsigned long rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() % rhs); }
 
         inline friend enc_ulong   operator&   (enc_ulong lhs, unsigned int rhs)            __attribute__((always_inline))  { return enc_ulong(lhs.decrypt_ulong() & rhs); }
 
@@ -1076,6 +1080,8 @@ struct enc_double;
         inline friend enc_ulong   operator-   (unsigned long lhs, enc_ulong rhs)            __attribute__((always_inline))  { return enc_ulong(lhs - rhs.decrypt_ulong()); }
         inline friend enc_ulong   operator*   (unsigned long lhs, enc_ulong rhs)            __attribute__((always_inline))  { return enc_ulong(lhs * rhs.decrypt_ulong()); }
         inline friend enc_ulong   operator/   (unsigned long lhs, enc_ulong rhs)            __attribute__((always_inline))  { return enc_ulong(lhs / rhs.decrypt_ulong()); }
+        inline friend enc_ulong   operator%   (unsigned long lhs, enc_ulong rhs)            __attribute__((always_inline))  { return enc_ulong(lhs % rhs.decrypt_ulong()); }
+
         // // Logic, Enc-Enc Op          
         inline friend enc_bool     operator==  (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_ulong()) == (rhs.decrypt_ulong())));   }
         inline friend enc_bool     operator!=  (enc_ulong lhs, enc_ulong rhs)        __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_ulong()) != (rhs.decrypt_ulong())));   }
