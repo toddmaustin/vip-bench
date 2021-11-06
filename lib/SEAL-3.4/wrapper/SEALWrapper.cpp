@@ -306,6 +306,35 @@ using namespace seal;
         bool SEALCipherText::isBatchingEnabled() {return batchingEnabled;}
         SEALCipherText::operator SEALCipherText() {return (*this);}
 
+
+        void SEALCipherText::initFromVector(std::vector<int>& i0)
+        {
+            Plaintext p1;
+            std::vector<int64_t> i1(i0.size());
+            for(int i=0; i<i0.size(); i++){
+                i1[i] = (int64_t)i0[i];
+            }
+            if(scheme==scheme_type::BFV){
+                
+                if(batchEncoder!=NULL)
+                {
+                    //printf("Batching enabled!\n ");
+                    batchingEnabled=true;
+                    batchEncoder->encode(i1,p1);
+                    encryptor->encrypt(p1,cipher);
+                }
+                else
+                {
+                    std::cout<<"Batch Encoder not instantiated!"<<std::endl;
+                    exit(1);
+                }
+            }
+            else
+            {
+                printf("Creating a batch unsuccessful!\n");
+            }
+        }
+
        /* SEALCipherText& SEALCipherText::operator = (SEALCipherText &c1)
         {
             cipher=c1.cipher;
@@ -339,7 +368,7 @@ using namespace seal;
         }
 
 
-        std::valarray<int64_t> SEALCipherText::decrypt_bfv() 
+        std::valarray<int> SEALCipherText::decrypt_bfv() 
         {
             Plaintext result;
             std::vector<int64_t> realRes;   //printf("Debug 1\n");        
@@ -365,7 +394,7 @@ using namespace seal;
                 
             }
              //printf("Debug 3\n");
-             std::valarray<int64_t> ret(realRes.size());
+             std::valarray<int> ret(realRes.size());
              std::copy(realRes.begin(), realRes.end(), std::begin(ret));  
              return ret;
         }
