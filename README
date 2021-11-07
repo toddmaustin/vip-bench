@@ -33,7 +33,7 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Bubble Sort** - Sorts an array of integers using the bubble sort algorithm. The sort operation is completely privatized.
 
-- **Distinctness - Tests an array of integers to see if they are all disinct, returns the first duplicate. The array and distinctness results are privatized.
+- **Distinctness** - Tests an array of integers to see if they are all disinct, returns the first duplicate. The array and distinctness results are privatized.
 
 - **Edit Distance** - Computes the edit distance between short genetic sequences. The genetic data and computed edit distance is privatized.
 
