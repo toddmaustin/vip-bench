@@ -9,6 +9,19 @@ using namespace std;
 #include "kissdb.h"
 #include "rapidcsv.h"
 
+struct sales_rec_t {
+  unsigned zip;
+  unsigned beds;
+  unsigned baths;
+  unsigned sqft;
+  double price;
+};
+
+void
+print_salesrec(FILE *fd, struct sales_rec_t *rec)
+{
+  fprintf(fd, "{ zip:%u, beds:%u, baths:%u, sqft:%u, price:$%.2lf }\n", rec->zip, rec->beds, rec->baths, rec->sqft, rec->price);
+}
 
 int
 main(int argc,char **argv)
@@ -23,8 +36,18 @@ main(int argc,char **argv)
   printf("Reading homesales.csv...\n");
   rapidcsv::Document doc("homesales.csv");
 
-  vector<float> col = doc.GetColumn<float>("price");
-  cout << "Read " << col.size() << " values." << std::endl;
+  fprintf(stderr, "INFO: num rows: %lu\n", doc.GetRowCount());
+
+  for (unsigned i=0; i < doc.GetRowCount(); i++)
+  {
+    struct sales_rec_t rec;
+    rec.zip = doc.GetCell<unsigned>(0, i);
+    rec.beds = doc.GetCell<unsigned>(1, i);
+    rec.baths = doc.GetCell<unsigned>(2, i);
+    rec.sqft = doc.GetCell<unsigned>(3, i);
+    rec.price = doc.GetCell<double>(4, i);
+    print_salesrec(stderr, &rec);
+  }
 
   printf("Opening new empty database test.db...\n");
 
