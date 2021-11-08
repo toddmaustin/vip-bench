@@ -24,7 +24,7 @@
 #define ftello _ftelli64
 #endif
 
-#define KISSDB_HEADER_SIZE ((sizeof(uint64_t) * 3) + 4)
+#define KISSDB_HEADER_SIZE ((int)(sizeof(uint64_t) * 3) + 4)
 
 /* djb2 hash function */
 static uint64_t KISSDB_hash(const void *b,unsigned long len)
@@ -121,7 +121,7 @@ int KISSDB_open(
 	db->value_size = value_size;
 	db->hash_table_size_bytes = sizeof(uint64_t) * (hash_table_size + 1); /* [hash_table_size] == next table */
 
-	httmp = malloc(db->hash_table_size_bytes);
+	httmp = (uint64_t *)malloc(db->hash_table_size_bytes);
 	if (!httmp) {
 		fclose(db->f);
 		return KISSDB_ERROR_MALLOC;
@@ -129,7 +129,7 @@ int KISSDB_open(
 	db->num_hash_tables = 0;
 	db->hash_tables = (uint64_t *)0;
 	while (fread(httmp,db->hash_table_size_bytes,1,db->f) == 1) {
-		hash_tables_rea = realloc(db->hash_tables,db->hash_table_size_bytes * (db->num_hash_tables + 1));
+		hash_tables_rea = (uint64_t *)realloc(db->hash_tables,db->hash_table_size_bytes * (db->num_hash_tables + 1));
 		if (!hash_tables_rea) {
 			KISSDB_close(db);
 			free(httmp);
@@ -274,7 +274,7 @@ put_no_match_next_hash_table:
 		return KISSDB_ERROR_IO;
 	endoffset = ftello(db->f);
 
-	hash_tables_rea = realloc(db->hash_tables,db->hash_table_size_bytes * (db->num_hash_tables + 1));
+	hash_tables_rea = (uint64_t *)realloc(db->hash_tables,db->hash_table_size_bytes * (db->num_hash_tables + 1));
 	if (!hash_tables_rea)
 		return KISSDB_ERROR_MALLOC;
 	db->hash_tables = hash_tables_rea;

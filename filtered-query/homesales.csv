@@ -1,5 +1,4 @@
-# Sacremento real estate transactions over a 5-day period in May 2008
-#zip,beds,baths,sq__ft,price
+zip,beds,baths,sqft,price
 95838,2,1,836,59222
 95823,3,1,1167,68212
 95815,2,1,796,68880
