@@ -617,6 +617,7 @@ struct enc_double;
 
         operator enc_ulong();
         operator enc_int();
+        operator enc_double();
 
     } enc_uint32;
 /*****************************************************************************/
