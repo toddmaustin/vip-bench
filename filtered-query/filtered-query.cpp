@@ -7,6 +7,7 @@
 using namespace std;
 
 #include "../config.h"
+#include "mathlib.h"
 #include "kissdb.h"
 #include "rapidcsv.h"
 
@@ -38,28 +39,65 @@ vector<unsigned> zipcodes =
   95833, 95834, 95835, 95838, 95841, 95842, 95843, 95864
 };
 
-void
-filtered_query(KISSDB *pdb, enum { op_avg, op_stddev } op, enum { field} field, vector<double> v)
+enum op_t { op_avg, op_stddev };
+enum field_t {field_price, field_pricesqft };
+enum bedsize_t { bedsize_small, bedsize_large, bedsize_all };
+
+double
+filtered_query(KISSDB *pdb, unsigned zipcode, enum op_t op, enum field_t field, enum bedsize_t bedsize, double avg)
 {
   struct salesrec_t rec;
 
+  double sum = 0.0;
+  unsigned count = 0;
+
+  for (unsigned j=0; ; j++)
+  {
+    uint64_t key = KEYFMT(zipcode, j);
+    if (KISSDB_get(pdb, &key, &rec))
+    {
+      // no more entries in this zip code
+      break;
+    }
+    // fprintf(stderr, "<zip,i> = <%u,%u>\n", zipcodes[i], j);
+
+    // process this entry
+    if ((bedsize == bedsize_all)
+        || (bedsize == bedsize_small && rec.beds < 3)
+        || (bedsize == bedsize_large && rec.beds >= 3))
+    {
+      double val;
+      count++;
+      if (field == field_price)
+        val = rec.price;
+      else if (field == field_pricesqft)
+        val = (double)rec.price/(double)rec.sqft;
+
+      if (op == op_avg)
+        sum += val;
+      else if (op == op_stddev)
+        sum += ((val - avg) * (val - avg));
+    }
+  }
+
+  // compute the final statistic
+  double retval;
+  if (op == op_avg && count > 0)
+    retval = sum / (double)count;
+  else if (op == op_stddev && count > 1)
+    retval = mysqrt(sum / (double)(count-1));
+  else
+    retval = 0.0;
+
+  return retval;
+}
+
+void
+filtered_query_all(KISSDB *pdb, enum op_t op, enum field_t field, enum bedsize_t bedsize, double avg, vector<double> v)
+{
   for (unsigned i=0; i < zipcodes.size(); i++)
   {
-    for (unsigned j=0; ; j++)
-    {
-      uint64_t key = KEYFMT(zipcodes[i], j);
-      if (KISSDB_get(&db, &key, &rec))
-      {
-        // no more entries in this zip code
-        break;
-      }
-      // fprintf(stderr, "<zip,i> = <%u,%u>\n", zipcodes[i], j);
-
-      // process this entry
-      if (filter_fn(&rec))
-      {
-      }
-    }
+    v[i] = filtered_query(pdb, zipcodes[i], op, field, bedsize, avg);
   }
 }
 
@@ -86,19 +124,19 @@ main(int argc,char **argv)
   uint64_t key = 0;
   for (unsigned i=0; i < doc.GetRowCount(); i++)
   {
-    rec.val.zip = doc.GetCell<unsigned>(0, i);
-    rec.val.beds = doc.GetCell<VIP_ENCUINT>(1, i);
-    rec.val.baths = doc.GetCell<VIP_ENCUINT>(2, i);
-    rec.val.sqft = doc.GetCell<VIP_ENCUINT>(3, i);
-    rec.val.price = doc.GetCell<VIP_ENCDOUBLE>(4, i);
+    rec.zip = doc.GetCell<unsigned>(0, i);
+    rec.beds = doc.GetCell<VIP_ENCUINT>(1, i);
+    rec.baths = doc.GetCell<VIP_ENCUINT>(2, i);
+    rec.sqft = doc.GetCell<VIP_ENCUINT>(3, i);
+    rec.price = doc.GetCell<VIP_ENCDOUBLE>(4, i);
 
     // compute the key val
-    if (currentZip != rec.val.zip)
+    if (currentZip != rec.zip)
     {
-      currentZip = rec.val.zip;
+      currentZip = rec.zip;
       zipCnt = 0;
     }
-    key = KEYFMT(rec.val.zip, zipCnt);
+    key = KEYFMT(rec.zip, zipCnt);
     zipCnt++;
 
     // print_salesrec(stderr, &rec);
@@ -108,46 +146,6 @@ main(int argc,char **argv)
       exit(1);
     }
   }
-
-#ifdef notdef
-  printf("Adding and then re-getting 10000 64-byte values...\n");
-
-  for(i=0;i<10000;++i) {
-    for(j=0;j<8;++j)
-      v[j] = i;
-    if (KISSDB_put(&db,&i,v)) {
-      printf("KISSDB_put failed (%" PRIu64 ")\n",i);
-      return 1;
-    }
-    memset(v,0,sizeof(v));
-    if ((q = KISSDB_get(&db,&i,v))) {
-      printf("KISSDB_get (1) failed (%" PRIu64 ") (%d)\n",i,q);
-      return 1;
-    }
-
-    for(j=0;j<8;++j) {
-      if (v[j] != i) {
-        printf("KISSDB_get (1) failed, bad data (%" PRIu64 ")\n",i);
-        return 1;
-      }
-    }
-  }
-
-  printf("Getting 10000 64-byte values...\n");
-
-  for(i=0;i<10000;++i) {
-    if ((q = KISSDB_get(&db,&i,v))) {
-      printf("KISSDB_get (2) failed (%" PRIu64 ") (%d)\n",i,q);
-      return 1;
-    }
-    for(j=0;j<8;++j) {
-      if (v[j] != i) {
-        printf("KISSDB_get (2) failed, bad data (%" PRIu64 ")\n",i);
-        return 1;
-      }
-    }
-  }
-#endif /* notdef */
 
   printf("INFO: Closing and re-opening database in read-only mode...\n");
   KISSDB_close(&db);
@@ -159,57 +157,29 @@ main(int argc,char **argv)
 
 
   // compute average/stddev price for zip code XXXXXX 
+  double avg = filtered_query(&db, 95864, op_avg, field_price, bedsize_all, 0.0);
+  fprintf(stdout, "STAT: average price for zipcode 95864: $%.2lf\n", avg);
+
+  double stddev = filtered_query(&db, 95864, op_stddev, field_price, bedsize_all, avg);
+  fprintf(stdout, "STAT: average price for zipcode 95864: $%.2lf\n", stddev);
 
   // compute average/stddev price for all zip codes
 
   // compute average/stddev price/sqft for zip code XXXXXX 
+  avg = filtered_query(&db, 95864, op_avg, field_pricesqft, bedsize_all, 0.0);
+  fprintf(stdout, "STAT: average price/sqft for zipcode 95864: $%.2lf\n", avg);
+
+  stddev = filtered_query(&db, 95864, op_stddev, field_pricesqft, bedsize_all, avg);
+  fprintf(stdout, "STAT: average price/sqft for zipcode 95864: $%.2lf\n", stddev);
+
 
   // compute average/stddev price/sqft for all zip codes
 
-  // find the most expensive zip code in the Sacremento area, by average price/sqrt
+  // find the most expensive zip code in the Sacremento area, by average price/sqft
 
   // find the least expensive zip code in the Sacremento area, by average home price
 
-#ifdef notdef
-  printf("Getting 10000 64-byte values...\n");
-
-  for(i=0;i<10000;++i) {
-    if ((q = KISSDB_get(&db,&i,v))) {
-      printf("KISSDB_get (3) failed (%" PRIu64 ") (%d)\n",i,q);
-      return 1;
-    }
-    for(j=0;j<8;++j) {
-      if (v[j] != i) {
-        printf("KISSDB_get (3) failed, bad data (%" PRIu64 ")\n",i);
-        return 1;
-      }
-    }
-  }
-
-  printf("Iterator test...\n");
-
-  KISSDB_Iterator_init(&db,&dbi);
-  i = 0xdeadbeef;
-  memset(got_all_values,0,sizeof(got_all_values));
-  while (KISSDB_Iterator_next(&dbi,&i,&v) > 0) {
-    if (i < 10000)
-      got_all_values[i] = 1;
-    else {
-      printf("KISSDB_Iterator_next failed, bad data (%" PRIu64 ")\n",i);
-      return 1;
-    }
-  }
-  for(i=0;i<10000;++i) {
-    if (!got_all_values[i]) {
-      printf("KISSDB_Iterator failed, missing value index %" PRIu64 "\n",i);
-      return 1;
-    }
-  }
-#endif /* notdef */
-
   KISSDB_close(&db);
-
-  printf("All tests OK!\n");
 
   return 0;
 }
