@@ -1,6 +1,7 @@
 
 LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
+LOCAL_CLEAN=homesales.db
 
 PROG=filtered-query
 OBJS=filtered-query.o kissdb.o ../common/utils.o
