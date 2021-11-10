@@ -4,7 +4,7 @@
 ## Introduction
 
 This is the VIP-Bench Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
-A privacy-enhance computation framework is one in which encrypted data can be directly processed without sofware needing to decrypt it.
+A privacy-enhance computation framework is one in which encrypted data can be directly processed without software needing to decrypt it.
 These systems naturally enhance privacy since hacking into a system using privacy-enhanced computation only gives the attacker access
 to ciphertext. Examples of privacy-enhanced computation frameworks that this benchmark suite wants to server are: homomorphic encryption,
 runtime encryption, multi-party computation, etc.
