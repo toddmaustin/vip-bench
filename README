@@ -41,6 +41,8 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **FFT Integer** - Computes an integer Fast Fourier Transform computation.
 
+- **Filtered Query** - A KissDB application that supports privatized home sales information, with a filtered query capability that returns a variety of statistics about home sales in the database.
+
 - **Flood Fill** - Performs a graphical flood fill operation on a 2D privatized image.
 
 - **Gradient Descent** - Computes the Gradient Descent of a fixed data set.
