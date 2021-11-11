@@ -38,7 +38,7 @@ VIP_ENCDOUBLE** Predictor::genRandomMatrix(size_t n, size_t m) {
     // Fill matrix with random values
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
-            mat[i][j] = (double)rand() / RAND_MAX * 5;
+            mat[i][j] = (double)myrand() / RAND_MAX * 5;
         }
     }
 

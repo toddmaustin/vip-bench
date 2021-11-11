@@ -15,6 +15,9 @@ main(int argc, char *argv[])
     double lambda;
     size_t iterations = 0;
 
+    // initialize RNG
+    mysrand(42);
+
     // Read arguments
     if (argc > 3) {
         eta = std::atof(argv[3]);
@@ -49,6 +52,7 @@ main(int argc, char *argv[])
         std::cout << "K = " << K
                   << ", eta = " << eta
                   << ", lambda = " << lambda
+                  << ", iterations = " << iterations
                   << std::endl;
         std::clock_t start = clock();
         predictor->predictionMatrix(K, eta, lambda, iterations);
@@ -100,6 +104,7 @@ main(int argc, char *argv[])
                 std::cout << "K = " << K
                           << ", eta = " << eta
                           << ", lambda = " << lambda
+                          << ", iterations = " << iterations
                           << ", Train MAE = " << VIP_DEC(predictor->trainingMeanAbsoluteError())
                           << ", Test MAE = " << VIP_DEC(mae)
                           << std::endl;
