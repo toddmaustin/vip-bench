@@ -1,6 +1,7 @@
 
 LOCAL_CFLAGS= -I../common
 LOCAL_LIBS=
+LOCAL_CLEAN=results.txt
 
 PROG=recommender
 OBJS=main.o parser.o predictor.o rating.o ../common/utils.o ../common/mathlib.o
