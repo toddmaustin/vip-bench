@@ -52,7 +52,7 @@ myrand(void)
 {
   if (!mt_initialized)
   {
-    fprintf(stderr, "ERROR: rng is not initialized, call srand()!\n");
+    fprintf(stderr, "ERROR: rng is not initialized, call mysrand()!\n");
     exit(1);
   }
 

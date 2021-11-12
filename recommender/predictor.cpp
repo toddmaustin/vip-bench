@@ -72,8 +72,8 @@ void Predictor::matrixFactorization(
 
                 // Stochastic gradient descent iteration
                 for (size_t k = 0; k < K; ++k) {
-                    U[i][k] = U[i][k] + (eta * (error * M[k][j] - lambda * U[i][k]));
-                    M[k][j] = M[k][j] + (eta * (error * U[i][k] - lambda * M[k][j]));
+                    U[i][k] = U[i][k] + ((VIP_ENCDOUBLE)eta * (error * M[k][j] - (VIP_ENCDOUBLE)lambda * U[i][k]));
+                    M[k][j] = M[k][j] + ((VIP_ENCDOUBLE)eta * (error * U[i][k] - (VIP_ENCDOUBLE)lambda * M[k][j]));
                 }
             }
 
@@ -98,8 +98,8 @@ void Predictor::matrixFactorization(
 
                 // Stochastic gradient descent iteration
                 for (size_t k = 0; k < K; ++k) {
-                    U[i][k] = U[i][k] + (eta * (error * M[k][j] - lambda * U[i][k]));
-                    M[k][j] = M[k][j] + (eta * (error * U[i][k] - lambda * M[k][j]));
+                    U[i][k] = U[i][k] + ((VIP_ENCDOUBLE)eta * (error * M[k][j] - (VIP_ENCDOUBLE)lambda * U[i][k]));
+                    M[k][j] = M[k][j] + ((VIP_ENCDOUBLE)eta * (error * U[i][k] - (VIP_ENCDOUBLE)lambda * M[k][j]));
                 }
             }
         }
