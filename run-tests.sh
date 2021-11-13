@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BENCHMARKS="bubble-sort distinctness edit-distance eulers-number-approx fft-int filtered-query flood-fill gradient-descent grad-x kadane kepler-calc lda linear-reg mersenne minspan mnist-cnn nonlinear-nn nr-solver pagerank parrando primal-test rad-to-degree recommender shortest-path tea-cipher triangle-count"
+BENCHMARKS="bubble-sort distinctness edit-distance eulers-number-approx fft-int filtered-query flood-fill gcd-list gradient-descent grad-x kadane kepler-calc lda linear-reg mersenne minspan mnist-cnn nonlinear-nn nr-solver pagerank parrando primal-test rad-to-degree recommender shortest-path tea-cipher triangle-count"
 MODES="na do enc"
 
 curDIR=$PWD
