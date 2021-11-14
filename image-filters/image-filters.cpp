@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../config.h"
 #include "helpers.h"
 
 int
@@ -96,8 +97,8 @@ main(int argc, char *argv[])
     int width = bi.biWidth;
 
     // Allocate memory for image
-    RGBTRIPLE(*image)[width] = (RGBTRIPLE (*)[width])calloc(height, width * sizeof(RGBTRIPLE));
-    if (image == NULL)
+    _native_RGBTRIPLE(*_native_image)[width] = (_native_RGBTRIPLE (*)[width])calloc(height, width * sizeof(_native_RGBTRIPLE));
+    if (_native_image == NULL)
     {
         fprintf(stderr, "Not enough memory to store image.\n");
         fclose(outptr);
@@ -106,13 +107,13 @@ main(int argc, char *argv[])
     }
 
     // Determine padding for scanlines
-    int padding = (4 - (width * sizeof(RGBTRIPLE)) % 4) % 4;
+    int padding = (4 - (width * sizeof(_native_RGBTRIPLE)) % 4) % 4;
 
     // Iterate over infile's scanlines
     for (int i = 0; i < height; i++)
     {
         // Read row into pixel array
-        if (fread(image[i], sizeof(RGBTRIPLE), width, inptr) != (size_t)width)
+        if (fread(_native_image[i], sizeof(_native_RGBTRIPLE), width, inptr) != (size_t)width)
         {
           fprintf(stderr, "ERROR: cannot read BMP scanline.\n");
           exit(1);
@@ -120,6 +121,25 @@ main(int argc, char *argv[])
 
         // Skip over padding
         fseek(inptr, padding, SEEK_CUR);
+    }
+
+    // copy native native data to protected structures
+    RGBTRIPLE *image = (RGBTRIPLE *)calloc(height, width * sizeof(RGBTRIPLE));
+    if (image == NULL)
+    {
+        fprintf(stderr, "Not enough memory to store image.\n");
+        fclose(outptr);
+        fclose(inptr);
+        return 7;
+    }
+    for (int i = 0; i < height; i++)
+    {
+      for (int j = 0; j < width; j ++)
+      {
+        PIXEL(image,height,width,i,j).rgbtBlue = PIXEL(_native_image,height,width,i,j).rgbtBlue;
+        PIXEL(image,height,width,i,j).rgbtGreen = PIXEL(_native_image,height,width,i,j).rgbtBlue;
+        PIXEL(image,height,width,i,j).rgbtRed = PIXEL(_native_image,height,width,i,j).rgbtRed;
+      }
     }
 
     // Filter image

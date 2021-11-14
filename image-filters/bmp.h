@@ -69,9 +69,17 @@ BITMAPINFOHEADER;
  */
 typedef struct
 {
+    VIP_ENCUCHAR  rgbtBlue;
+    VIP_ENCUCHAR  rgbtGreen;
+    VIP_ENCUCHAR  rgbtRed;
+} __attribute__((__packed__))
+RGBTRIPLE;
+
+typedef struct
+{
     BYTE  rgbtBlue;
     BYTE  rgbtGreen;
     BYTE  rgbtRed;
 } __attribute__((__packed__))
-RGBTRIPLE;
+_native_RGBTRIPLE;
 
