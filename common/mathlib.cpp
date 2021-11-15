@@ -22,6 +22,40 @@ myfloor(VIP_ENCDOUBLE x)
 }
 
 VIP_ENCDOUBLE
+myround(VIP_ENCDOUBLE x)
+{
+  VIP_ENCDOUBLE t = 0.0;
+
+#ifdef VIP_DO_MODE
+  VIP_ENCBOOL _pred = (x >= 0);
+  t = VIP_CMOV(_pred, myfloor(x), t);
+  VIP_ENCBOOL _pred1 = ((t - x) <= -0.5);
+  t = VIP_CMOV(_pred && _pred1, t + 1, t);
+
+  t = VIP_CMOV(!_pred, myfloor(-x), t);
+  VIP_ENCBOOL _pred2 = ((t + x) <= -0.5);
+  t = VIP_CMOV(!_pred && _pred2, t + 1, t);
+  t = VIP_CMOV(!_pred, -t, t);
+#else /* !VIP_DO_MODE */
+  if (x >= 0)
+  {
+    t = myfloor(x);
+    if ((t - x) <= -0.5)
+      t += 1;
+  }
+  else /* x < 0 */
+  {
+    t = myfloor(-x);
+    if ((t + x) <= -0.5)
+      t += 1;
+    t = -t;
+  }
+#endif /* !VIP_DO_MODE */
+
+  return t;
+}
+
+VIP_ENCDOUBLE
 myfabs(VIP_ENCDOUBLE x)
 {
 #ifdef VIP_DO_MODE

@@ -72,7 +72,10 @@ typedef struct
     VIP_ENCUCHAR  rgbtBlue;
     VIP_ENCUCHAR  rgbtGreen;
     VIP_ENCUCHAR  rgbtRed;
-} __attribute__((__packed__))
+}
+#ifndef VIP_ENC_MODE
+__attribute__((__packed__))
+#endif /* !VIP_ENC_MODE */
 RGBTRIPLE;
 
 typedef struct

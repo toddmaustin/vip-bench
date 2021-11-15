@@ -4,7 +4,7 @@ LOCAL_LIBS=
 LOCAL_CLEAN=FOO.bmp
 
 PROG=image-filters
-OBJS=image-filters.o helpers.o ../common/utils.o
+OBJS=image-filters.o helpers.o ../common/utils.o ../common/mathlib.o
 
 include ../Makefile
 

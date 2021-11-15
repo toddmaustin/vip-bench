@@ -98,6 +98,7 @@ main(int argc, char *argv[])
 
     // Allocate memory for image
     _native_RGBTRIPLE(*_native_image)[width] = (_native_RGBTRIPLE (*)[width])calloc(height, width * sizeof(_native_RGBTRIPLE));
+    _native_RGBTRIPLE *_pnative_image = (_native_RGBTRIPLE *)_native_image;
     if (_native_image == NULL)
     {
         fprintf(stderr, "Not enough memory to store image.\n");
@@ -136,9 +137,9 @@ main(int argc, char *argv[])
     {
       for (int j = 0; j < width; j ++)
       {
-        PIXEL(image,height,width,i,j).rgbtBlue = PIXEL(_native_image,height,width,i,j).rgbtBlue;
-        PIXEL(image,height,width,i,j).rgbtGreen = PIXEL(_native_image,height,width,i,j).rgbtBlue;
-        PIXEL(image,height,width,i,j).rgbtRed = PIXEL(_native_image,height,width,i,j).rgbtRed;
+        PIXEL(image,height,width,i,j).rgbtBlue = PIXEL(_pnative_image,height,width,i,j).rgbtBlue;
+        PIXEL(image,height,width,i,j).rgbtGreen = PIXEL(_pnative_image,height,width,i,j).rgbtGreen;
+        PIXEL(image,height,width,i,j).rgbtRed = PIXEL(_pnative_image,height,width,i,j).rgbtRed;
       }
     }
 
@@ -177,11 +178,22 @@ main(int argc, char *argv[])
     // Write outfile's BITMAPINFOHEADER
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
+    // copy protected structures to native native
+    for (int i = 0; i < height; i++)
+    {
+      for (int j = 0; j < width; j ++)
+      {
+        PIXEL(_pnative_image,height,width,i,j).rgbtBlue = VIP_DEC(PIXEL(image,height,width,i,j).rgbtBlue);
+        PIXEL(_pnative_image,height,width,i,j).rgbtGreen = VIP_DEC(PIXEL(image,height,width,i,j).rgbtGreen);
+        PIXEL(_pnative_image,height,width,i,j).rgbtRed = VIP_DEC(PIXEL(image,height,width,i,j).rgbtRed);
+      }
+    }
+
     // Write new pixels to outfile
     for (int i = 0; i < height; i++)
     {
         // Write row to outfile
-        fwrite(image[i], sizeof(RGBTRIPLE), width, outptr);
+        fwrite(_native_image[i], sizeof(_native_RGBTRIPLE), width, outptr);
 
         // Write padding at end of row
         for (int k = 0; k < padding; k++)
