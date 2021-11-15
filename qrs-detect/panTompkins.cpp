@@ -187,7 +187,7 @@ void init(const char file_in[], const char file_out[])
     A/D converter etc) and put it in a suitable, numeric format. Return the
     sample, or NOSAMPLE if there are no more samples.
 */
-VIP_ENCINT input()
+VIP_ENCDOUBLE input()
 {
 	int num = NOSAMPLE;
 	if (!feof(fin))
@@ -196,7 +196,7 @@ VIP_ENCINT input()
       num = NOSAMPLE;
   }
 
-	return num;
+	return (VIP_ENCDOUBLE)num;
 }
 
 /*
@@ -232,7 +232,7 @@ void panTompkins()
     // The signal array is where the most recent samples are kept. The other arrays are the outputs of each
     // filtering module: DC Block, low pass, high pass, integral etc.
 	// The output is a buffer where we can change a previous result (using a back search) before outputting.
-	VIP_ENCINT signal[BUFFSIZE], dcblock[BUFFSIZE], lowpass[BUFFSIZE], highpass[BUFFSIZE], derivative[BUFFSIZE], squared[BUFFSIZE], integral[BUFFSIZE], outputSignal[BUFFSIZE];
+	VIP_ENCDOUBLE signal[BUFFSIZE], dcblock[BUFFSIZE], lowpass[BUFFSIZE], highpass[BUFFSIZE], derivative[BUFFSIZE], squared[BUFFSIZE], integral[BUFFSIZE], outputSignal[BUFFSIZE];
 
 	// rr1 holds the last 8 RR intervals. rr2 holds the last 8 RR intervals between rrlow and rrhigh.
 	// rravg1 is the rr1 average, rr2 is the rravg2. rrlow = 0.92*rravg2, rrhigh = 1.08*rravg2 and rrmiss = 1.16*rravg2.
@@ -263,7 +263,7 @@ void panTompkins()
 	// The threshold 1 variables are the threshold variables. If a signal sample is higher than this threshold, it's a peak.
 	// The threshold 2 variables are half the threshold 1 ones. They're used for a back search when no peak is detected for too long.
 	// The spk and npk variables are, respectively, running estimates of signal and noise peaks.
-	VIP_ENCINT peak_i = 0, peak_f = 0, threshold_i1 = 0, threshold_i2 = 0, threshold_f1 = 0, threshold_f2 = 0, spk_i = 0, spk_f = 0, npk_i = 0, npk_f = 0;
+	VIP_ENCDOUBLE peak_i = 0, peak_f = 0, threshold_i1 = 0, threshold_i2 = 0, threshold_f1 = 0, threshold_f2 = 0, spk_i = 0, spk_f = 0, npk_i = 0, npk_f = 0;
 
 	// qrs tells whether there was a detection or not.
 	// regular tells whether the heart pace is regular or not.
@@ -279,6 +279,8 @@ void panTompkins()
 
     // The main loop where everything proposed in the paper happens. Ends when there are no more signal samples.
     do{
+        // fprintf(stdout, "A: currentSlope = %d\n", VIP_DEC(currentSlope));
+
         // Test if the buffers are full.
         // If they are, shift them, discarding the oldest sample and adding the new one at the end.
         // Else, just put the newest sample in the next free position.
@@ -316,6 +318,7 @@ void panTompkins()
 			dcblock[current] = signal[current] - signal[current-1] + (VIP_ENCDOUBLE)0.995*dcblock[current-1];
 		else
 			dcblock[current] = 0;
+    // fprintf(stdout, "A: dcblock = %lf\n", VIP_DEC(dcblock[current]));
 
 		// Low Pass filter
 		// Implemented as proposed by the original paper.
@@ -323,13 +326,14 @@ void panTompkins()
 		// Can be removed if your signal was previously filtered, or replaced by a different filter.
 		lowpass[current] = dcblock[current];
 		if (current >= 1)
-			lowpass[current] += (VIP_ENCINT)2*lowpass[current-1];
+			lowpass[current] += (VIP_ENCDOUBLE)2*lowpass[current-1];
 		if (current >= 2)
 			lowpass[current] -= lowpass[current-2];
 		if (current >= 6)
-			lowpass[current] -= (VIP_ENCINT)2*dcblock[current-6];
+			lowpass[current] -= (VIP_ENCDOUBLE)2*dcblock[current-6];
 		if (current >= 12)
 			lowpass[current] += dcblock[current-12];
+    // fprintf(stdout, "A: lowpass = %lf\n", VIP_DEC(lowpass[current]));
 
 		// High Pass filter
 		// Implemented as proposed by the original paper.
@@ -339,9 +343,10 @@ void panTompkins()
 		if (current >= 1)
 			highpass[current] -= highpass[current-1];
 		if (current >= 16)
-			highpass[current] += (VIP_ENCINT)32*lowpass[current-16];
+			highpass[current] += (VIP_ENCDOUBLE)32*lowpass[current-16];
 		if (current >= 32)
 			highpass[current] += lowpass[current-32];
+    // fprintf(stdout, "A: highpass = %lf\n", VIP_DEC(highpass[current]));
 
 		// Derivative filter
 		// This is an alternative implementation, the central difference method.
@@ -351,10 +356,12 @@ void panTompkins()
         derivative[current] = highpass[current];
 		if (current > 0)
 			derivative[current] -= highpass[current-1];
+    // fprintf(stdout, "A: derivative = %lf\n", VIP_DEC(derivative[current]));
 
 		// This just squares the derivative, to get rid of negative values and emphasize high frequencies.
 		// y(nT) = [x(nT)]^2.
 		squared[current] = derivative[current]*derivative[current];
+    // fprintf(stdout, "A: squared = %lf\n", VIP_DEC(squared[current]));
 
 		// Moving-Window Integration
 		// Implemented as proposed by the original paper.
@@ -369,7 +376,8 @@ void panTompkins()
 			else
 				break;
 		}
-		integral[current] /= (VIP_ENCINT)i;
+		integral[current] /= (VIP_ENCDOUBLE)i;
+    // fprintf(stdout, "A: integral = %lf\n", VIP_DEC(integral[current]));
 
 		qrs = dt_false;
 
@@ -397,8 +405,9 @@ void panTompkins()
                 if (VIP_DEC(squared[j] > currentSlope))
                     currentSlope = squared[j];
             }
+            // fprintf(stdout, "B: currentSlope = %d\n", VIP_DEC(currentSlope));
 
-				    if (VIP_DEC(currentSlope <= (VIP_ENCINT)(lastSlope/2)))
+				    if (VIP_DEC(currentSlope <= (VIP_ENCDOUBLE)(lastSlope/2)))
                     {
                         qrs = dt_false;
                     }
@@ -424,6 +433,7 @@ void panTompkins()
                     for (j = current - 10; j <= current; j++)
                         if (VIP_DEC(squared[j] > currentSlope))
                             currentSlope = squared[j];
+            // fprintf(stdout, "C: currentSlope = %d\n", VIP_DEC(currentSlope));
 
                     spk_i = (VIP_ENCDOUBLE)0.125*peak_i + (VIP_ENCDOUBLE)0.875*spk_i;
                     threshold_i1 = npk_i + (VIP_ENCDOUBLE)0.25*(spk_i - npk_i);
@@ -523,8 +533,9 @@ void panTompkins()
                             if (VIP_DEC(squared[j] > currentSlope))
                                 currentSlope = squared[j];
                         }
+            // fprintf(stdout, "D: currentSlope = %d\n", VIP_DEC(currentSlope));
 
-                        if (VIP_DEC((currentSlope < (VIP_ENCINT)(lastSlope/2)) && (i + sample) < lastQRS + 0.36*lastQRS))
+                        if (VIP_DEC((currentSlope < (VIP_ENCDOUBLE)(lastSlope/2)) && (i + sample) < lastQRS + 0.36*lastQRS))
                         {
                             qrs = dt_false;
                         }
