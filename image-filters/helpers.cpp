@@ -185,10 +185,10 @@ void edges(int height, int width, RGBTRIPLE *image)
             // y axis
             int yaxis[] = {col - 1, col, col + 1};
 
-            // flaot vals for gx rgb
+            // float vals for gx rgb
             VIP_ENCFLOAT Gx_R = 0, Gx_G = 0, Gx_B = 0;
 
-            // flaot vals for gy rgb
+            // float vals for gy rgb
             VIP_ENCFLOAT Gy_R = 0, Gy_G = 0, Gy_B = 0;
 
             for (int r = 0; r < 3; r++)

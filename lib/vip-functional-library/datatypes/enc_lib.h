@@ -12,6 +12,7 @@ struct enc_long;
 struct enc_ulong;
 struct enc_uint32;
 struct enc_uint64;
+struct enc_float; 
 struct enc_double; 
 
 
@@ -260,6 +261,7 @@ struct enc_double;
                 return enc_int(result);
         }     
         operator enc_double(); 
+        operator enc_float(); 
         operator enc_uint32();
         operator enc_uint64();
     } enc_int;

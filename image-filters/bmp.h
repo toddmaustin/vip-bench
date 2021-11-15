@@ -67,11 +67,15 @@ BITMAPINFOHEADER;
  *
  * Adapted from http://msdn.microsoft.com/en-us/library/aa922590.aspx.
  */
+//
+// TMA: note, almost no-one (save Meso) implements privatized "unsigned char" data types,
+// so to make this benchmark more palatable, the internal privatized datatype is VIP_ENCINT
+//
 typedef struct
 {
-    VIP_ENCUCHAR  rgbtBlue;
-    VIP_ENCUCHAR  rgbtGreen;
-    VIP_ENCUCHAR  rgbtRed;
+    VIP_ENCINT  rgbtBlue;
+    VIP_ENCINT  rgbtGreen;
+    VIP_ENCINT  rgbtRed;
 }
 #ifndef VIP_ENC_MODE
 __attribute__((__packed__))

@@ -143,9 +143,13 @@ main(int argc, char *argv[])
       }
     }
 
-    // Filter image
-    switch (filter)
+    // time the core algorithm
     {
+      Stopwatch s("VIP-Bench image-filters:");
+
+      // Filter image
+      switch (filter)
+      {
         // Blur
         case 'b':
             blur(height, width, (RGBTRIPLE *)image);
@@ -170,6 +174,7 @@ main(int argc, char *argv[])
         case 'r':
             reflect(height, width, (RGBTRIPLE *)image);
             break;
+      }
     }
 
     // Write outfile's BITMAPFILEHEADER
