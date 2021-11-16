@@ -17,7 +17,11 @@ main(int argc, char **argv)
   char *outfile = argv[2];
 
   init(infile, outfile);
-  panTompkins();
+  {
+    Stopwatch s("VIP-Bench qrs-detect:");
+
+    panTompkins();
+  }
   return 0;
 }
 
