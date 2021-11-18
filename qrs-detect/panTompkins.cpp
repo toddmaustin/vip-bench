@@ -413,7 +413,7 @@ void panTompkins()
 	  currentSlope = VIP_CMOV(_pred4, 0, currentSlope);
 	  for (j = current - 10; j <= (unsigned)current; j++)
     {
-      currentSlope = VIP_CMOV(squared[j] > currentSlope, squared[j], currentSlope);
+      currentSlope = VIP_CMOV(_pred4 && (squared[j] > currentSlope), squared[j], currentSlope);
     }
     // fprintf(stdout, "B: currentSlope = %d\n", VIP_DEC(currentSlope));
 
@@ -432,46 +432,39 @@ void panTompkins()
     qrs = VIP_CMOV(_pred4 && !_pred5, dt_true, qrs);
 
     VIP_ENCBOOL _pred6 = _pred && _pred1 && !_pred2;
-    if (_pred6)
+		currentSlope = VIP_CMOV(_pred6, 0, currentSlope);
+    for (j = current - 10; j <= current; j++)
     {
-				  currentSlope = 0;
-          for (j = current - 10; j <= current; j++)
-          {
-            if (VIP_DEC(squared[j] > currentSlope))
-              currentSlope = squared[j];
-          }
-          // fprintf(stdout, "C: currentSlope = %d\n", VIP_DEC(currentSlope));
-
-          spk_i = (VIP_ENCDOUBLE)0.125*peak_i + (VIP_ENCDOUBLE)0.875*spk_i;
-          threshold_i1 = npk_i + (VIP_ENCDOUBLE)0.25*(spk_i - npk_i);
-          threshold_i2 = (VIP_ENCDOUBLE)0.5*threshold_i1;
-
-          spk_f = (VIP_ENCDOUBLE)0.125*peak_f + (VIP_ENCDOUBLE)0.875*spk_f;
-          threshold_f1 = npk_f + (VIP_ENCDOUBLE)0.25*(spk_f - npk_f);
-          threshold_f2 = (VIP_ENCDOUBLE)0.5*threshold_f1;
-
-          lastSlope = currentSlope;
-          qrs = dt_true;
-
+      currentSlope = VIP_CMOV(_pred6 && (squared[j] > currentSlope), squared[j], currentSlope);
     }
+    // fprintf(stdout, "C: currentSlope = %d\n", VIP_DEC(currentSlope));
+
+    spk_i = VIP_CMOV(_pred6, (VIP_ENCDOUBLE)0.125*peak_i + (VIP_ENCDOUBLE)0.875*spk_i, spk_i);
+    threshold_i1 = VIP_CMOV(_pred6, npk_i + (VIP_ENCDOUBLE)0.25*(spk_i - npk_i), threshold_i1);
+    threshold_i2 = VIP_CMOV(_pred6, (VIP_ENCDOUBLE)0.5*threshold_i1, threshold_i2);
+
+    spk_f = VIP_CMOV(_pred6, (VIP_ENCDOUBLE)0.125*peak_f + (VIP_ENCDOUBLE)0.875*spk_f, spk_f);
+    threshold_f1 = VIP_CMOV(_pred6, npk_f + (VIP_ENCDOUBLE)0.25*(spk_f - npk_f), threshold_f1);
+    threshold_f2 = VIP_CMOV(_pred6, (VIP_ENCDOUBLE)0.5*threshold_f1, threshold_f2);
+
+    lastSlope = VIP_CMOV(_pred6, currentSlope, lastSlope);
+    qrs = VIP_CMOV(_pred6, dt_true, qrs);
 
     VIP_ENCBOOL _pred7 = _pred && !_pred1;
-    if (_pred7)
-    {
-    peak_i = integral[current];
-	  npk_i = (VIP_ENCDOUBLE)0.125*peak_i + (VIP_ENCDOUBLE)0.875*npk_i;
-	  threshold_i1 = npk_i + (VIP_ENCDOUBLE)0.25*(spk_i - npk_i);
-	  threshold_i2 = (VIP_ENCDOUBLE)0.5*threshold_i1;
-	  peak_f = highpass[current];
-	  npk_f = (VIP_ENCDOUBLE)0.125*peak_f + (VIP_ENCDOUBLE)0.875*npk_f;
-	  threshold_f1 = npk_f + (VIP_ENCDOUBLE)0.25*(spk_f - npk_f);
-    threshold_f2 = (VIP_ENCDOUBLE)0.5*threshold_f1;
-    qrs = dt_false;
-	  outputSignal[current] = qrs;
-	  if (sample > DELAY + BUFFSIZE)
+    peak_i = VIP_CMOV(_pred7, integral[current], peak_i);
+	  npk_i = VIP_CMOV(_pred7, (VIP_ENCDOUBLE)0.125*peak_i + (VIP_ENCDOUBLE)0.875*npk_i, npk_i);
+	  threshold_i1 = VIP_CMOV(_pred7, npk_i + (VIP_ENCDOUBLE)0.25*(spk_i - npk_i), threshold_i1);
+	  threshold_i2 = VIP_CMOV(_pred7, (VIP_ENCDOUBLE)0.5*threshold_i1, threshold_i2);
+	  peak_f = VIP_CMOV(_pred7, highpass[current], peak_f);
+	  npk_f = VIP_CMOV(_pred7, (VIP_ENCDOUBLE)0.125*peak_f + (VIP_ENCDOUBLE)0.875*npk_f, npk_f);
+	  threshold_f1 = VIP_CMOV(_pred7, npk_f + (VIP_ENCDOUBLE)0.25*(spk_f - npk_f), threshold_f1);
+    threshold_f2 = VIP_CMOV(_pred7, (VIP_ENCDOUBLE)0.5*threshold_f1, threshold_f2);
+    qrs = VIP_CMOV(_pred7, dt_false, qrs);
+	  outputSignal[current] = VIP_CMOV(_pred7, qrs, outputSignal[current]);
+	  if (_pred7 && (sample > DELAY + BUFFSIZE))
       output(outputSignal[0]);
-    continue;
-    }
+    if (_pred7)
+      continue;
  
 #else /* !VIP_DO_MODE */
 		// If both the integral and the signal are above their thresholds, they're probably signal peaks.
