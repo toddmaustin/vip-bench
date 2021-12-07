@@ -280,6 +280,22 @@ do {                \
   (d) = gh_u; \
 } while (0)
 
+#define EXTRACT_WORDS(ix0,ix1,d)        \
+do {                \
+  VIP_ENCDOUBLE gh_u = (d); \
+  VIP_ENCULONG gh_v = *(VIP_ENCULONG *)&gh_u; \
+  (ix0) = (VIP_ENCUINT)(gh_v >> 32); \
+  (ix1) = (VIP_ENCUINT)(gh_v & 0xffffffff); \
+} while (0)
+
+#define SET_HIGH_WORD(d,v) \
+do { \
+  VIP_ENCDOUBLE gh_u = (d); \
+  VIP_ENCULONG gh_v = *(VIP_ENCULONG *)&gh_u; \
+  gh_v = (((VIP_ENCULONG)(v)) << 32) | (gh_v & 0xffffffffUL); \
+  (d) = *(VIP_ENCDOUBLE *)&gh_v; \
+} while (0)
+
 VIP_ENCDOUBLE
 myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
 {
@@ -449,8 +465,160 @@ myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
 #endif /* VIP_DO_MODE */
 }
 
+static const double
+ln2_hi  =  6.93147180369123816490e-01,  /* 3fe62e42 fee00000 */
+ln2_lo  =  1.90821492927058770002e-10,  /* 3dea39ef 35793c76 */
+two54   =  1.80143985094819840000e+16,  /* 43500000 00000000 */
+Lg1 = 6.666666666666735130e-01,  /* 3FE55555 55555593 */
+Lg2 = 3.999999999940941908e-01,  /* 3FD99999 9997FA04 */
+Lg3 = 2.857142874366239149e-01,  /* 3FD24924 94229359 */
+Lg4 = 2.222219843214978396e-01,  /* 3FCC71C5 1D8E78AF */
+Lg5 = 1.818357216161805012e-01,  /* 3FC74664 96CB03DE */
+Lg6 = 1.531383769920937332e-01,  /* 3FC39A09 D078C69F */
+Lg7 = 1.479819860511658591e-01;  /* 3FC2F112 DF3E5244 */
+
+static const double zero   =  0.0;
+
+VIP_ENCDOUBLE
+mylog(VIP_ENCDOUBLE x)
+{
+  VIP_ENCDOUBLE hfsq = 0.0,f,s,z,R = 0.0,w,t1,t2,dk = 0.0;
+  VIP_ENCINT k,hx,i,j;
+  VIP_ENCUINT lx;
+
+#ifdef VIP_DO_MODE
+  VIP_ENCINT _tmp;
+  VIP_ENCDOUBLE retval = 0.0;
+  VIP_ENCBOOL _returned = false;
+
+  EXTRACT_WORDS(hx,lx,x);
+  k=0;
+  VIP_ENCBOOL _pred0 = (hx < 0x00100000); /* _pred0: x < 2**-1022  */
+  VIP_ENCBOOL _pred1 = (((hx&0x7fffffff)|lx)==0); /* _pred1 */
+  retval = VIP_CMOV(_pred0 && _pred1, -((VIP_ENCDOUBLE)two54)/zero, retval); /* log(+-0)=-inf */
+  _returned = _returned || (_pred0 && _pred1);
+
+  VIP_ENCBOOL _pred2 = (hx<0); /* _pred2 */
+  retval = VIP_CMOV(!_returned && _pred0 && _pred2, (x-x)/zero, retval); /* log(-#) = NaN */
+  _returned = _returned || (_pred0 && _pred2);
+  k = VIP_CMOV(!_returned && _pred0, k - 54, k); /* subnormal number, scale up */
+  x = VIP_CMOV(!_returned && _pred0, x * two54, x);
+  GET_HIGH_WORD(_tmp,x);
+  hx = VIP_CMOV(!_returned && _pred0, _tmp, hx);
+
+  VIP_ENCBOOL _pred3 = (hx >= 0x7ff00000); /* _pred3 */
+  retval = VIP_CMOV(!_returned && _pred3, x+x, retval);
+  _returned = _returned || _pred3;
+
+  k += (hx>>20)-1023;
+  hx &= 0x000fffff;
+  i = (hx+0x95f64)&0x100000;
+  SET_HIGH_WORD(x,hx|(i^0x3ff00000)); /* normalize x or x/2 */
+  k += (i>>20);
+  f = x-1.0;
+
+  VIP_ENCBOOL _pred4 = ((((VIP_ENCINT)0x000fffff)&((VIP_ENCINT)2+hx))<3); /* _pred4: -2**-20 <= f < 2**-20 */
+  VIP_ENCBOOL _pred5 = (f==zero); /* _pred5 */
+  VIP_ENCBOOL _pred6 = (k==0); /* _pred6 */
+  retval = VIP_CMOV(!_returned && _pred4 && _pred5 && _pred6, (VIP_ENCDOUBLE)zero, retval);
+  _returned = _returned || (_pred4 && _pred5 && _pred6);
+
+  dk = VIP_CMOV(!_returned && _pred4 && _pred5 && !_pred6, (VIP_ENCDOUBLE)k, dk);
+  retval = VIP_CMOV(!_returned && _pred4 && _pred5 && !_pred6, dk*ln2_hi+dk*ln2_lo, retval);
+  _returned = _returned || (_pred4 && _pred5 && !_pred6);
+
+  R = VIP_CMOV(!_returned && _pred4, f*f*((VIP_ENCDOUBLE)0.5-(VIP_ENCDOUBLE)0.33333333333333333*f), R);
+  VIP_ENCBOOL _pred7 = (k==0); /* _pred7 */
+  retval = VIP_CMOV(!_returned && _pred4 && _pred7, f-R, retval);
+  _returned = _returned || (_pred4 && _pred7);
+
+  dk = VIP_CMOV(!_returned && _pred4 && !_pred7, (VIP_ENCDOUBLE)k, dk);
+  retval = VIP_CMOV(!_returned && _pred4 && !_pred7, dk*ln2_hi-((R-dk*ln2_lo)-f), retval);
+  _returned = _returned || (_pred4 && !_pred7);
+
+  s = f/((VIP_ENCDOUBLE)2.0+f);
+  dk = (VIP_ENCDOUBLE)k;
+  z = s*s;
+  i = hx-0x6147a;
+  w = z*z;
+  j = (VIP_ENCINT)0x6b851-hx;
+  t1= w*((VIP_ENCDOUBLE)Lg2+w*((VIP_ENCDOUBLE)Lg4+w*Lg6));
+  t2= z*((VIP_ENCDOUBLE)Lg1+w*((VIP_ENCDOUBLE)Lg3+w*((VIP_ENCDOUBLE)Lg5+w*Lg7)));
+  i |= j;
+  R = t2+t1;
+
+  VIP_ENCBOOL _pred8 = (i>0);
+  hfsq = VIP_CMOV(!_returned && _pred8, (VIP_ENCDOUBLE)0.5*f*f, hfsq);
+
+  VIP_ENCBOOL _pred9 = (k==0);
+  retval = VIP_CMOV(!_returned && _pred8 && _pred9, f-(hfsq-s*(hfsq+R)), retval);
+  _returned = _returned || (_pred8 && _pred9);
+
+  retval = VIP_CMOV(!_returned && _pred8 && !_pred9, dk*ln2_hi-((hfsq-(s*(hfsq+R)+dk*ln2_lo))-f), retval);
+  _returned = _returned || (_pred8 && !_pred9);
+
+  retval = VIP_CMOV(!_returned && !_pred8 && _pred9, f-s*(f-R), retval);
+  _returned = _returned || (!_pred8 && _pred9);
+
+  retval = VIP_CMOV(!_returned && !_pred8 && !_pred9, dk*ln2_hi-((s*(f-R)-dk*ln2_lo)-f), retval);
+  _returned = _returned || (!_pred8 && !_pred9);
+
+  return retval;
+#else /* VIP_DO_MODE */
+  EXTRACT_WORDS(hx,lx,x);
+  k=0;
+  if (hx < 0x00100000) {      /* x < 2**-1022  */
+      if (((hx&0x7fffffff)|lx)==0)
+    return -two54/zero;   /* log(+-0)=-inf */
+      if (hx<0) return (x-x)/zero;  /* log(-#) = NaN */
+      k -= 54; x *= two54; /* subnormal number, scale up x */
+      GET_HIGH_WORD(hx,x);
+  }
+  if (hx >= 0x7ff00000) return x+x;
+  k += (hx>>20)-1023;
+  hx &= 0x000fffff;
+  i = (hx+0x95f64)&0x100000;
+  SET_HIGH_WORD(x,hx|(i^0x3ff00000)); /* normalize x or x/2 */
+  k += (i>>20);
+  f = x-1.0;
+  if((0x000fffff&(2+hx))<3) { /* -2**-20 <= f < 2**-20 */
+      if(f==zero) {
+    if(k==0) {
+        return zero;
+    } else {
+        dk=(double)k;
+        return dk*ln2_hi+dk*ln2_lo;
+    }
+      }
+      R = f*f*(0.5-0.33333333333333333*f);
+      if(k==0) return f-R; else {dk=(double)k;
+             return dk*ln2_hi-((R-dk*ln2_lo)-f);}
+  }
+  s = f/(2.0+f);
+  dk = (double)k;
+  z = s*s;
+  i = hx-0x6147a;
+  w = z*z;
+  j = 0x6b851-hx;
+  t1= w*(Lg2+w*(Lg4+w*Lg6));
+  t2= z*(Lg1+w*(Lg3+w*(Lg5+w*Lg7)));
+  i |= j;
+  R = t2+t1;
+  if(i>0) {
+      hfsq=0.5*f*f;
+      if(k==0) return f-(hfsq-s*(hfsq+R)); else
+         return dk*ln2_hi-((hfsq-(s*(hfsq+R)+dk*ln2_lo))-f);
+  } else {
+      if(k==0) return f-s*(f-R); else
+         return dk*ln2_hi-((s*(f-R)-dk*ln2_lo)-f);
+  }
+#endif /* !VIP_DO_MODE */
+}
+
 
 #ifdef TEST
+# define myM_El   2.7182818284590452353602874713526625L  /* e */
+
 int
 main(void)
 {
@@ -481,6 +649,13 @@ main(void)
   fprintf(stderr, "myfloor(-7.0) = %lf (should be -7.0)\n", myfloor(-7.0L));
   fprintf(stderr, "myfloor(-7.1) = %lf (should be -8.0)\n", myfloor(-7.1L));
   fprintf(stderr, "myfloor(-7.9) = %lf (should be -8.0)\n", myfloor(-7.9L));
+  fprintf(stderr, "\n");
+  fprintf(stderr, "mylog(1.0) = %lf (should be 0.0)\n", mylog(1.0L));
+  fprintf(stderr, "mylog(e) = %lf (should be 1.0)\n", mylog(myM_El));
+  fprintf(stderr, "mylog(1.0 / e) = %lf (should be -1.0)\n", mylog(1.0L / myM_El));
+  fprintf(stderr, "mylog(2.0) = %lf (should be 0.693147)\n", mylog(2.0L));
+  fprintf(stderr, "mylog(10.0) = %lf (should be 2.302585)\n", mylog(10.0L));
+  fprintf(stderr, "mylog(0.7) = %lf (should be -0.356675)\n", mylog(0.7L));
 
   return 0;
 }
