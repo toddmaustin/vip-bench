@@ -65,9 +65,9 @@ int main(void)
   uint64_t perf_ex = 0;
   uint64_t perf_wait = 0;
   uint64_t perf_skip = 0;
-
+  
   OZonePerfClear();
-  perf_cmds = OZonePerfCmds();
+  /*perf_cmds = OZonePerfCmds();
   perf_idle = OZonePerfIdle();
   perf_prep = OZonePerfPrep();
   perf_ex = OZonePerfEx();
@@ -77,7 +77,7 @@ int main(void)
           "INITIAL PERFORMANCE STATE:\n %lu cmds executed.\n%lu idle cycles.\n%lu prep cycles.\n%lu ex cycles.\n%lu wait cycles.\n%lu skipped states.\n",
           perf_cmds, perf_idle, perf_prep, perf_ex, perf_wait, perf_skip);
   OZonePerfClear();
-
+  */
   // initialize the pseudo-RNG
   mysrand(42);
   // mysrand(time(NULL));
