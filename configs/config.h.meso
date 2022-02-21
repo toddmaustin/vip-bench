@@ -5,7 +5,9 @@
 // TODO: make this an optional flag in the Makefile
 #define PERF_OUTPUT_ONLY
 // end TODO
-#include "common/utils.h"
+#include "../common/utils.h"
+#include <valarray>
+#include <vector>
 
 #if defined(VIP_NA_MODE)
 
@@ -18,7 +20,16 @@
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      (X)
+#define VIP_DEC_VEC(X)  (X)
+
+extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
+    std::copy(source->begin(), source->end(), std::begin(*dest));
+}
+inline VIP_VEC_ENCINT   operator<<   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(rhs); }
+inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(-rhs); }
 
 #elif defined(VIP_DO_MODE)
 
@@ -31,8 +42,17 @@
 #define VIP_ENCBOOL     bool
 #define VIP_ENCFLOAT    float
 #define VIP_ENCDOUBLE   double
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      (X)
+#define VIP_DEC_VEC(X)  (X)
 #define VIP_CMOV(P,A,B) ((P) ? (A) : (B))
+
+extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
+    std::copy(source->begin(), source->end(), std::begin(*dest));
+}
+inline VIP_VEC_ENCINT   operator<<   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(rhs); }
+inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(-rhs); }
 
 #elif defined(VIP_ENC_MODE)
 
@@ -48,8 +68,28 @@
 #define VIP_ENCBOOL     MesoSealedBool
 #define VIP_ENCFLOAT    MesoSealedFloat
 #define VIP_ENCDOUBLE   MesoSealedDouble
+#define VIP_VEC_ENCDOUBLE   std::valarray<VIP_ENCDOUBLE>
+#define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)      ((X).asval())
+#define VIP_DEC_VEC(X)      (vip_dec_vector(X))
 #define VIP_CMOV(P,A,B) MesoCMOV((P), (A), (B))
+
+extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
+    dest->resize(source->size());
+    for (unsigned int i=0; i<source->size(); i++) {
+        (*dest)[i] = (*source)[i];
+    }
+}
+extern inline std::valarray<int> vip_dec_vector(VIP_VEC_ENCINT x){
+    std::valarray<int> p(x.size());
+    for(unsigned int i=0; i<x.size(); i++){
+        p[i] = VIP_DEC(x[i]);
+    }
+    return p;
+}
+inline VIP_VEC_ENCINT   operator<<   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(rhs); }
+inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lhs.cshift(-rhs); }
+
 
 // Meso require DO mode code
 #undef  VIP_DO_MODE

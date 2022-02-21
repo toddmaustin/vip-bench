@@ -391,8 +391,8 @@ int main(void)
 
 int newmain(int argc, const char **argv)
 {
-	int n = 1, i = 1;
-	int m = 1;
+	int i=1;
+	int m=1;
 	VIP_ENCDOUBLE sign = 1.0;
 	VIP_ENCDOUBLE M = 0.0;
 	double _e = -0.1;
@@ -485,27 +485,22 @@ int newmain(int argc, const char **argv)
 #endif
 	/* Do selected calculation, and quit when accuracy is bettered. */
 #ifdef VIP_DO_MODE
-	for (unsigned iter = 0; iter < MAXITER; iter++)
-	{
-		E = method(E_old, e, M, 0);
-		E_old = E;
-
+	for (unsigned iter=0; iter < MAXITER; iter++)
+    {
+      E = method(E_old, e, M, 0);
+		  E_old = E;
+	  }
 #ifndef PERF_OUTPUT_ONLY
-		printf("n = %d\tE = %f\n", n++, VIP_DEC(sign * E));
-#else  /* !PERF_OUTPUT_ONLY */
-		n++;
-#endif /* PERF_OUTPUT_ONLY */
-	}
+		printf("E = %f\n",VIP_DEC(sign*E));
+#endif  /* PERF_OUTPUT_ONLY */
 #else /* !VIP_DO_MODE */
 	while (myfabs(E_old - (E = method(E_old, e, M, 0))) >= derror)
 	{
 		E_old = E;
-#ifndef PERF_OUTPUT_ONLY
-		printf("n = %d\tE = %lf\n", n++, sign * E);
-#else  /* !PERF_OUTPUT_ONLY */
-		n++;
-#endif /* PERF_OUTPUT_ONLY */
 	}
+#ifndef PERF_OUTPUT_ONLY
+  printf("E = %lf\n",sign*E);
+#endif /* PERF_OUTPUT_ONLY */
 #endif /* VIP_DO_MODE */
 }
 	return 0;

@@ -1,4 +1,7 @@
 #include <stdlib.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
 #include "utils.h"
 
 /* Period parameters */  
@@ -16,12 +19,15 @@
 #define TEMPERING_SHIFT_T(y)  (y << 15)
 #define TEMPERING_SHIFT_L(y)  (y >> 18)
 
-static unsigned int mt[N]; /* the array for the state vector  */
+static bool mt_initialized = false;
+static unsigned int mt[N+1]; /* the array for the state vector  */
 static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
 
 double Stopwatch::timeTaken=0;
 bool Stopwatch::precision=true;
 int Stopwatch::numIter=1;
+int Stopwatch::nSlots=1;
+bool Stopwatch::tableFormat=true;
 
 
 /* Initializing the array with a seed */
@@ -30,6 +36,7 @@ mysrand(unsigned int seed)
 {
   int i;
 
+  mt_initialized = true;
   for (i=0;i<N;i++)
   {
     mt[i] = seed & 0xffff0000;
@@ -43,6 +50,12 @@ mysrand(unsigned int seed)
 unsigned int 
 myrand(void)
 {
+  if (!mt_initialized)
+  {
+    fprintf(stderr, "ERROR: rng is not initialized, call srand()!\n");
+    exit(1);
+  }
+
   unsigned int y;
   static unsigned int mag01[2]={0x0, MATRIX_A};
   /* mag01[x] = x * MATRIX_A  for x=0,1 */
@@ -79,3 +92,78 @@ myrand(void)
   return y; 
 }
 
+long
+perf_event_open(struct perf_event_attr *hw_event, pid_t pid, int cpu, int group_fd, unsigned long flags)
+{
+  int ret;
+  ret = syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
+  return ret;
+} 
+ void record_mem(){
+                //if (mem_count > 100) return;
+                //mem_count++;
+                char system_cmd[1024];
+                int sprintf_ret = snprintf(
+                        system_cmd,
+                        sizeof(system_cmd),
+                        "grep -E 'VmPeak|VmRSS|VmSize' /proc/%ju/status >> mem.out",
+                        (uintmax_t)getpid()
+               );
+               assert(sprintf_ret >= 0);
+               assert((size_t)sprintf_ret < sizeof(system_cmd));
+               //puts(system_cmd);
+               if (system(system_cmd))
+               {
+                 fprintf(stderr, "Cannot start memory monitor.\n");
+                 exit(1);
+               }
+               std::ostringstream ss;
+               ss<< std::ifstream("mem.out").rdbuf();
+               std::string command_output=ss.str();
+               // size_t loc=0, loc2;
+               // loc=command_output.find("\n");
+               // loc2=command_output.substr(loc+1).find("\n");
+               //std::cerr << "[VIP] " << command_output.substr(loc+1,loc2)<<"\n";
+               
+}
+
+void record_mem(std::string fileName ){
+                //if (mem_count > 100) return;
+                //mem_count++;
+               
+               std::string command("ps -o pid,vsz,rss | awk '{if (NR == 1 || $1 == \"%ju\") print}' > ");
+                command+=fileName;
+
+                printf("%s\n",command.c_str());
+                char system_cmd[1024];
+                int sprintf_ret = snprintf(
+                        system_cmd,
+                        sizeof(system_cmd),
+                        command.c_str(),
+                        (uintmax_t)getpid()
+               );
+               assert(sprintf_ret >= 0);
+               assert((size_t)sprintf_ret < sizeof(system_cmd));
+               //puts(system_cmd);
+               if (system(system_cmd))
+               {
+                 fprintf(stderr, "Cannot start memory monitor.\n");
+                 exit(1);
+               }
+               //puts("");
+}
+/*int record_mem(){
+	// if (mem_count > 100) return;
+	// mem_count++;
+
+	char system_cmd[1024];
+  int sprintf_ret = snprintf(
+          system_cmd,
+          sizeof(system_cmd),
+          "ps -o pid,vsz,rss | awk '{if (NR == 1 || $1 == \"%ju\") print}' >> mem.out",  
+          (uintmax_t)getpid()
+  );
+  assert(sprintf_ret >= 0);
+  assert((size_t)sprintf_ret < sizeof(system_cmd));
+  return system(system_cmd);
+}*/

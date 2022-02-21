@@ -1,13 +1,13 @@
-# VIP Benchmark Suite
+# VIP-Bench Benchmark Suite
 
 
 ## Introduction
 
-This is the VIP Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
-A privacy-enhance computation framework is one in which encrypted data can be directly processed without sofware needing to decrypt it.
+This is the VIP-Bench Benchmark Suite, which is a collection of benchmarks to serve the evaluation of privacy-enhanced computation frameworks.
+A privacy-enhance computation framework is one in which encrypted data can be directly processed without software needing to decrypt it.
 These systems naturally enhance privacy since hacking into a system using privacy-enhanced computation only gives the attacker access
 to ciphertext. Examples of privacy-enhanced computation frameworks that this benchmark suite wants to server are: homomorphic encryption,
-sequestered encryption, runtime encryption, confidential computing, etc.
+runtime encryption, multi-party computation, etc.
 
 *Why do we need a privacy-oriented benchmark suite?* Privacy-oriented programming has two primary impacts on software algorithms: first,
 the algorithms become less heuristic since they can no longer inspect the data they are operating on; and second, the core datatypes will
@@ -20,25 +20,88 @@ computation, perhaps you can benchmark without that particular application. Sinc
 these benchmarks, we felt it was important to take a great-common-demoninator approach to selecting benchmarks, rather than a
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
 
+To learn more about VIP-Bench's design and implementation, please read the [VIP-Bench paper](https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing).
+
+If you use the VIP-Bench benchmarks in your research and/or publications, please cite the VIP-Bench paper:
+
+> Lauren Biernacki, Meron Zerihun Demissie, Kidus Birkayehu Workneh, Galane Basha Namomsa, Plato Gebremedhin, Fitsum Assamnew Andargie, Brandon Reagen, and Todd Austin, VIP-Bench: A Benchmark Suite for Evaluating Privacy-Enhanced Computation Frameworks, in the 2021 IEEE International Symposium on Secure and Private Execution Environment Design (SEED-2021), September 2021.
 
 ## VIP Benchmarks
 
 The VIP benchmarks were selected for their (mostly) obvious demands for data privacy. Currently, the benchmark suite supports the following
-benchmarks.
+benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on most homomorphic encryption frameworks because they have only linear operators and shallow computations. The remaining benchmarks are classified as HE-hard, since they would likely require deep computations and non-linear operator support.
 
 - **Bubble Sort** - Sorts an array of integers using the bubble sort algorithm. The sort operation is completely privatized.
 
+- **Distinctness** - Tests an array of integers to see if they are all disinct, returns the first duplicate. The array and distinctness results are privatized.
+
 - **Edit Distance** - Computes the edit distance between short genetic sequences. The genetic data and computed edit distance is privatized.
 
+- **Eulers Number Approximation** - Calculate e=2.718, using an interative approximation.
+
+- **FFT Integer** - Computes an integer Fast Fourier Transform computation.
+
+- **Filtered Query** - A KissDB application that supports privatized home sales information, with a filtered query capability that returns a variety of statistics about home sales in the database.
+
+- **Flood Fill** - Performs a graphical flood fill operation on a 2D privatized image.
+
+- **Gradient Descent** - Computes the Gradient Descent of a fixed data set.
+
+- **Gradient of X** - Computes the gradient of vector X (HE-friendly).
+
+- **Kadanes Algorithm** - Finds the maximum sum of a contiguous subarray in a given privatized integer array.
+
+- **Keplers Equation Calculator** - Performs orbital trajectory calculations using five Kepler's Equation solvers.
+
+- **Linear Discriminant Analysis** - Performs linear discriminant anaylsis of a privatized fixed data set.
+
+- **Linear Regression** - Performs linear regression on a fixed privatized vector data set (HE-friendly).
+
+- **Mersenne Twister** - A privatized random number generator based on Mersenne's Twister.
+
+- **Minimum Spanning Tree** - Finds the minimal spanning tree of a graph (via Kruscal's algorithm over the graph's adjacency matrix). The graph and the discovered minimal spanning tree are privatized.
+
+- **NMIST CNN** - A 7-layer CNN model performing training and inference on the MNIST handwriting data set. The CNN weights and inputs are privatized.
+
+- **Nonlinear NN** - A collection of popular non-linear activation functions utilized in neural networks (e.g., LeakyReLU).
+
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
+
+- **Parrondo's Paradox** - A game theory based solver that simulates Parrondo's paradox.
+
+- **Miller-Rabin Primality Test** - Performs the Miller-Rabin stochastic primarility test to extremely high certainty.
+
+- **Radians to Degrees** - Converts a vector of radian measurements to degrees.
+
+- **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm.
+
+- **TEA Cipher** - A TEA (Tiny Encryption Algorithm) cipher that runs on privatized data.
+
+- **Triangle Count** - Computes the triangle count for a fixed privatized graph.
+
+
+## Prerequisites
+
+The "numdiff" utility must be installed, as it is used to compare results that may be slightly imprecise (e.g., kepler-calc in DO mode). This tool lets the test-runs verify that the answer is within a specific tolerance of the expected value.
+
+## Building SEAL-3.4 Library
+To use VIP-Bench with SEAL-3.4, you must first install and build the SEAL submodule repository:
+```
+git submodule update --init --recursive
+cd lib/SEAL-3.4/SEAL/native/src
+cmake .
+make
+
+```
+Then you can continue building and runnign the VIP benchmarks from the parent directory. 
 
 
 ## Building and Running the VIP Benchmarks
 
-First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. For example, to configure the benchmarks for Agita Labs' Mesosphere encrypted computation library, execute the following commands:
+First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. If you have your own PEC framework, you will have to create the associated configuration files. We've included configuration files for the VIP Functional Library, which is a reference implementation of the VIP Computational Model using Intel's AES-NI instructions. You can configure the VIP-Bench to utilize this library with the following commands:
 ```
-ln -sf configs/config.mk.meso config.mk
-ln -sf configs/config.h.meso config.h
+ln -sf configs/config.mk.vip config.mk
+ln -sf configs/config.h.vip config.h
 ```
 
 Then, one can build, run and test the benchmarks in each of their respective directories. All benchmarks can be build in three distinct execution modes:
@@ -102,15 +165,18 @@ data-oblivious manner.
 
 ## Licensing Details
 
-The portions of the benchmark suite that was build by the VIP Benchmark team are (C) 2019-2020 and available for use under
+The portions of the benchmark suite that was build by the VIP Benchmark team are (C) 2019-2021 and available for use under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 
 ## VIP Benchmark Suite Authors
 
 - Fitsum Andargiae, AAiT
 - Todd Austin, UM and Agita Labs
+- Galane Basha, AAiT
 - Lauren Biernacki, UM
 - Meron Demissie, AAiT
+- Plato G Medhin, AAiT
+- Brandon Reagen, NYU
 - Kidus Workneh, AAiT 
 
 And, thanks to the respective authors of the benchmarks that were adapted for the VIP Benchmark Suite from other efforts.

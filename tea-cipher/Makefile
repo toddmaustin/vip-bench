@@ -9,6 +9,6 @@ include ../Makefile
 
 test: $(TARGET_EXE)
 	-$(TARGET_SIM) $(TARGET_EXE) > FOO
-	-$(TARGET_DIFF) FOO tea-cipher.out
+	$(TARGET_DIFF) FOO tea-cipher.out
 	rm -f FOO
 

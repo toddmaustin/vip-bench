@@ -31,7 +31,7 @@ TARGET_DIFF = $(NA_DIFF)
 TARGET_EXE = $(PROG).na
 endif
 
-CFLAGS = -std=c++11 -Wall $(OPT_CFLAGS) $(TARGET_CFLAGS) $(LOCAL_CFLAGS)
+CFLAGS = -std=c++11 -Wall $(OPT_CFLAGS) -Wno-strict-aliasing $(TARGET_CFLAGS) $(LOCAL_CFLAGS)
 LIBS = $(LOCAL_LIBS) $(TARGET_LIBS)
 
 build: $(TARGET_EXE)
@@ -62,5 +62,5 @@ $(TARGET_EXE): $(OBJS)
 	$(LD) $(CFLAGS) -o $@ $(notdir $^) $(LIBS)
 
 clean:
-	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core FOO
+	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core mem.out FOO $(LOCAL_CLEAN)
 
