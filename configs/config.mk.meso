@@ -2,7 +2,7 @@ CC  = gcc
 CXX = g++
 LD  = g++
 
-OPT_CFLAGS = -O2 -g -I../common
+OPT_CFLAGS = -O4 -g -I../common
 
 NA_CFLAGS =
 NA_LIBS =
@@ -16,7 +16,7 @@ DO_DIFF = diff
 
 # Flags and libraries for linking VIP against the OZone TEK
 ENC_CFLAGS = -Wno-deprecated-declarations -I../../mesosphere-tek -I/opt/xilinx/xrt/include -I/tools/Xilinx/Vivado/2020.2/include -DTARGET_ALVEO
-ENC_LIBS = ../../mesosphere-tek/mesolib.a -L/opt/xilinx/xrt/lib -lxrt_core -luuid -lssl -lcrypto
+ENC_LIBS = ../../mesosphere-tek/mesolib.a -L/opt/xilinx/xrt/lib -lxrt_core -luuid -L/usr/local/ssl/lib -lssl -lcrypto
 #ENC_CFLAGS = -I../../mesosphere-tek -DTARGET_EMUL 
 #ENC_LIBS = ../../mesosphere-tek/mesolib.a -lssl -lcrypto
 
