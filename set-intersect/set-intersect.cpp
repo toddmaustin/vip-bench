@@ -13,12 +13,6 @@ using namespace std;
 #define SETA_SIZE     500
 #define SETB_SIZE     1000
 
-#define DATASET_SIZE 256
-VIP_ENCINT data[DATASET_SIZE];
-
-// total swaps executed so far
-unsigned long swaps = 0;
-
 void
 set_init(vector<VIP_ENCINT>& set)
 {
@@ -100,3 +94,4 @@ main(void)
   fprintf(stdout, "INFO: cardinality(setA & setB) == %u\n", j);
   return 0;
 }
+
