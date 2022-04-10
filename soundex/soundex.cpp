@@ -10,56 +10,6 @@ using namespace std;
 // include build configuration defines
 #include "../config.h"
 
-#define DATASET_SIZE 256
-VIP_ENCINT data[DATASET_SIZE];
-
-// total swaps executed so far
-unsigned long swaps = 0;
-
-
-void
-print_data(VIP_ENCINT *data, unsigned size)
-{
-  fprintf(stdout, "DATA DUMP:\n");
-  for (unsigned i=0; i < size; i++)
-    fprintf(stdout, "  data[%u] = %d\n", i, VIP_DEC(data[i]));
-}
-
-void
-bubblesort(VIP_ENCINT *data, unsigned size)
-{
-  for (unsigned i=0; i < size-1; i++)
-  {
-#ifndef VIP_DO_MODE
-    bool swapped = false;
-#endif /* !VIP_DO_MODE */
-    for (unsigned j=0; j < size-1; j++)
-    {
-#ifndef VIP_DO_MODE
-      if (data[j] > data[j+1])
-      {
-        VIP_ENCINT tmp = data[j];
-        data[j] = data[j+1];
-        data[j+1] = tmp;
-        swapped = true;
-        swaps++;
-      }
-#else /* VIP_DO_MODE */
-      VIP_ENCBOOL do_swap = data[j] > data[j+1];
-      VIP_ENCINT tmp = data[j];
-      data[j] = VIP_CMOV(do_swap, data[j+1], data[j]);
-      data[j+1] = VIP_CMOV(do_swap, tmp, data[j+1]);
-      swaps++;
-#endif /* VIP_DO_MODE */
-    }
-#ifndef VIP_DO_MODE
-    // done?
-    if (!swapped)
-      break;
-#endif /* !VIP_DO_MODE */
-  }
-}
-
 vector<string> namesA = {"Johnson", "Adams", "Davis", "Simons", "Richards", "Taylor", "Carter", "Stevenson", "Taylor", "Smith", "McDonald", "Harris", "Sim", "Williams", "Baker", "Wells", "Fraser", "Jones", "Wilks", "Hunt", "Sanders", "Parsons", "Robson", "Harker"};
 vector<string> namesB = {"Jonson", "Addams", "Davies", "Simmons", "Richardson", "Tailor", "Chater", "Stephenson", "Naylor", "Smythe", "MacDonald", "Harrys", "Sym", "Wilson", "Barker", "Wills", "Frazer", "Johns", "Wilkinson", "Hunter", "Saunders", "Pearson", "Robertson", "Parker"};
 
@@ -72,7 +22,8 @@ string_to_soundex(string& name, string& sndex)
   //                 ABCDEFGHIJKLMNOPQRSTUVWXYZ
   char mappings[] = "01230120022455012623010202";
 
-  sndex[0] = toupper(name[0]);
+  sndex.clear();
+  sndex += toupper(name[0]);
 
   for (unsigned i = 1, len = name.size(); i < len; i++)
   {
@@ -84,7 +35,7 @@ string_to_soundex(string& name, string& sndex)
       {
         if (mappings[c] != sndex[si-1])
         {
-          sndex[si] = mappings[c];
+          sndex += mappings[c];
           si++;
         }
 
@@ -98,7 +49,7 @@ string_to_soundex(string& name, string& sndex)
   {
     while(si <= 3)
     {
-      sndex[si] = '0';
+      sndex += '0';
       si++;
     }
   }
@@ -116,7 +67,7 @@ main(void)
 
   {
     Stopwatch s("VIP_Bench Runtime");
-    for (unsigned i = 0; i < sndexA.size())
+    for (unsigned i = 0; i < sndexA.size(); i++)
     {
       string_to_soundex(namesA[i], sndexA[i]);
       string_to_soundex(namesB[i], sndexB[i]);
@@ -124,21 +75,15 @@ main(void)
   }
 
   // print the results
-  for (unsigned i=0; i < sndexA.size(); i++)
+  unsigned trial;
+  for (trial=0; trial < sndexA.size(); trial++)
   {
+    const char *res = sndexA[trial].compare(sndexB[trial]) == 0 ? "true" : "false";
+    fprintf(stdout, "trial %3u: %-20s[%-6s] =? %-20s[%-6s] --> %s\n",
+            trial, namesA[trial].c_str(), sndexA[trial].c_str(), namesB[trial].c_str(), sndexB[trial].c_str(), res);
   }
 
-  // check the array
-  for (unsigned i=0; i < DATASET_SIZE-1; i++)
-  {
-    if (VIP_DEC(data[i]) > VIP_DEC(data[i+1]))
-    {
-      fprintf(stdout, "ERROR: data is not properly sorted.\n");
-      return -1;
-    }
-  }
-  fprintf(stderr, "INFO: %lu swaps executed.\n", swaps);
-  fprintf(stdout, "INFO: data is properly sorted.\n");
+  fprintf(stderr, "INFO: %u trials performed.\n", trial);
   return 0;
 }
 
