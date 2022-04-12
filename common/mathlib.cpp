@@ -465,6 +465,8 @@ myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
 #endif /* VIP_DO_MODE */
 }
 
+#ifdef notdef
+
 static const double
 ln2_hi  =  6.93147180369123816490e-01,  /* 3fe62e42 fee00000 */
 ln2_lo  =  1.90821492927058770002e-10,  /* 3dea39ef 35793c76 */
@@ -494,7 +496,7 @@ mylog(VIP_ENCDOUBLE x)
   EXTRACT_WORDS(hx,lx,x);
   k=0;
   VIP_ENCBOOL _pred0 = (hx < 0x00100000); /* _pred0: x < 2**-1022  */
-  VIP_ENCBOOL _pred1 = (((hx&0x7fffffff)|lx)==0); /* _pred1 */
+  VIP_ENCBOOL _pred1 = (((hx&0x7fffffff)|(/*FIXME*/VIP_ENCINT)lx)==0); /* _pred1 */
   retval = VIP_CMOV(_pred0 && _pred1, -((VIP_ENCDOUBLE)two54)/zero, retval); /* log(+-0)=-inf */
   _returned = _returned || (_pred0 && _pred1);
 
@@ -511,7 +513,7 @@ mylog(VIP_ENCDOUBLE x)
   _returned = _returned || _pred3;
 
   k += (hx>>20)-1023;
-  hx &= 0x000fffff;
+  hx = hx & 0x000fffff;
   i = (hx+0x95f64)&0x100000;
   SET_HIGH_WORD(x,hx|(i^0x3ff00000)); /* normalize x or x/2 */
   k += (i>>20);
@@ -544,7 +546,7 @@ mylog(VIP_ENCDOUBLE x)
   j = (VIP_ENCINT)0x6b851-hx;
   t1= w*((VIP_ENCDOUBLE)Lg2+w*((VIP_ENCDOUBLE)Lg4+w*Lg6));
   t2= z*((VIP_ENCDOUBLE)Lg1+w*((VIP_ENCDOUBLE)Lg3+w*((VIP_ENCDOUBLE)Lg5+w*Lg7)));
-  i |= j;
+  i = i | j;
   R = t2+t1;
 
   VIP_ENCBOOL _pred8 = (i>0);
@@ -614,6 +616,7 @@ mylog(VIP_ENCDOUBLE x)
   }
 #endif /* !VIP_DO_MODE */
 }
+#endif /* notdef */
 
 
 #ifdef TEST

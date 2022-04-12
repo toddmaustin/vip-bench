@@ -2,7 +2,7 @@ CC  = gcc
 CXX = g++
 LD  = g++
 
-OPT_CFLAGS = -O0 -g -std=c++11 -Wno-comment -maes
+OPT_CFLAGS = -O3 -g -std=c++11 -Wno-comment -maes
 
 NA_CFLAGS =
 NA_LIBS =

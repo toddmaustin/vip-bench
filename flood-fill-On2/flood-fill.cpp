@@ -126,11 +126,11 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 		   				struct_mat[i+row[k]][j+col[k]].group = VIP_CMOV(condition&&struct_mat[i][j].assigned&&struct_mat[i][j].sub_group==struct_mat[i+row[k]][j+col[k]].sub_group,temp,struct_mat[i+row[k]][j+col[k]].group);				
 		   				
 		   				//If conditon was set to true the the current element will be assigned(true)          	
-			       		struct_mat[i][j].assigned = VIP_CMOV(condition,true,struct_mat[i][j].assigned);	       		          	          
+			       		struct_mat[i][j].assigned = VIP_CMOV(condition,(VIP_ENCBOOL)true,struct_mat[i][j].assigned);	       		          	          
 		   			}
 			  }					  				    		
 		    		//If no adjacent value that fullfils the condition is found then it will be assigned a new group
-		    		struct_mat[i][j].sub_group = VIP_CMOV(!found,primeNum[groupIndex],struct_mat[i][j].sub_group);
+		    		struct_mat[i][j].sub_group = VIP_CMOV(!found,(VIP_ENCULONG)primeNum[groupIndex],struct_mat[i][j].sub_group);
 		    		struct_mat[i][j].group = VIP_CMOV(!found,struct_mat[i][j].sub_group,struct_mat[i][j].group);
 		    		
 		    		//all value are assigned after the finish this phase
@@ -148,7 +148,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 				VIP_ENCBOOL _istarget = (x == ix && y == iy);
 				targetGr = VIP_CMOV(_istarget,struct_mat[ix][iy].group,targetGr);
 				targetGr = VIP_CMOV(condition&&isFactor(struct_mat[ix][iy].group,targetGr),struct_mat[ix][iy].group,targetGr);
-				condition = VIP_CMOV(_istarget,true,condition);
+				condition = VIP_CMOV(_istarget,(VIP_ENCBOOL)true,condition);
 
 			}
 		}
