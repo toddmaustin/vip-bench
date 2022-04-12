@@ -1,7 +1,7 @@
 include ../config.mk
 
 #
-# END of user-modifiable variables.
+# END of user-modifiable variables
 #
 
 ifeq ($(MODE), na)

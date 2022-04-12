@@ -12,6 +12,7 @@ struct enc_long;
 struct enc_ulong;
 struct enc_uint32;
 struct enc_uint64;
+struct enc_float; 
 struct enc_double; 
 
 
@@ -223,6 +224,11 @@ struct enc_double;
         inline friend enc_bool     operator>   (int lhs, enc_int rhs)            __attribute__((always_inline))  {  return enc_bool((rhs.decrypt_int()) < lhs);      }
         inline friend enc_bool     operator>=  (int lhs, enc_int rhs)            __attribute__((always_inline))  {  return enc_bool(!(lhs < (rhs.decrypt_int())));   }
        /*************/
+        inline friend enc_int      operator&   (enc_int lhs, enc_int rhs)      __attribute__((always_inline))  { return enc_int(lhs.decrypt_int() & rhs.decrypt_int()); }
+        inline friend enc_int      operator|   (enc_int lhs, enc_int rhs)      __attribute__((always_inline))  { return enc_int(lhs.decrypt_int() | rhs.decrypt_int()); }  
+        inline friend enc_int      operator^   (enc_int lhs, enc_int rhs)      __attribute__((always_inline))  { return enc_int(lhs.decrypt_int() ^ rhs.decrypt_int()); }
+        inline friend enc_int      operator>>  (enc_int lhs, enc_int rhs)      __attribute__((always_inline))  { return enc_int(lhs.decrypt_int() >> rhs.decrypt_int()); }
+        inline friend enc_int      operator<<  (enc_int lhs, enc_int rhs)      __attribute__((always_inline))  { return enc_int(lhs.decrypt_int() << rhs.decrypt_int()); } 
        /*** Math ***/
         // inline friend enc_int      sqrt   (enc_int x)                            __attribute__((always_inline)) {std::cerr << "EXTERNAL CALL TO UNSAFE MATH FUNCTION\n"; return enc_int(sqrt(x.decrypt_int())); }   //TODO Should implement d.o. sqrt function
         // inline friend enc_int      pow    (enc_int x, int y)                     __attribute__((always_inline)) {std::cerr << "EXTERNAL CALL TO UNSAFE MATH FUNCTION\n"; return enc_int(pow(x.decrypt_int(), y)); } //TODO Should implement d.o. pow function
@@ -260,6 +266,7 @@ struct enc_double;
                 return enc_int(result);
         }     
         operator enc_double(); 
+        operator enc_float(); 
         operator enc_uint32();
         operator enc_uint64();
     } enc_int;
@@ -553,16 +560,19 @@ struct enc_double;
         inline friend enc_uint32   operator-   (enc_uint32 lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() - rhs.decrypt_uint32()); }
         inline friend enc_uint32   operator*   (enc_uint32 lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() * rhs.decrypt_uint32()); }   
         inline friend enc_uint32   operator/   (enc_uint32 lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() / rhs.decrypt_uint32()); }
+        inline friend enc_uint32   operator%   (enc_uint32 lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() % rhs.decrypt_uint32()); }
         // Arithmetic, Enc-Plaintext Op
         inline friend enc_uint32   operator+   (enc_uint32 lhs, unsigned int rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() + rhs); }
         inline friend enc_uint32   operator-   (enc_uint32 lhs, unsigned int rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() - rhs); }
         inline friend enc_uint32   operator*   (enc_uint32 lhs, unsigned int rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() * rhs); }
         inline friend enc_uint32   operator/   (enc_uint32 lhs, unsigned int rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() / rhs); }
+        inline friend enc_uint32   operator%   (enc_uint32 lhs, unsigned int rhs)           __attribute__((always_inline))  { return enc_uint32(lhs.decrypt_uint32() % rhs); }
         // // Arithmetic, Plaintext-Enc Op
         inline friend enc_uint32   operator+   (unsigned int lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs + rhs.decrypt_uint32()); }
         inline friend enc_uint32   operator-   (unsigned int lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs - rhs.decrypt_uint32()); }
         inline friend enc_uint32   operator*   (unsigned int lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs * rhs.decrypt_uint32()); }
         inline friend enc_uint32   operator/   (unsigned int lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs / rhs.decrypt_uint32()); }
+        inline friend enc_uint32   operator%   (unsigned int lhs, enc_uint32 rhs)           __attribute__((always_inline))  { return enc_uint32(lhs % rhs.decrypt_uint32()); }
         // // Logic, Enc-Enc Op          
         inline friend enc_bool     operator==  (enc_uint32 lhs, enc_uint32 rhs)         __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_uint32()) == (rhs.decrypt_uint32())));   }
         inline friend enc_bool     operator!=  (enc_uint32 lhs, enc_uint32 rhs)         __attribute__((always_inline))  {  return enc_bool(((lhs.decrypt_uint32()) != (rhs.decrypt_uint32())));   }

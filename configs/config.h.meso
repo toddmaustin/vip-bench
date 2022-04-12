@@ -10,6 +10,7 @@
 
 #define VIP_INIT
 #define VIP_ENCCHAR     char
+#define VIP_ENCUCHAR    unsigned char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
 #define VIP_ENCLONG     long
@@ -32,6 +33,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 
 #define VIP_INIT
 #define VIP_ENCCHAR     char
+#define VIP_ENCUCHAR    unsigned char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
 #define VIP_ENCLONG     long
@@ -58,6 +60,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_INIT        MesoInit(NULL, false)
 
 #define VIP_ENCCHAR     MesoSealedChar
+#define VIP_ENCUCHAR    MesoSealedUChar
 #define VIP_ENCINT      MesoSealedInt32
 #define VIP_ENCUINT     MesoSealedUInt32
 #define VIP_ENCLONG     MesoSealedLong64

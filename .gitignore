@@ -2,7 +2,6 @@ Attic/
 config.h
 config.mk
 *.o
-*.log
 *.na
 *.do
 *.enc
@@ -11,5 +10,6 @@ FOO
 FOO1
 *.enc
 *.na
-*.out
+mem.out
+*.log
 */bin/*

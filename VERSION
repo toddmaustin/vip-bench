@@ -1,0 +1,13 @@
+Version 1.2
+  - Many more benchmarks added: distinctness, filtered-query, gcd-list, image-filters, kadane, knapsack, pagerank, recommender, set-intersect, shortest-path
+  - Added flood-fill-On2, which is a redesigned version of flood-fill, which improves order complexity from O(N^4) to O(N^2) 
+  - Additional support for Microsoft SEAL
+  - Additional operator support in VIP-Functional library
+
+Version 1.1
+  - Additional benchmarks: fft-int, tea-cipher, triangle-count
+  - Initial support added for Microsoft SEAL
+
+Version 1.0
+  - Initial release
+

@@ -95,12 +95,21 @@ main(void)
 {
   VIP_ENCINT dup;
 
-  if (VIP_DEC(isDistinct(elements1, dup)))
+  bool res1, res2;
+
+  {
+    Stopwatch s("VIP Distinctness check:");
+
+    res1 = VIP_DEC(isDistinct(elements1, dup));
+    res2 = VIP_DEC(isDistinct(elements2, dup));
+  }
+
+  if (res1)
 		cout<<"The elements of `elements1' are distinct"<<endl;
 	else
 		cout<<"The elements of `elements1' are not distinct (e.g., " << VIP_DEC(dup) << " is duplicated)"<<endl;
 	
-  if (VIP_DEC(isDistinct(elements2, dup)))
+  if (res2)
 		cout<<"The elements of `elements2' are distinct"<<endl;
 	else
 		cout<<"The elements of `elements2' are not distinct (e.g., " << VIP_DEC(dup) << " is duplicated)"<<endl;

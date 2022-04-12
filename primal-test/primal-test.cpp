@@ -51,7 +51,7 @@ static VIP_ENCULONG powm(VIP_ENCULONG b, VIP_ENCULONG e, VIP_ENCUINT m)
     _done = _done || (e == 0);
     VIP_ENCBOOL _pred = ((e & 1) == 1);
     result = VIP_CMOV(!_done && _pred, (result * b) % (VIP_ENCULONG)m, result);
-		b = VIP_CMOV(!_done, (b * b) % m, b);
+		b = VIP_CMOV(!_done, (b * b) % (VIP_ENCULONG)m, b);
 		e = VIP_CMOV(!_done, e / 2, e);
   }
 #else /* !VIP_DO_MODE */
