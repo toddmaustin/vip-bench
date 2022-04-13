@@ -47,19 +47,19 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Flood Fill O(N^2)** - Performs a graphical flood fill operation on a 2D privatized image, but this version is more clever and achieves O(N^2) data-oblivious performance. The image being filled and the location of the start of the flood fill are all privatized.
 
-**GCD List** - Computes the greatest common divisor for a list of integers using the division algorithm. The input list of integers and the computed GCD for the list are all privatized.
+- **GCD List** - Computes the greatest common divisor for a list of integers using the division algorithm. The input list of integers and the computed GCD for the list are all privatized.
 
 - **Gradient Descent** - Computes the Gradient Descent of a fixed data set. The input integer data set and the computed gradient are all privatized.
 
 - **Gradient of X** - Computes the gradient of vector X (HE-friendly). The vector X and the computed gradient are all privatized.
 
-**Image Filter** - Applies a sepia-tone filter to an image. The input image and the resulting filtered image are all privatized.
+- **Image Filter** - Applies a sepia-tone filter to an image. The input image and the resulting filtered image are all privatized.
 
 - **Kadanes Algorithm** - Finds the maximum sum of a contiguous subarray in a given privatized integer array. The input array of integers and the location of the maximum subsum are all privatized.
 
 - **Keplers Equation Calculator** - Performs orbital trajectory calculations using five Kepler's Equation solvers. The orbital parameters and the computed trajectory are all privatized.
 
-**Knapsack** - Computes the 0-1 Knapsack solution for a set of weights and values. The input weights and values and the computed packing are all privatized.
+- **Knapsack** - Computes the 0-1 Knapsack solution for a set of weights and values. The input weights and values and the computed packing are all privatized.
 
 - **Linear Discriminant Analysis** - Performs linear discriminant anaylsis of a privatized fixed data set. The input integer data set and the computed discriminant are all privatized.
 
@@ -75,7 +75,7 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Netwon-Raphson Solver** - Computes a square-root value using a Newton-Raphson solver. The inputs and outputs of the solver are privatized.
 
-**Pagerank** - Computes the page rank algorithm on a randomly generated graph. The input graph and the computed page rank are all privatized.
+- **Pagerank** - Computes the page rank algorithm on a randomly generated graph. The input graph and the computed page rank are all privatized.
 
 - **Parrondo's Paradox** - A game theory based solver that simulates Parrondo's paradox. The inputs and outputs of the solver are privatized.
 
@@ -83,9 +83,9 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Radians to Degrees** - Converts a vector of radian measurements to degrees. The input vector of radians and the computed degree values are all privatized.
 
-**Recommender** - Performs movie recommendations using the matrix factorization algorithm. The movies viewed by users and their ratings and the predicted ratings computed are all privatized.
+- **Recommender** - Performs movie recommendations using the matrix factorization algorithm. The movies viewed by users and their ratings and the predicted ratings computed are all privatized.
 
-**Set Intersect** - Performs private set intersection (PSI) on two randomly generated sets of integers. The input sets and the computed intersection are all privatized.
+- **Set Intersect** - Performs private set intersection (PSI) on two randomly generated sets of integers. The input sets and the computed intersection are all privatized.
  
 - **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm. The input graph and the computed path are all privatized.
 
