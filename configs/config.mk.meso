@@ -17,7 +17,7 @@ DO_DIFF = diff
 ENC_CFLAGS = -Wno-deprecated-declarations -I../../mesosphere-tek -I/opt/xilinx/xrt/include -I/tools/Xilinx/Vivado/2020.2/include -DTARGET_ALVEO
 ENC_LIBS = ../../mesosphere-tek/mesolib.a -L/opt/xilinx/xrt/lib -lxrt_core -luuid -L/usr/local/ssl/lib -lssl -lcrypto
 #ENC_CFLAGS = -I../../mesosphere -DTARGET_EMUL
-#ENC_LIBS = ../../mesosphere/mesolib.a -lssl -lcrypto
+#ENC_LIBS = ../../mesosphere/mesolib.a -L/usr/local/ssl/lib -lssl -lcrypto
 ENC_SIM =
 ENC_DIFF = diff
 
