@@ -21,38 +21,35 @@ print_data(VIP_ENCINT *data, unsigned size)
     fprintf(stdout, "  data[%u] = %d\n", i, VIP_DEC(data[i]));
 }
 
+// given an array arr of length n, this code sorts it in place
+// all indices run from 0 to n-1
 void
-bubblesort(VIP_ENCINT *data, unsigned size)
+bitonicsort(VIP_ENCINT *data, unsigned size)
 {
-  for (unsigned i=0; i < size-1; i++)
+  for (unsigned k = 2; k <= size; k <<= 1) // k is doubled every iteration
   {
-#ifndef VIP_DO_MODE
-    bool swapped = false;
-#endif /* !VIP_DO_MODE */
-    for (unsigned j=0; j < size-1; j++)
+    for (unsigned j = k/2; j > 0; j >>= 1) // j is halved at every iteration, with truncation of fractional parts
     {
-#ifndef VIP_DO_MODE
-      if (data[j] > data[j+1])
+      for (unsigned i = 0; i < size; i++)
       {
-        VIP_ENCINT tmp = data[j];
-        data[j] = data[j+1];
-        data[j+1] = tmp;
-        swapped = true;
-        swaps++;
-      }
-#else /* VIP_DO_MODE */
-      VIP_ENCBOOL do_swap = data[j] > data[j+1];
-      VIP_ENCINT tmp = data[j];
-      data[j] = VIP_CMOV(do_swap, data[j+1], data[j]);
-      data[j+1] = VIP_CMOV(do_swap, tmp, data[j+1]);
-      swaps++;
-#endif /* VIP_DO_MODE */
-    }
+        unsigned l = (i ^ j);
 #ifndef VIP_DO_MODE
-    // done?
-    if (!swapped)
-      break;
-#endif /* !VIP_DO_MODE */
+        if ((l > i) && ((((i & k) == 0) && (data[i] > data[l])) || (((i & k) != 0) && (data[i] < data[l]))) )
+        {
+          VIP_ENCINT tmp = data[i];
+          data[i] = data[l];
+          data[l] = tmp;
+          swaps++;
+        }
+#else /* VIP_DO_MODE */
+        VIP_ENCBOOL _pred = ((l > i) && ((((i & k) == 0) && (data[i] > data[l])) || (((i & k) != 0) && (data[i] < data[l]))) );
+        VIP_ENCINT tmp = data[i];
+        data[i] = VIP_CMOV(_pred, data[l], data[i]);
+        data[l] = VIP_CMOV(_pred, tmp, data[l]);
+        swaps++;
+#endif /* VIP_DO_MODE */
+      }
+    }
   }
 }
 
@@ -73,7 +70,7 @@ main(void)
 
   {
     Stopwatch s("VIP_Bench Runtime");
-    bubblesort(data, DATASET_SIZE);
+    bitonicsort(data, DATASET_SIZE);
   }
   print_data(data, DATASET_SIZE);
 
