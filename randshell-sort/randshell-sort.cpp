@@ -3,6 +3,8 @@
 #include <time.h>
 #include "utils.h"
 
+// Randomized Shell sort, from: https://arxiv.org/pdf/0909.1037.pdf
+
 // include build configuration defines
 #include "../config.h"
 
