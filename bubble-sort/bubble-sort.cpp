@@ -24,12 +24,12 @@ print_data(VIP_ENCINT *data, unsigned size)
 void
 bubblesort(VIP_ENCINT *data, unsigned size)
 {
-  for (unsigned i=0; i < size-1; i++)
+  for (unsigned i=size; i > 1; i--)
   {
 #ifndef VIP_DO_MODE
     bool swapped = false;
 #endif /* !VIP_DO_MODE */
-    for (unsigned j=0; j < size-1; j++)
+    for (unsigned j=0; j < i-1; j++)
     {
 #ifndef VIP_DO_MODE
       if (data[j] > data[j+1])
