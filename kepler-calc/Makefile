@@ -12,7 +12,7 @@ DO_DIFF= numdiff -r 0.001
 ENC_DIFF=$(DO_DIFF)
 
 test:
-	-$(TARGET_SIM) $(TARGET_EXE) > FOO
+	-$(TARGET_SIM) $(eval SHELL:=/bin/bash) OZONE_CONTRACT=../keyfiles/dataowner-keyenc.bin OZONE_DEBUGKEY=../keyfiles/dataowner-keybin.bin $(TARGET_EXE) > FOO
 	$(TARGET_DIFF) FOO kepler-calc.out
 	rm -f FOO
 
