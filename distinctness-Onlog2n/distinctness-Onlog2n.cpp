@@ -27,7 +27,7 @@ VIP_ENCINT elements1[SIZE] = {
   425,497,401,400,436,422,474,403,409,412,430,481,463,4148,499,413,464,449,480,415,
   525,597,501,500,536,522,574,503,509,512,530,581,563,5148,599,513,564,549,580,515,
   625,697,601,600,636,622,674,603,
-  1554, 1521, 1372, 1616, 1996, 1677, 1283, 1821, 1730,	1725, 1072, 1358, 1726, 1733, 1643,
+  1554, 1521, 1372, 1616, 1996, 1677, 1283, 1821, 1730, 1725, 1072, 1358, 1726, 1733, 1643,
   1484, 1127, 1671, 1582, 1259, 1734, 1440, 1961, 1669, 1859, 1417, 1625, 1056, 1003, 1370,
   1665, 1842, 1132, 1870, 1382, 1389, 1257, 1851, 1598, 1742, 1575, 1175, 1426, 1718, 1775,
   1926, 1378, 1432, 1910, 1247, 1919, 1558, 1287, 1062, 1868, 1736, 1149, 1270, 1066, 1646,
@@ -45,7 +45,7 @@ VIP_ENCINT elements2[SIZE] = {
   425,497,401,400,436,422,474,403,409,412,430,481,463,4148,499,413,464,449,480,415,
   525,597,501,500,536,522,574,503,509,512,530,581,563,5148,599,513,564,549,580,515,
   625,697,601,600,636,622,674,603,
-  1554, 1521, 1372, 1616, 1996, 1677, 1283, 1821, 1730,	1725, 1072, 1358, 1726, 1733, 1643,
+  1554, 1521, 1372, 1616, 1996, 1677, 1283, 1821, 1730, 1725, 1072, 1358, 1726, 1733, 1643,
   1484, 1127, 1671, 1582, 1259, 1734, 1440, 1961, 1669, 1859, 1417, 1625, 1056, 1003, 1370,
   1665, 1842, 1132, 1870, 1382, 1389, 1257, 1851, 1598, 1742, 1575, 1175, 1426, 1718, 1775,
   1926, 1378, 1432, 1910, 1247, 1919, 1558, 1287, 1062, 1868, 1736, 1149, 1270, 1066, 1646,
@@ -56,70 +56,64 @@ VIP_ENCINT elements2[SIZE] = {
   1359, 1138, 1236, 1246, 1683, 1935, 1814, 1408
 };
 
+// given an array arr of length n, this code sorts it in place
+// all indices run from 0 to n-1
+void
+bitonicsort(VIP_ENCINT *data, unsigned size)
+{
+  for (unsigned k = 2; k <= size; k <<= 1) // k is doubled every iteration
+  { 
+    for (unsigned j = k/2; j > 0; j >>= 1) // j is halved at every iteration, with truncation of fractional parts
+    { 
+      for (unsigned i = 0; i < size; i++)
+      { 
+        unsigned l = (i ^ j);
+#ifndef VIP_DO_MODE 
+        if ((l > i) && ((((i & k) == 0) && (data[i] > data[l])) || (((i & k) != 0) && (data[i] < data[l]))) )
+        { 
+          VIP_ENCINT tmp = data[i];
+          data[i] = data[l];
+          data[l] = tmp;
+        }
+#else /* VIP_DO_MODE */
+        VIP_ENCBOOL _pred = ((l > i) && ((((i & k) == 0) && (data[i] > data[l])) || (((i & k) != 0) && (data[i] < data[l]))) );
+        VIP_ENCINT tmp = data[i]; 
+        data[i] = VIP_CMOV(_pred, data[l], data[i]);
+        data[l] = VIP_CMOV(_pred, tmp, data[l]);
+#endif /* VIP_DO_MODE */
+      }
+    }
+  }
+}
+
 VIP_ENCBOOL
 isDistinct(VIP_ENCINT elements[], VIP_ENCINT &dup)
 {
-#ifdef VIP_DO_MODE
-  dup = MAX;
+  // sort the data
+  bitonicsort(elements, SIZE);
 
-  for (int i=SIZE-1; i >= 0; i--)
+  // detect dups
+#ifndef VIP_DO_MODE 
+  dup = MAX;
+  for (unsigned i=0; i < SIZE-1; i++)
   {
-    for (int j=0; j < SIZE; j++)
-      dup = VIP_CMOV(elements[i] == elements[j] && i!=j, elements[j], dup);
+    if (elements[i] == elements[i+1])
+    {
+      dup = elements[i];
+      return false;
+    }
   }
-
-  return (dup == MAX);
-#else /* !VIP_DO_MODE */
-  VIP_ENCINT tree[SIZE][3];
+  return true;
+#else /* VIP_DO_MODE */
+  VIP_ENCBOOL distinct = true;
   dup = MAX;
-
-	for(int i = 0; i < SIZE;i++){
-		tree[i][0] = MAX;
-		tree[i][1] = MAX;
-		tree[i][2] = MAX;
-	}	
-	
-	tree[0][0] = elements[0];
-	VIP_ENCINT location = 0;
-
-	for(int i = 1; i < SIZE; i++){
-		VIP_ENCINT temp = 0;
-		VIP_ENCINT value = tree[0][0];
-		VIP_ENCINT left = tree[0][1];
-		VIP_ENCINT right = tree[0][2];
-
-		while(value != MAX){
-			if(elements[i] > value){
-				if(right != MAX){
-					value = tree[right][0];
-					left = tree[right][1];
-					temp = right;
-					right = tree[right][2];
-				}else{
-					tree[location+1][0] = elements[i];
-					tree[temp][2] = location + 1;
-					location++;
-					break;
-				}
-			}else if(elements[i] < value){
-				if(left != MAX){
-					value = tree[left][0];
-					right = tree[left][2];
-					temp = left;
-					left = tree[left][1];
-				}else{
-					tree[temp][1] = location+1;
-					tree[location+1][0] = elements[i];
-					location++;
-					break;
-				}
-			}else{
-        dup = elements[i];
-				return false;
-			}
-		}
-	}
-	return true;
+  for (int i=SIZE-2; i >= 0; i--)
+  {
+    VIP_ENCBOOL _pred = (elements[i] == elements[i+1]);
+    dup = VIP_CMOV(_pred, elements[i], dup);
+    distinct = VIP_CMOV(_pred, (VIP_ENCBOOL)false, distinct);
+  }
+  return distinct;
 #endif /* VIP_DO_MODE */
 }
 
