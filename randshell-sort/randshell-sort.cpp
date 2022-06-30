@@ -8,6 +8,7 @@
 // include build configuration defines
 #include "../config.h"
 
+// supported sizes: 256, 512, 1024 (default), 2048
 #define DATASET_SIZE 1024
 VIP_ENCINT data[DATASET_SIZE];
 
