@@ -9,7 +9,7 @@ using namespace std;
 #include "utils.h"
  
 // sizes support 10 (default), 15, 20, 25
-#define SIZE 25
+#define SIZE 10
 
 // `M × N` matrix
 #define M SIZE
@@ -115,8 +115,9 @@ int groupIndex=0;
 node struct_mat[M][N];
 
 //Can use this function to see the groups and subgroup
-void printStructMatrix(node struct_mat[M][N])
+void printStructMatrix(node struct_mat[M][N], int phase)
 {
+  cout << "Phase #" << phase << endl;
   for (int i = 0; i < M; i++)
   {
     for (int j = 0; j < N; j++)
@@ -127,12 +128,19 @@ void printStructMatrix(node struct_mat[M][N])
   }
 }
 
+#if 0
+// TMA: this version overflows for bigger data sets
 //checks if small is a factor of big
 VIP_ENCBOOL isFactor(VIP_ENCDOUBLE big,VIP_ENCDOUBLE small){
 	VIP_ENCDOUBLE temp= big/small;
 	VIP_ENCINT temp1 = big/small;
 	return (temp-temp1)==0;
 }
+#else
+VIP_ENCBOOL isFactor(VIP_ENCULONG big,VIP_ENCULONG small){
+  return (big % small) == 0;
+}
+#endif
 
 //generates primeNumbers in a random way
 void generatePrime(){
@@ -183,6 +191,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 		
 		for(int i = 0;i < M;i++){
 			for(int j=0;j<N;j++){		
+        // printStructMatrix(struct_mat, 0);
 				for (int k=0; k < 8; k++){
 		      		if (SAFELOC(i+row[k], j+col[k])){
 		      			
@@ -228,6 +237,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 		VIP_ENCULONG targetGr = 1;
 		for (int ix=0; ix < M; ix++){
 			for (int iy=0; iy < N; iy++){
+        // printStructMatrix(struct_mat, 1);
 				VIP_ENCBOOL _istarget = (x == ix && y == iy);
 				targetGr = VIP_CMOV(_istarget,struct_mat[ix][iy].group,targetGr);
 				targetGr = VIP_CMOV(condition&&isFactor(struct_mat[ix][iy].group,targetGr),struct_mat[ix][iy].group,targetGr);
@@ -239,6 +249,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 		//This loop finds each element that is in the target group and assigns it with the replacemnt color	  
 		for(int i=0;i<M;i++){
 		  	for(int j=0;j<N;j++){		  	
+          // printStructMatrix(struct_mat, 1);
 		  		condition = (isFactor(targetGr,struct_mat[i][j].sub_group));		  		
 		  		mat[i][j] = VIP_CMOV(condition,replacement,mat[i][j]); 		
 		  	}
