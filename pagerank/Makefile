@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=pagerank
 OBJS=graph.o main.o pagerank.o pageutil.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

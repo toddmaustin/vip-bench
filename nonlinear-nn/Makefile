@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=nonlinear-nn
 OBJS=nonlinear-nn.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

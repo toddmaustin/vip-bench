@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=parrando
 OBJS=parrando.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

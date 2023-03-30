@@ -1,9 +1,20 @@
-include ../config.mk
+define HELP_TEXT
+Please choose one of the following target
+  config-vip     - configure VIP-Bench to target the VIP-Bench functional library
+  config-meso    - configure VIP-Bench to target Agita Labs' Mesosphere secure computation SDK
+  config-seal    - configure VIP-Bench to target Microsoft's SEAL Homomorphic Encryption library
+  run-tests      - clean, build, and test all benchmarks in all target modes (NA,DO,ENC)
+  all-clean      - clean all benchmark directories
+endef
+
+export HELP_TEXT
+
+error:
+	@echo "$$HELP_TEXT"
 
 #
 # END of user-modifiable variables
 #
-
 ifeq ($(MODE), na)
 TARGET_CFLAGS = $(NA_CFLAGS)
 TARGET_LIBS = $(NA_LIBS)
@@ -62,5 +73,30 @@ $(TARGET_EXE): $(OBJS)
 	$(LD) $(CFLAGS) -o $@ $(notdir $^) $(LIBS)
 
 clean:
-	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core mem.out FOO $(LOCAL_CLEAN)
+	rm -f $(PROG).na $(PROG).do $(PROG).enc *.o core mem.out *.log FOO $(LOCAL_CLEAN)
 
+
+#
+# top-level Makefile interfaces
+#
+
+config-vip:
+	@echo "Configuring VIP-Bench for VIP functional library..."
+	ln -sf configs/config.mk.vip config.mk
+	ln -sf configs/config.h.vip config.h
+
+config-mesa:
+	@echo "Configuring VIP-Bench for Agita Labs' Mesosphere SDK..."
+	ln -sf configs/config.mk.meso config.mk
+	ln -sf configs/config.h.meso config.h
+
+config-seal:
+	@echo "Configuring VIP-Bench for Microsoft SEAL HE library..."
+	ln -sf configs/config.mk.seal config.mk
+	ln -sf configs/config.h.seal config.h
+
+run-tests:
+	./scripts/run-tests.sh
+
+all-clean:
+	./scripts/all-clean.sh

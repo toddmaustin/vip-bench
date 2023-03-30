@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=distinctness
 OBJS=distinctness.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=fft-int
 OBJS=fft-int.o ../common/mathlib.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

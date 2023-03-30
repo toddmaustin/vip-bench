@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=mnist-cnn
 OBJS=mnist-cnn.o kautodiff.o kann.o kann_data.o ../common/mathlib.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

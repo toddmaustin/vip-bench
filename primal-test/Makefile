@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=primal-test
 OBJS=primal-test.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

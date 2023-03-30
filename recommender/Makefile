@@ -6,6 +6,7 @@ LOCAL_CLEAN=results.txt
 PROG=recommender
 OBJS=main.o parser.o predictor.o rating.o ../common/utils.o ../common/mathlib.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

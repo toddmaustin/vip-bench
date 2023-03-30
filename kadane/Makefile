@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=kadane
 OBJS=kadane.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

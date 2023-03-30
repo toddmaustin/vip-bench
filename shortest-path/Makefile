@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=shortest-path
 OBJS=shortest-path.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

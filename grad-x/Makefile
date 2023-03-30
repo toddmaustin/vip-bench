@@ -9,6 +9,7 @@ LOCAL_LIBS=
 PROG=grad-x
 OBJS=grad-x.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

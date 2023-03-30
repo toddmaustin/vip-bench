@@ -6,6 +6,7 @@ LOCAL_CLEAN=homesales.db
 PROG=filtered-query
 OBJS=filtered-query.o kissdb.o ../common/utils.o ../common/mathlib.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

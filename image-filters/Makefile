@@ -6,6 +6,7 @@ LOCAL_CLEAN=FOO.bmp
 PROG=image-filters
 OBJS=image-filters.o helpers.o ../common/utils.o ../common/mathlib.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

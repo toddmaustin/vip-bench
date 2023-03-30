@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=lda
 OBJS=lda.o ../common/utils.o ../common/mathlib.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

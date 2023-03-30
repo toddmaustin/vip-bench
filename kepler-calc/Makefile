@@ -6,6 +6,7 @@ LOCAL_LIBS=
 PROG=kepler-calc
 OBJS=kepler-calc.o ../common/mathlib.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 DO_DIFF= numdiff -r 0.001

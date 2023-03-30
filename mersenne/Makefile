@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=mersenne
 OBJS=mersenne.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)

@@ -5,6 +5,7 @@ LOCAL_LIBS=
 PROG=edit-distance
 OBJS=edit-distance.o ../common/utils.o
 
+include ../config.mk
 include ../Makefile
 
 test: $(TARGET_EXE)
