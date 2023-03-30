@@ -15,6 +15,8 @@ error:
 #
 # END of user-modifiable variables
 #
+BMARKS = bitonic-sort boyer-moore-search bubble-sort
+
 ifeq ($(MODE), na)
 TARGET_CFLAGS = $(NA_CFLAGS)
 TARGET_LIBS = $(NA_LIBS)
@@ -96,7 +98,26 @@ config-seal:
 	ln -sf configs/config.h.seal config.h
 
 run-tests:
-	./scripts/run-tests.sh
+	@for _BMARK in $(BMARKS) ; do \
+	  for _MODE in na do enc ; do \
+	    cd $$_BMARK ; \
+	    echo "--------------------------------" ; \
+	    echo "Running "$$_BMARK" in MODE="$$_MODE ; \
+	    echo "--------------------------------" ; \
+	    make MODE=$$_MODE clean build test ; \
+	    cd .. ; \
+	  done \
+	done
 
 all-clean:
-	./scripts/all-clean.sh
+	@for _BMARK in $(BMARKS) ; do \
+	  for _MODE in na do enc ; do \
+	    cd $$_BMARK ; \
+	    echo "--------------------------------" ; \
+	    echo "Running "$$_BMARK" in MODE="$$_MODE ; \
+	    echo "--------------------------------" ; \
+	    make MODE=$$_MODE clean ; \
+	    cd .. ; \
+	  done \
+	done
+

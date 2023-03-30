@@ -6,6 +6,7 @@
 // include build configuration defines
 #include "../config.h"
 
+// supported sizes: 256 (default), 512, 1024, 2048
 #define DATASET_SIZE 256
 VIP_ENCINT data[DATASET_SIZE];
 
@@ -24,12 +25,12 @@ print_data(VIP_ENCINT *data, unsigned size)
 void
 bubblesort(VIP_ENCINT *data, unsigned size)
 {
-  for (unsigned i=size; i > 1; i--)
+  for (unsigned i=0; i < size-1; i++)
   {
 #ifndef VIP_DO_MODE
     bool swapped = false;
 #endif /* !VIP_DO_MODE */
-    for (unsigned j=0; j < i-1; j++)
+    for (unsigned j=0; j < size-1; j++)
     {
 #ifndef VIP_DO_MODE
       if (data[j] > data[j+1])
