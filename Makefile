@@ -15,7 +15,7 @@ error:
 #
 # END of user-modifiable variables
 #
-BMARKS = bitonic-sort boyer-moore-search bubble-sort
+BMARKS = bitonic-sort boyer-moore-search bubble-sort distinctness distinctness-Onlog2n edit-distance eulers-number-approx fft-int filtered-query flood-fill flood-fill-On2 gcd-list gradient-descent grad-x image-filters kadane kepler-calc knapsack lda linear-reg mersenne minspan mnist-cnn nonlinear-nn nr-solver pagerank parrando primal-test rabinkarp-search rad-to-degree randshell-sort recommender set-intersect shortest-path string-search tea-cipher triangle-count
 
 ifeq ($(MODE), na)
 TARGET_CFLAGS = $(NA_CFLAGS)

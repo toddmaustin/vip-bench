@@ -2,9 +2,9 @@
 Moore String Matching Algorithm */
 // SOURCE: https://www.geeksforgeeks.org/boyer-moore-algorithm-for-pattern-searching/
 
-# include <limits.h>
-# include <string.h>
-# include <stdio.h>
+#include <limits.h>
+#include <string.h>
+#include <stdio.h>
 #include "../config.h"
 
 #ifdef VIP_DO_MODE

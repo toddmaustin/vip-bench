@@ -1,6 +1,6 @@
 Version 1.3
   - added more top-level Makefile targets and help output
-  - added new benchmarks: bitonic-sort, boyer-moore-search, distinctness-Onlog2n, rabinkarp-search, randshell-sort, string-search
+  - added new benchmarks: bitonic-sort, boyer-moore-search, distinctness-Onlog2n, flood-fill-On2, rabinkarp-search, randshell-sort, string-search
 
 Version 1.2
   - Many more benchmarks added: distinctness, filtered-query, gcd-list, image-filters, kadane, knapsack, pagerank, recommender, set-intersect, shortest-path
