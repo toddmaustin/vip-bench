@@ -109,7 +109,7 @@ run-tests:
 	  done \
 	done
 
-all-clean:
+all-clean: clean
 	@for _BMARK in $(BMARKS) ; do \
 	  for _MODE in na do enc ; do \
 	    cd $$_BMARK ; \
