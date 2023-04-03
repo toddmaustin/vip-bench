@@ -31,9 +31,15 @@ If you use the VIP-Bench benchmarks in your research and/or publications, please
 The VIP benchmarks were selected for their (mostly) obvious demands for data privacy. Currently, the benchmark suite supports the following
 benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on most homomorphic encryption frameworks because they have only linear operators and shallow computations. The remaining benchmarks are classified as HE-hard, since they would likely require deep computations and non-linear operator support.
 
+- **Bitonic Sort** - Sorts an array of integers using the bitonic sort algorithm. This algorithm has O(Nlog^2n) complexity, compared to bubble sort's O(N^2) complexity. The integer values being sorted are completely privatized.
+
+- **Boyer-Moore Search** - Implements the Boyer-Moore heuristic search algorithm. All string data, including the search database and the search string are privatized.
+
 - **Bubble Sort** - Sorts an array of integers using the bubble sort algorithm. The integer values being sorted are completely privatized.
 
 - **Distinctness** - Tests an array of integers to see if they are all disinct, returns the first duplicate. The test array values and their distinctness results are all privatized.
+
+- **Distinctness O(Nlog^2N)** - Tests an array of integers to see if they are all disinct, returns the first duplicate. This algorithm works in O(nlog2n + n) time using bitonic sort, compared to the baseline distictness algorithm, which works in O(n^3) time. The test array values and their distinctness results are all privatized.
 
 - **Edit Distance** - Computes the edit distance between short genetic sequences. The genomic input data and computed edit distances are all privatized.
 
@@ -45,7 +51,7 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Flood Fill** - Performs a graphical flood fill operation on a 2D privatized image, with an algorithm that is naively O(N^4). The image being filled and the location of the start of the flood fill are all privatized.
 
-- **Flood Fill O(N^2)** - Performs a graphical flood fill operation on a 2D privatized image, but this version is more clever and achieves O(N^2) data-oblivious performance. The image being filled and the location of the start of the flood fill are all privatized.
+- **Flood Fill O(N^2)** - Performs a graphical flood fill operation on a 2D privatized image, but this version is more clever and achieves O(N^2) data-oblivious performance, compared the original flood fill algorithms, which is O(N^4). The image being filled and the location of the start of the flood fill are all privatized.
 
 - **GCD List** - Computes the greatest common divisor for a list of integers using the division algorithm. The input list of integers and the computed GCD for the list are all privatized.
 
@@ -56,6 +62,8 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 - **Image Filter** - Applies a sepia-tone filter to an image. The input image and the resulting filtered image are all privatized.
 
 - **Kadanes Algorithm** - Finds the maximum sum of a contiguous subarray in a given privatized integer array. The input array of integers and the location of the maximum subsum are all privatized.
+
+- **Kalman Filter** - Computes a smoothed Kalman filtering of accelerometer data from the 3-axis intertial measurement unit. The accelerometer data and all filter computation and results are privatized.
 
 - **Keplers Equation Calculator** - Performs orbital trajectory calculations using five Kepler's Equation solvers. The orbital parameters and the computed trajectory are all privatized.
 
@@ -81,13 +89,21 @@ benchmarks. Note that the benchmarks tagged with (HE-friendly) can be run on mos
 
 - **Miller-Rabin Primality Test** - Performs the Miller-Rabin stochastic primarility test to extremely high certainty. The value being tested for primality and its outcome are all privatized.
 
+- **Rabin-Karp Rolling Hash String Search** - Implements the very efficient Rabin-Karp data-oblivious string search algorithm. This search algorithm is O(N) in the length of the string searched. All string data, including the string search database and the search string are privatized.
+
 - **Radians to Degrees** - Converts a vector of radian measurements to degrees. The input vector of radians and the computed degree values are all privatized.
+
+- **Randomized Shell Sort** - Sorts an array of integers using Goodrich's data-oblivious randomized shell sort algorithm. This algorithm very efficient, having a complexity of O(NlogN) with the number of elements sorted. This The integer values being sorted are completely privatized.
 
 - **Recommender** - Performs movie recommendations using the matrix factorization algorithm. The movies viewed by users and their ratings and the predicted ratings computed are all privatized.
 
 - **Set Intersect** - Performs private set intersection (PSI) on two randomly generated sets of integers. The input sets and the computed intersection are all privatized.
  
 - **Shortest Path** - Solves the all-pairs shortest path problem using the Floyd-Warshall algorithm. The input graph and the computed path are all privatized.
+
+- **Soundex String Compare** - Compares two strings using the sounds-alike Soundex algorithm configured for the English language, such that the two strings compare as equivalent if they sound alike when spoken. This algorithm privatizes the strings being compared as well as the result of the comparison.
+
+- **String Search** - Implements the moderately efficient naive data-oblivious string search algorithm. This search algorithm is O(N*M), where N is the the length of the string searched and M is the length of the string to be located. All string data, including the string search database and the search string are privatized.
 
 - **TEA Cipher** - A TEA (Tiny Encryption Algorithm) cipher that runs on privatized data. The cipher key and inputs and the encrypted output are all privatized.
 
