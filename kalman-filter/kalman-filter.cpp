@@ -10,7 +10,7 @@
 // supported sizes: 256 (default), 512, 1024, 2048
 #define DATASET_SIZE 256
 
-float kf_rawdata[2048+1][4] =
+VIP_ENCFLOAT kf_rawdata[2048+1][4] =
 {
   { 20,1.004,0.09,-0.125 }, { 20,1.004,-0.043,-0.125 }, { 20,0.969,0.09,-0.121 }, { 20,0.973,-0.012,-0.137 }, { 20,1,-0.016,-0.121 },
   { 20,0.961,0.082,-0.121 }, { 20,0.973,-0.055,-0.109 }, { 20,1,0.012,-0.133 }, { 20,0.969,-0.102,-0.141 }, { 20,0.973,-0.059,-0.125 },
@@ -425,7 +425,7 @@ float kf_rawdata[2048+1][4] =
 }; 
 
 KalmanFilter kf;
-float kf_predictions[DATASET_SIZE][3];
+VIP_ENCFLOAT kf_predictions[DATASET_SIZE][3];
 
 int
 main(void)
@@ -450,46 +450,18 @@ main(void)
   {
     // Kalman filter step
     kf.predict(kf_rawdata[step][0]/1000.0);
-    kf_predictions[step][0] = kf.get(0);
-    kf_predictions[step][1] = kf.get(1);
-    kf_predictions[step][2] = kf.get(2);
-    fprintf(stdout, "INFO: prediction @ step %u = (x:%f,y:%f,z:%f)\n",
-            step, kf_predictions[step][0], kf_predictions[step][1], kf_predictions[step][2]);
+    kf.get(&kf_predictions[step][0], 3);
     kf.correct(&kf_rawdata[step+1][1], 3);
-    fprintf(stdout, "INFO: rawdata @ step %u = (x:%f,y:%f,z:%f)\n",
-            step+1, kf_rawdata[step+1][1], kf_rawdata[step+1][2], kf_rawdata[step+1][3]);
+  }
+
+  // dump the results
+  fprintf(stdout, "INFO: dumping %d Kalman accelerometer (x,y,z) predictions...\n", DATASET_SIZE);
+  for (step=0; step < DATASET_SIZE; step++)
+  {
+    // fprintf(stdout, "input step[%u]=(x:%f,y:%f,z:%f)\n", step, kf_rawdata[step][1], kf_rawdata[step][2], kf_rawdata[step][3]);
+    fprintf(stdout, "step[%u]=(x:%f,y:%f,z:%f)\n",
+            step, VIP_DEC(kf_predictions[step][0]), VIP_DEC(kf_predictions[step][1]), VIP_DEC(kf_predictions[step][2]));
   }
   return 0;
 }
-
-
-#ifdef notdef
-#include <kalman.h>
-
-unsigned long timer = 0;
-
-void setup() {
-
-}
-
-void loop() {
-
-  // Delta time : time since last prediction
-  float dt = (millis()-timer)/1000.f;
-  timer = millis();
-}
-
-KalmanFilter kf;
-float mouse[2];
-
-void setup() {
-
-
-void update() {
-  float dt = getLastFrameTime();
-  kf.predict(dt);
-  kf.get(mouse, 2);
-  kf.correct(getMousePos(), 2);
-}
-#endif /* notdef */
 

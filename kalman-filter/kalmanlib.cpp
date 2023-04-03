@@ -36,7 +36,7 @@ KalmanModel::KalmanModel() {
     reset();
 }
 
-void KalmanModel::predict(float dt, float u, Vec2 Q) {
+void KalmanModel::predict(VIP_ENCFLOAT dt, VIP_ENCFLOAT u, Vec2 Q) {
     
     // State transition model (Sometimes called A)
     Mat2x2 F = Mat2x2(
@@ -59,7 +59,7 @@ void KalmanModel::predict(float dt, float u, Vec2 Q) {
     P = F * P * Ft + Q * dt;
 }
 
-void KalmanModel::correct(float z, float R) {
+void KalmanModel::correct(VIP_ENCFLOAT z, VIP_ENCFLOAT R) {
     
     // Observation model
     Mat2x2 H = Mat2x2(
@@ -72,14 +72,14 @@ void KalmanModel::correct(float z, float R) {
     
     // Innovation covariance
     Mat2x2 Sm = H * P * Ht + R;
-    float S = Sm.m00;
+    VIP_ENCFLOAT S = Sm.m00;
     
     // Kalman gain
     Mat2x2 Km = P * Ht * (1/S);
     Vec2 K(Km.m00, Km.m10);
     
     // Update the state
-    float y = z - x[0];
+    VIP_ENCFLOAT y = z - x[0];
     x = x + K * y;
     
     // Identity matrix
@@ -119,41 +119,41 @@ KalmanFilter::~KalmanFilter() {
     }
 }
 
-void KalmanFilter::predict(float dt, float * pu, unsigned int nu, unsigned int start) {
+void KalmanFilter::predict(VIP_ENCFLOAT dt, VIP_ENCFLOAT * pu, unsigned int nu, unsigned int start) {
     for (unsigned int i=0; i<nu; i++) {
 		if (i < nmodels)
         pmodels[start+i].predict(dt, pu ? pu[i] : 0, Q);
     }
 }
 
-void KalmanFilter::predict(float dt) {
+void KalmanFilter::predict(VIP_ENCFLOAT dt) {
     predict(dt, 0, nmodels);
 }
 
-void KalmanFilter::correct(float *pz, unsigned int nz, unsigned int start) {
+void KalmanFilter::correct(VIP_ENCFLOAT *pz, unsigned int nz, unsigned int start) {
     for (unsigned int i=0; i<nz; i++) {
         if (i < nmodels)
             pmodels[start+i].correct(pz[i], R);
     }
 }
 
-void KalmanFilter::correct(float z, unsigned int istate) {
+void KalmanFilter::correct(VIP_ENCFLOAT z, unsigned int istate) {
     if (istate < nmodels)
         pmodels[istate].correct(z, R);
 }
 
-void KalmanFilter::get(float *px, unsigned int nx, unsigned int start) {
+void KalmanFilter::get(VIP_ENCFLOAT *px, unsigned int nx, unsigned int start) {
     for (unsigned int i=0; i<nx; i++) {
         if (i < nmodels)
             px[i] = pmodels[start+i].x[0];
     }
 }
 
-float KalmanFilter::get(unsigned int istate) {
+VIP_ENCFLOAT KalmanFilter::get(unsigned int istate) {
     return pmodels[istate].x[0];
 }
 
-void KalmanFilter::set(float *px, unsigned int nx, unsigned int start) {
+void KalmanFilter::set(VIP_ENCFLOAT *px, unsigned int nx, unsigned int start) {
     for (unsigned int i=0; i<nx; i++) {
         if (i < nmodels)
             pmodels[start+i].x[0] = px[i];
@@ -171,7 +171,7 @@ void KalmanFilter::reset(unsigned int n, unsigned int start) {
         pmodels[i].reset();
 }
 
-void KalmanFilter::set(float x, unsigned int istate) {
+void KalmanFilter::set(VIP_ENCFLOAT x, unsigned int istate) {
     pmodels[istate].x[0] = x;
 }
 
@@ -180,12 +180,12 @@ Vec2::Vec2() {
     this->y = 0;
 }
 
-Vec2::Vec2(float x, float y) {
+Vec2::Vec2(VIP_ENCFLOAT x, VIP_ENCFLOAT y) {
     this->x = x;
     this->y = y;
 }
 
-Vec2 Vec2::operator*(const float &scalar) const {
+Vec2 Vec2::operator*(const VIP_ENCFLOAT &scalar) const {
     return Vec2(x * scalar, y * scalar);
 }
 
@@ -197,7 +197,7 @@ Vec2 Vec2::operator+(const Vec2 &other) const {
     return Vec2(x + other.x, y + other.y);
 }
 
-float & Vec2::operator[](int index) {
+VIP_ENCFLOAT & Vec2::operator[](int index) {
     return index == 0 ? x : y;
 }
 
@@ -208,7 +208,7 @@ Mat2x2::Mat2x2() {
     this->m11 = 0;
 }
 
-Mat2x2::Mat2x2(float m00, float m01, float m10, float m11) {
+Mat2x2::Mat2x2(VIP_ENCFLOAT m00, VIP_ENCFLOAT m01, VIP_ENCFLOAT m10, VIP_ENCFLOAT m11) {
     this->m00 = m00;
     this->m01 = m01;
     this->m10 = m10;
@@ -220,7 +220,7 @@ Mat2x2 Mat2x2::transposed() {
 }
 
 Mat2x2 Mat2x2::inversed() {
-    float det = 1 / (m00 * m11 - m01 * m10);
+    VIP_ENCFLOAT det = 1 / (m00 * m11 - m01 * m10);
     return Mat2x2(m11, -m01, -m10, m00) * det;
 }
 
@@ -240,7 +240,7 @@ Vec2 Mat2x2::operator*(const Vec2 &other) const {
     return v;
 }
 
-Mat2x2 Mat2x2::operator * (const float & scalar) const {
+Mat2x2 Mat2x2::operator * (const VIP_ENCFLOAT & scalar) const {
     Mat2x2 m;
     m.m00 = this->m00 * scalar;
     m.m01 = this->m01 * scalar;
@@ -258,7 +258,7 @@ Mat2x2 Mat2x2::operator+(const Vec2 &other) const {
     return m;
 }
 
-Mat2x2 Mat2x2::operator+(const float &scalar) const {
+Mat2x2 Mat2x2::operator+(const VIP_ENCFLOAT &scalar) const {
     Mat2x2 m;
     m.m00 = this->m00 + scalar;
     m.m01 = this->m01 + scalar;
@@ -275,3 +275,4 @@ Mat2x2 Mat2x2::operator-(const Mat2x2 &other) const {
     m.m11 = this->m11 - other.m11;
     return m;
 }
+

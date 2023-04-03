@@ -36,38 +36,38 @@
 // 2D Vector
 class Vec2 {
 public:
-    float x;
-    float y;
+    VIP_ENCFLOAT x;
+    VIP_ENCFLOAT y;
 
     Vec2();
-    Vec2(float x, float y);
+    Vec2(VIP_ENCFLOAT x, VIP_ENCFLOAT y);
 
-    Vec2 operator * (const float & scalar) const;
+    Vec2 operator * (const VIP_ENCFLOAT & scalar) const;
     Vec2 operator * (const Vec2 & other) const;
     Vec2 operator + (const Vec2 & other) const;
-    float & operator [](int index);
+    VIP_ENCFLOAT & operator [](int index);
 };
 
 
 // 2x2 Matrix
 class Mat2x2 {
 public:
-    float m00;
-    float m01;
-    float m10;
-    float m11;
+    VIP_ENCFLOAT m00;
+    VIP_ENCFLOAT m01;
+    VIP_ENCFLOAT m10;
+    VIP_ENCFLOAT m11;
 
     Mat2x2();
-    Mat2x2(float m00, float m01, float m10, float m11);
+    Mat2x2(VIP_ENCFLOAT m00, VIP_ENCFLOAT m01, VIP_ENCFLOAT m10, VIP_ENCFLOAT m11);
 
     Mat2x2 transposed();
     Mat2x2 inversed();
 
     Mat2x2 operator * (const Mat2x2 & other) const;
     Vec2   operator * (const Vec2 & other) const;
-    Mat2x2 operator * (const float & scalar) const;
+    Mat2x2 operator * (const VIP_ENCFLOAT & scalar) const;
     Mat2x2 operator + (const Vec2 & other) const;
-    Mat2x2 operator + (const float & scalar) const;
+    Mat2x2 operator + (const VIP_ENCFLOAT & scalar) const;
     Mat2x2 operator - (const Mat2x2 & other) const;
 };
 
@@ -77,8 +77,8 @@ class KalmanModel {
 public:
     KalmanModel();
     
-    void predict(float dt, float u, Vec2 Q);
-    void correct(float z, float R);
+    void predict(VIP_ENCFLOAT dt, VIP_ENCFLOAT u, Vec2 Q);
+    void correct(VIP_ENCFLOAT z, VIP_ENCFLOAT R);
 
     void reset();
 
@@ -103,22 +103,22 @@ public:
     void setMeasurementNoise(float R) {this->R = R;}
 
     // Predict state from current error covariance (single state).
-    void predict(float dt);
+    void predict(VIP_ENCFLOAT dt);
     // Predict multiple states from current error covariance.
-    void predict(float dt, float * pu, unsigned int nu, unsigned int start = 0);
+    void predict(VIP_ENCFLOAT dt, VIP_ENCFLOAT * pu, unsigned int nu, unsigned int start = 0);
 
     // Correct prediction with observation (single state).
-    void correct(float z, unsigned int istate = 0);
+    void correct(VIP_ENCFLOAT z, unsigned int istate = 0);
     // Correct multiple predictions with observations.
-    void correct(float * pz, unsigned int nz, unsigned int start = 0);
+    void correct(VIP_ENCFLOAT * pz, unsigned int nz, unsigned int start = 0);
 
     // Get current states
     float get(unsigned int istate = 0);
-    void get(float * px, unsigned int nx, unsigned int start = 0);
+    void get(VIP_ENCFLOAT * px, unsigned int nx, unsigned int start = 0);
 
     // Set current state
-    void set(float z, unsigned int istate = 0);
-    void set(float * px, unsigned int nx, unsigned int start = 0);
+    void set(VIP_ENCFLOAT z, unsigned int istate = 0);
+    void set(VIP_ENCFLOAT * px, unsigned int nx, unsigned int start = 0);
 
     // Reset state
     void reset();
