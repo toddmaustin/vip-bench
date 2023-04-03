@@ -10,7 +10,7 @@
 // supported sizes: 256 (default), 512, 1024, 2048
 #define DATASET_SIZE 256
 
-VIP_ENCFLOAT kf_rawdata[2048+1][4] =
+float kf_rawdata[2048+1][4] =
 {
   { 20,1.004,0.09,-0.125 }, { 20,1.004,-0.043,-0.125 }, { 20,0.969,0.09,-0.121 }, { 20,0.973,-0.012,-0.137 }, { 20,1,-0.016,-0.121 },
   { 20,0.961,0.082,-0.121 }, { 20,0.973,-0.055,-0.109 }, { 20,1,0.012,-0.133 }, { 20,0.969,-0.102,-0.141 }, { 20,0.973,-0.059,-0.125 },
@@ -430,6 +430,8 @@ VIP_ENCFLOAT kf_predictions[DATASET_SIZE][3];
 int
 main(void)
 {
+  unsigned step = 0;
+
   // initialize the privacy enhanced execution target
   VIP_INIT;
 
@@ -442,16 +444,21 @@ main(void)
   kf.setProcessNoise(0.1, 0.01);
   kf.setMeasurementNoise(0.1);
  
-  // set initial state
-  unsigned step = 0;
-  kf.set(&kf_rawdata[0][1], 3);
-
-  for (; step < DATASET_SIZE; step++)
   {
-    // Kalman filter step
-    kf.predict(kf_rawdata[step][0]/1000.0);
-    kf.get(&kf_predictions[step][0], 3);
-    kf.correct(&kf_rawdata[step+1][1], 3);
+    Stopwatch s("VIP_Bench Runtime");
+
+    // set initial state
+    VIP_ENCFLOAT tuple[3] = { kf_rawdata[0][1], kf_rawdata[0][2], kf_rawdata[0][3] };
+    kf.set(tuple, 3);
+
+    for (; step < DATASET_SIZE; step++)
+    {
+      // Kalman filter step
+      kf.predict((VIP_ENCFLOAT)kf_rawdata[step][0]/1000.0);
+      kf.get(&kf_predictions[step][0], 3);
+      VIP_ENCFLOAT tuple[3] = { kf_rawdata[step+1][1], kf_rawdata[step+1][2], kf_rawdata[step+1][3] };
+      kf.correct(tuple, 3);
+    }
   }
 
   // dump the results

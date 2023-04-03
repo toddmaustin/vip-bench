@@ -113,7 +113,7 @@ public:
     void correct(VIP_ENCFLOAT * pz, unsigned int nz, unsigned int start = 0);
 
     // Get current states
-    float get(unsigned int istate = 0);
+    VIP_ENCFLOAT get(unsigned int istate = 0);
     void get(VIP_ENCFLOAT * px, unsigned int nx, unsigned int start = 0);
 
     // Set current state
