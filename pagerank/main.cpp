@@ -116,18 +116,24 @@ int main(int argc, char **argv) {
         update = &PageRank::PushUpdate;
     }
 
-    std::vector<VIP_ENCDOUBLE> r1 = (*pr.*update)(d);
-    std::vector<VIP_ENCDOUBLE> r2 = (*pr.*update)(d);
-    while (Progress(r1, r2, THRESHOLD)) {
-        r1 = (*pr.*update)(d);
-        r2 = (*pr.*update)(d);
-    }
+    std::vector<VIP_ENCDOUBLE>* ranks;
+    VIP_ENCDOUBLE sum;
+    {
+      Stopwatch s("VIP_Bench Runtime");
 
-    // Clean up the final ranks to sum up to 1.0.
-    std::vector<VIP_ENCDOUBLE>* ranks = pr->Ranks();
-    VIP_ENCDOUBLE sum = 0.0;
-    for (std::vector<VIP_ENCDOUBLE>::iterator it = (*ranks).begin(); it < (*ranks).end(); ++it) {
-        sum = sum + *it;
+      std::vector<VIP_ENCDOUBLE> r1 = (*pr.*update)(d);
+      std::vector<VIP_ENCDOUBLE> r2 = (*pr.*update)(d);
+      while (Progress(r1, r2, THRESHOLD)) {
+          r1 = (*pr.*update)(d);
+          r2 = (*pr.*update)(d);
+      }
+
+      // Clean up the final ranks to sum up to 1.0.
+      ranks = pr->Ranks();
+      sum = 0.0;
+      for (std::vector<VIP_ENCDOUBLE>::iterator it = (*ranks).begin(); it < (*ranks).end(); ++it) {
+          sum = sum + *it;
+      }
     }
     std::cout << "======== Ranks ========" << std::endl;    
     for (size_t i = 0; i < ranks->size(); ++i) {

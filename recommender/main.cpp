@@ -55,7 +55,10 @@ main(int argc, char *argv[])
                   << ", iterations = " << iterations
                   << std::endl;
         std::clock_t start = clock();
-        predictor->predictionMatrix(K, eta, lambda, iterations);
+        {
+          Stopwatch s("VIP_Bench Runtime");
+          predictor->predictionMatrix(K, eta, lambda, iterations);
+        }
         double duration = (double)(clock() - start) / CLOCKS_PER_SEC;
 
         // Training MAE
