@@ -112,7 +112,13 @@ Then you can continue building and runnign the VIP benchmarks from the parent di
 
 ## Building and Running the VIP Benchmarks
 
-First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. If you have your own PEC framework, you will have to create the associated configuration files. We've included configuration files for the VIP Functional Library, which is a reference implementation of the VIP Computational Model using Intel's AES-NI instructions. You can configure the VIP-Bench to utilize this library with the following commands:
+First, you have to configure the benchmark suite, which requires creating two symbolic links in the top-level directory: one for the Makefile configuration and one for the C++ compilation configuration. If you have your own PEC framework, you will have to create the associated configuration files. We've included configuration files for the VIP Functional Library, which is a reference implementation of the VIP Computational Model using Intel's AES-NI instructions. You can configure the VIP-Bench to utilize this library with the following top-level Makefile commands:
+```
+make config-vip   # configure VIP-Bench to target the VIP-Bench functional library
+make config-meso  # configure VIP-Bench to target Agita Labs' Mesosphere secure computation SDK
+make config-seal  # configure VIP-Bench to target Microsoft's SEAL Homomorphic Encryption library
+```
+Or, it is possible to configure the libraries manually using the following commands:
 ```
 ln -sf configs/config.mk.vip config.mk
 ln -sf configs/config.h.vip config.h
@@ -144,6 +150,12 @@ make MODE=enc test
 make MODE=enc clean
 ```
 
+To assist in running experiments, the top-level Makefile includes a few useful targets:
+```
+make run-tests   # clean, build, and test all benchmarks in all target modes (NA,DO,ENC)
+make all-clean   # clean all benchmark directories
+```
+You should be able to adapt these targets to your own project-specific tasks.
 
 ## Porting the VIP Benchmarks to Another Privacy-Enhanced Computation Framework
 
