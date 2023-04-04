@@ -216,6 +216,7 @@ the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 - Todd Austin, University of Michigan and Agita Labs
 - Galane Basha, Addis Ababa Institute of Technology
 - Lauren Biernacki, University of Michigan
+- Shibo Chen, University of Michigan
 - Meron Demissie, University of Michigan and Addis Ababa Institute of Technology
 - Plato G Medhin, Addis Ababa Institute of Technology
 - Brandon Reagen, New York University
