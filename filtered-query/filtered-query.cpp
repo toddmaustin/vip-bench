@@ -313,46 +313,49 @@ main(int argc,char **argv)
     exit(1);
   }
 
-
-  // compute average/stddev price for zip code 95864 
-  VIP_ENCDOUBLE avg = filtered_query(&db, 95864, op_avg, field_price, bedsize_all, 0.0);
-  fprintf(stdout, "STAT: average price for zipcode 95864: $%.2lf\n", VIP_DEC(avg));
-
-  VIP_ENCDOUBLE stddev = filtered_query(&db, 95864, op_stddev, field_price, bedsize_all, avg);
-  fprintf(stdout, "STAT: stddev price for zipcode 95864: $%.2lf\n", VIP_DEC(stddev));
-
-  // compute average/stddev price/sqft for zip code 95864 
-  avg = filtered_query(&db, 95864, op_avg, field_pricesqft, bedsize_all, 0.0);
-  fprintf(stdout, "STAT: average price/sqft for zipcode 95864: $%.2lf\n", VIP_DEC(avg));
-
-  stddev = filtered_query(&db, 95864, op_stddev, field_pricesqft, bedsize_all, avg);
-  fprintf(stdout, "STAT: stddev price/sqft for zipcode 95864: $%.2lf\n", VIP_DEC(stddev));
-
-  // find the most expensive home price in the database
-  VIP_ENCDOUBLE max_price = filtered_query_all(&db, op_max, field_price, bedsize_all, 0.0);
-  fprintf(stdout, "STAT: price of most expensive home price: $%.2lf\n", VIP_DEC(max_price));
-
-  // find the most expensive home price/sqft in the database
-  VIP_ENCDOUBLE max_pricesqft = filtered_query_all(&db, op_max, field_pricesqft, bedsize_all, 0.0);
-  fprintf(stdout, "STAT: price of most expensive home price/sqft: $%.2lf\n", VIP_DEC(max_pricesqft));
-
-  // find the average price of small homes
-  VIP_ENCDOUBLE avg_small = filtered_query_all(&db, op_avg, field_price, bedsize_small, 0.0);
-  fprintf(stdout, "STAT: average price of small homes: $%.2lf\n", VIP_DEC(avg_small));
-
-  // find the average price of large homes
-  VIP_ENCDOUBLE avg_large = filtered_query_all(&db, op_avg, field_price, bedsize_large, 0.0);
-  fprintf(stdout, "STAT: average price of large homes: $%.2lf\n", VIP_DEC(avg_large));
-
-  // compute average/stddev price/sqft, by zip code
-  VIP_ENCDOUBLE avgs[zipcodes.size()];
-  VIP_ENCDOUBLE stddevs[zipcodes.size()];
-  filtered_query_byzip(&db, op_avg, field_pricesqft, bedsize_all, avgs, avgs);
-  filtered_query_byzip(&db, op_stddev, field_pricesqft, bedsize_all, avgs, stddevs);
-  for (unsigned i=0; i < zipcodes.size(); i++)
   {
-    fprintf(stdout, "STAT: Zipcode %u: average price/sqft $%.2lf, stddev price/sqft $%.2lf\n",
-            zipcodes[i], VIP_DEC(avgs[i]), VIP_DEC(stddevs[i]));
+    Stopwatch s("VIP_Bench Runtime");
+
+    // compute average/stddev price for zip code 95864 
+    VIP_ENCDOUBLE avg = filtered_query(&db, 95864, op_avg, field_price, bedsize_all, 0.0);
+    fprintf(stdout, "STAT: average price for zipcode 95864: $%.2lf\n", VIP_DEC(avg));
+
+    VIP_ENCDOUBLE stddev = filtered_query(&db, 95864, op_stddev, field_price, bedsize_all, avg);
+    fprintf(stdout, "STAT: stddev price for zipcode 95864: $%.2lf\n", VIP_DEC(stddev));
+
+    // compute average/stddev price/sqft for zip code 95864 
+    avg = filtered_query(&db, 95864, op_avg, field_pricesqft, bedsize_all, 0.0);
+    fprintf(stdout, "STAT: average price/sqft for zipcode 95864: $%.2lf\n", VIP_DEC(avg));
+
+    stddev = filtered_query(&db, 95864, op_stddev, field_pricesqft, bedsize_all, avg);
+    fprintf(stdout, "STAT: stddev price/sqft for zipcode 95864: $%.2lf\n", VIP_DEC(stddev));
+
+    // find the most expensive home price in the database
+    VIP_ENCDOUBLE max_price = filtered_query_all(&db, op_max, field_price, bedsize_all, 0.0);
+    fprintf(stdout, "STAT: price of most expensive home price: $%.2lf\n", VIP_DEC(max_price));
+
+    // find the most expensive home price/sqft in the database
+    VIP_ENCDOUBLE max_pricesqft = filtered_query_all(&db, op_max, field_pricesqft, bedsize_all, 0.0);
+    fprintf(stdout, "STAT: price of most expensive home price/sqft: $%.2lf\n", VIP_DEC(max_pricesqft));
+
+    // find the average price of small homes
+    VIP_ENCDOUBLE avg_small = filtered_query_all(&db, op_avg, field_price, bedsize_small, 0.0);
+    fprintf(stdout, "STAT: average price of small homes: $%.2lf\n", VIP_DEC(avg_small));
+
+    // find the average price of large homes
+    VIP_ENCDOUBLE avg_large = filtered_query_all(&db, op_avg, field_price, bedsize_large, 0.0);
+    fprintf(stdout, "STAT: average price of large homes: $%.2lf\n", VIP_DEC(avg_large));
+
+    // compute average/stddev price/sqft, by zip code
+    VIP_ENCDOUBLE avgs[zipcodes.size()];
+    VIP_ENCDOUBLE stddevs[zipcodes.size()];
+    filtered_query_byzip(&db, op_avg, field_pricesqft, bedsize_all, avgs, avgs);
+    filtered_query_byzip(&db, op_stddev, field_pricesqft, bedsize_all, avgs, stddevs);
+    for (unsigned i=0; i < zipcodes.size(); i++)
+    {
+      fprintf(stdout, "STAT: Zipcode %u: average price/sqft $%.2lf, stddev price/sqft $%.2lf\n",
+              zipcodes[i], VIP_DEC(avgs[i]), VIP_DEC(stddevs[i]));
+    }
   }
 
   // shut down
