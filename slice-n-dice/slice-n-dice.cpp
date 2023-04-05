@@ -7,10 +7,15 @@
 // include build configuration defines
 #include "../config.h"
 
+// size of esch individual experiment
+#define EXPSIZE 1000000
+
 void
 slice_n_dice(FILE *outfile, uint64_t samples)
 {
-  VIP_ENCINT x;
+  VIP_ENCINT x, y;
+  VIP_ENCFLOAT f, g;
+  VIP_ENCBOOL a, b;
   uint64_t count = 0;
 
   // continue this test sequence until 
@@ -18,18 +23,97 @@ slice_n_dice(FILE *outfile, uint64_t samples)
   {
 
     fprintf(stdout, "INFO: Running the too-many-0s test...\n");
-    for (unsigned i=0; i < 10000; i++)
+    for (unsigned i=0; i < EXPSIZE; i++)
     {
       x = 1;
       VIP_EMITCT(outfile, x, count, samples, done);
     }
 
-    fprintf(stdout, "INFO: Running the fixed-stride test...\n");
+    fprintf(stdout, "INFO: Running the integer fixed-stride test...\n");
     x = 0;
-    for (unsigned i=0; i < 10000; i++)
+    for (unsigned i=0; i < EXPSIZE; i++)
     {
-      x++;
+      x = x + 1;
       VIP_EMITCT(outfile, x, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the negative integer fixed-stride test...\n");
+    x = 0;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      x = x - 1;
+      VIP_EMITCT(outfile, x, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the generalized integer computation test...\n");
+    x = 0;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      y = x*x + 4*x - 5;
+      VIP_EMITCT(outfile, x, count, samples, done);
+      VIP_EMITCT(outfile, y, count, samples, done);
+      x++;
+    }
+
+    fprintf(stdout, "INFO: Running the too-many-0.0s test...\n");
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      f = 1;
+      VIP_EMITCT(outfile, f, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the FP fixed-stride test...\n");
+    f = 0.0f;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      f = f + 1.0f;
+      VIP_EMITCT(outfile, f, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the negative FP fixed-stride test...\n");
+    f = 0.0f;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      f = f - 1.0f;
+      VIP_EMITCT(outfile, f, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the generalized FP computation test...\n");
+    f = 0.0f;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      g = f*f + 4.0f*f - 5;
+      VIP_EMITCT(outfile, f, count, samples, done);
+      VIP_EMITCT(outfile, g, count, samples, done);
+      f = f + 1.0f;
+    }
+
+    fprintf(stdout, "INFO: Running the too-many-falses test...\n");
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      a = false;
+      VIP_EMITCT(outfile, a, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the boolean ping-pong test...\n");
+    a = false;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      a = !a;
+      VIP_EMITCT(outfile, a, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the generalized boolean computation test...\n");
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      a = true;
+      b = (a && a) || a;
+      VIP_EMITCT(outfile, a, count, samples, done);
+      VIP_EMITCT(outfile, b, count, samples, done);
+      a = false;
+      b = (a || !a) && a;
+      VIP_EMITCT(outfile, a, count, samples, done);
+      VIP_EMITCT(outfile, b, count, samples, done);
     }
 
   }
