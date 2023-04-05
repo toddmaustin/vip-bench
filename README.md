@@ -17,7 +17,7 @@ range of application that suggest a strong need for data privacy.
 *My privacy-enhanced computation framework doesn't work with some/all of the VIP benchmarks!* Yes, this may be the case
 If you cannot support a benchmark, due to the data types it requires or the complexity of its
 computation, perhaps you can benchmark without that particular application. Since some of the privacy-enhanced frameworks can do all of
-these benchmarks, we felt it was important to take a great-common-demoninator approach to selecting benchmarks, rather than a
+these benchmarks, we felt it was important to take a greatest-common-demoninator approach to selecting benchmarks, rather than a
 least-common-demoninator approach.  In any event, please help us build in support for your framework in our benchmark suite.
 
 To learn more about VIP-Bench's design and implementation, please read the [VIP-Bench paper](https://drive.google.com/file/d/1aresSfrY_8C0gMtrcF0LRfTRGybESsA2/view?usp=sharing).
