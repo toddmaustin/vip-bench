@@ -16,7 +16,7 @@ slice_n_dice(FILE *outfile, uint64_t samples)
   VIP_ENCINT x, y, z;
   VIP_ENCFLOAT f, g, h;
   VIP_ENCBOOL a, b, c, d;
-  uint64_t count = 0;
+  uint64_t count = 0, tripCount = 0;
 
   // continue this test sequence until 
   while (count < samples)
@@ -155,10 +155,16 @@ slice_n_dice(FILE *outfile, uint64_t samples)
       VIP_EMITCT(outfile, d, count, samples, done);
     }
 
+    tripCount++;
   }
 
 done:
   assert (count == samples);
+
+  // indicate the trip count, should be greater than 1!
+  fprintf(stderr, "INFO: tripCount = %lu\n", tripCount);
+  if (tripCount == 0)
+    fprintf(stderr, "WARNING: trip count should be at least 1!\n");
   return;
 }
 

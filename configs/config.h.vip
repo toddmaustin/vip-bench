@@ -98,6 +98,22 @@ vip_emitct(FILE *outfile, bit128_t ciphertext, uint64_t count, uint64_t samples)
     fprintf(outfile, "%10u\n", uint32_t((ciphertext.getLowerValue_64b()) & 0xffffffff));
     count++;
   }
+  if (count < samples)
+  {
+    fprintf(outfile, "%10u\n", uint32_t((ciphertext.getLowerValue_64b() >> 32) & 0xffffffff));
+    count++;
+  }
+  if (count < samples)
+  {
+    fprintf(outfile, "%10u\n", uint32_t((ciphertext.getUpperValue_64b()) & 0xffffffff));
+    count++;
+  }
+  if (count < samples)
+  {
+    fprintf(outfile, "%10u\n", uint32_t((ciphertext.getUpperValue_64b() >> 32) & 0xffffffff));
+    count++;
+  }
+
   return count;
 }
  
