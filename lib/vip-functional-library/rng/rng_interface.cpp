@@ -4,7 +4,6 @@
 #include "rng_interface.h"
 using namespace std;
 
-
 // Random Number Generator for Salts
 int RANDOM_SEED; 
 std::mt19937 RNG; 

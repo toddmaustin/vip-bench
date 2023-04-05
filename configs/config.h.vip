@@ -24,7 +24,7 @@
 #define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)          (X)
 #define VIP_DEC_VEC(X)      (X) 
-#define VIP_EMITCT(F,X,C,S,D) ({ (void)x; if (((C) = (C) + 1) >= (S)) goto D; })
+#define VIP_EMITCT(F,X,C,S,D) ({ (void)(X); if (((C) = (C) + 1) >= (S)) goto D; })
 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
     std::copy(source->begin(), source->end(), std::begin(*dest));
@@ -55,7 +55,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_DEC(X)          (X)
 #define VIP_DEC_VEC(X)      (X) 
 #define VIP_CMOV(P,A,B)     ((P) ? (A) : (B))
-#define VIP_EMITCT(F,X,C,S,D) ({ (void)x; if (((C) = (C) + 1) >= (S)) goto D; })
+#define VIP_EMITCT(F,X,C,S,D) ({ (void)(X); if (((C) = (C) + 1) >= (S)) goto D; })
 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
     std::copy(source->begin(), source->end(), std::begin(*dest));

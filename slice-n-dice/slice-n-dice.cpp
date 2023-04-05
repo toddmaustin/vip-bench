@@ -7,6 +7,11 @@
 // include build configuration defines
 #include "../config.h"
 
+// FIXME: hack
+#ifdef VIP_NA_MODE
+#define VIP_CMOV(A,B,C)   ((A) ? (B) : (C))
+#endif
+
 // size of esch individual experiment
 #define EXPSIZE 1000000
 
