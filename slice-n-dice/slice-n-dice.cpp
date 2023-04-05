@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 #include "utils.h"
@@ -6,63 +7,37 @@
 // include build configuration defines
 #include "../config.h"
 
-// supported sizes: 256 (default), 512, 1024, 2048
-#define DATASET_SIZE 256
-VIP_ENCINT data[DATASET_SIZE];
-
-// total swaps executed so far
-unsigned long swaps = 0;
-
-
 void
-print_data(VIP_ENCINT *data, unsigned size)
+slice_n_dice(FILE *outfile, uint64_t samples)
 {
-  fprintf(stdout, "DATA DUMP:\n");
-  for (unsigned i=0; i < size; i++)
-    fprintf(stdout, "  data[%u] = %d\n", i, VIP_DEC(data[i]));
-}
+  VIP_ENCINT x;
+  uint64_t count = 0;
 
-void
-bubblesort(VIP_ENCINT *data, unsigned size)
-{
-  for (unsigned i=0; i < size-1; i++)
+  // continue this test sequence until 
+  while (count < samples)
   {
-#ifndef VIP_DO_MODE
-    bool swapped = false;
-#endif /* !VIP_DO_MODE */
-    for (unsigned j=0; j < size-1; j++)
+
+    fprintf(stdout, "INFO: Running the too-many-0s test...\n");
+    for (unsigned i=0; i < 10000; i++)
     {
-#ifndef VIP_DO_MODE
-      if (data[j] > data[j+1])
-      {
-        VIP_ENCINT tmp = data[j];
-        data[j] = data[j+1];
-        data[j+1] = tmp;
-        swapped = true;
-        swaps++;
-      }
-#else /* VIP_DO_MODE */
-      VIP_ENCBOOL do_swap = data[j] > data[j+1];
-      VIP_ENCINT tmp = data[j];
-      data[j] = VIP_CMOV(do_swap, data[j+1], data[j]);
-      data[j+1] = VIP_CMOV(do_swap, tmp, data[j+1]);
-      swaps++;
-#endif /* VIP_DO_MODE */
+      x = 1;
+      VIP_EMITCT(outfile, x, count, samples, done);
     }
-#ifndef VIP_DO_MODE
-    // done?
-    if (!swapped)
-      break;
-#endif /* !VIP_DO_MODE */
+
+    fprintf(stdout, "INFO: Running the fixed-stride test...\n");
+    x = 0;
+    for (unsigned i=0; i < 10000; i++)
+    {
+      x++;
+      VIP_EMITCT(outfile, x, count, samples, done);
+    }
+
   }
-}
 
-static void
-show_usage(char *name)
-{
-  fprintf(stderr, "USAGE: %s <out-file-name> <sample-size>\n", name);
+done:
+  assert (count == samples);
+  return;
 }
-
 
 int
 main(int argc, char* argv[])
@@ -74,57 +49,38 @@ main(int argc, char* argv[])
   mysrand(42);
   // mysrand(time(NULL));
 
-  if (argc != 3) {
-      show_usage(argv[0]);
-      return 1;
+  if (argc != 3)
+  {
+    fprintf(stderr, "USAGE: %s <out-file-name> <sample-size>\n", argv[0]);
+    exit(1);
   }
 
-  char *outFile = argv[1];
-  uchar *outFile = argv[1];
+  char *outname = argv[1];
+  uint64_t samples = strtoull(argv[2], NULL, 10);;
 
-int main(int argc, char* argv[])
-{
-    std::vector <std::string> sources;
-    std::string destination;
-    for (int i = 1; i < argc; ++i) {
-        std::string arg = argv[i];
-        if ((arg == "-h") || (arg == "--help")) {
-            show_usage(argv[0]);
-            return 0;
-        } else if ((arg == "-d") || (arg == "--destination")) {
-            if (i + 1 < argc) { // Make sure we aren't at the end of argv!
-                destination = argv[i++]; // Increment 'i' so we don't get the argument as the next argv[i].
-            } else { // Uh-oh, there was no argument to the destination option.
-                  std::cerr << "--destination option requires one argument." << std::endl;
-                return 1;
-            }  
-        } else {
-            sources.push_back(argv[i]);
-        }
-    }
-    return move(sources, destination);
+  fprintf(stdout, "INFO: writing `%lu' samples to file `%s'\n", samples, outname);
 
-  // initialize the array to sort
-  for (unsigned i=0; i < DATASET_SIZE; i++)
-    data[i] = myrand();
-  print_data(data, DATASET_SIZE);
+  // open the sample file
+  FILE *outfile = fopen(outname, "w");
+  if (!outfile)
+  {
+    fprintf(stderr, "ERROR: cannot open file `%s'\n", outname);
+    exit(1);
+  }
+
+  // write the DIEHARDER RNG sample file header
+  fprintf(outfile, "# ciphertext samples from VIP-Bench slice-n-dice\n");
+  fprintf(outfile, "type: d\n");
+  fprintf(outfile, "count: %lu\n", samples);
+  fprintf(outfile, "numbit: 32\n");
 
   {
     Stopwatch s("VIP_Bench Runtime");
-    bubblesort(data, DATASET_SIZE);
+    slice_n_dice(outfile, samples);
   }
-  print_data(data, DATASET_SIZE);
+  fprintf(stdout, "INFO: slice-n-dice ciphertext sampling is complete.\n");
 
-  // check the array
-  for (unsigned i=0; i < DATASET_SIZE-1; i++)
-  {
-    if (VIP_DEC(data[i]) > VIP_DEC(data[i+1]))
-    {
-      fprintf(stdout, "ERROR: data is not properly sorted.\n");
-      return -1;
-    }
-  }
-  fprintf(stderr, "INFO: %lu swaps executed.\n", swaps);
-  fprintf(stdout, "INFO: data is properly sorted.\n");
+  // close the ciphertext sample file
+  fclose(outfile);
   return 0;
 }

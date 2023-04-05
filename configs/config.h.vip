@@ -24,6 +24,7 @@
 #define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)          (X)
 #define VIP_DEC_VEC(X)      (X) 
+#define VIP_EMITCT(F,X,C,S,D) ({ (void)x; if (((C) = (C) + 1) >= (S)) goto D; })
 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
     std::copy(source->begin(), source->end(), std::begin(*dest));
@@ -54,6 +55,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_DEC(X)          (X)
 #define VIP_DEC_VEC(X)      (X) 
 #define VIP_CMOV(P,A,B)     ((P) ? (A) : (B))
+#define VIP_EMITCT(F,X,C,S,D) ({ (void)x; if (((C) = (C) + 1) >= (S)) goto D; })
 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
     std::copy(source->begin(), source->end(), std::begin(*dest));
@@ -86,7 +88,19 @@ using namespace enc_lib;
 #define VIP_DEC(X)          ((X).GET_DECRYPTED_VALUE())
 #define VIP_DEC_VEC(X)      (vip_dec_vector(X)) 
 #define VIP_CMOV(P,A,B)     CMOV((P), (A), (B))
+#define VIP_EMITCT(F,X,C,S,D) ({ if (((C) = vip_emitct((F),(X).ciphertext,(C),(S))) >= (S)) goto D; })
 
+extern inline uint64_t
+vip_emitct(FILE *outfile, bit128_t ciphertext, uint64_t count, uint64_t samples)
+{
+  if (count < samples)
+  {
+    fprintf(outfile, "%10u\n", uint32_t((ciphertext.getLowerValue_64b()) & 0xffffffff));
+    count++;
+  }
+  return count;
+}
+ 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {
     dest->resize(source->size());
     for (unsigned int i=0; i<source->size(); i++) {

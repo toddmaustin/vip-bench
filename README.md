@@ -173,6 +173,23 @@ make all-clean   # clean all benchmark directories
 ```
 You should be able to adapt these targets to your own project-specific tasks.
 
+## Running VIP Benchmark Security Analysis
+
+To assess the security of a privacy-enhanced computation framework, VIP-Bench performs indistinguishability analysis on sampled ciphertext from a running program. The ciphertext is analyzed using the DIEHARDER random test suite, which looks for any traces of information in the sampled ciphertext. To run these experiments, first install the DIEHARDER test suite (e.g., for Ubuntu):
+```
+sudo apt-get install -y dieharder
+```
+
+Next, build the SLICE-N-DICE application, which notably requires the underlying privacy-enhanced computation framework to implement the VIP_EMITCT() macro. To build and run the SLICE-N-DICE sampled ciphertext generator and then analyze the emitted ciphertext with DIEHARDER, use the following commands:
+```
+cd slice-n-dice
+make MODE=enc clean build
+./slice-n-dice SAMPLES.log 500000000
+dieharder -a -g 202 -f SAMPLES.log
+```
+
+Note that the format of the SLICE-N-DICE command is: slice-n-dice <sample-file-name> <total-samples>. Also note that DIEHARDER will likely need about 500M to 1G of samples before its tests function properly without wrapping the input sample file. The DIEHARDER tests will likely take about 4-6 hours to run on a high-end system. When running DIEHARD, each of the tests will receive a "PASS", "FAIL" or "WEAK" score. Ideally, one wants to receive all "PASS" scores, but it is often the case even for high-quality true random sources that the occasional one or two "WEAK" scores will appear. Any occurance of a "FAIL" either indicates that 1) too few samples of ciphertext were made available (DIEHARDER will indicate how many times it rewound the input file), or 2) there is information (either based on secret data or cryptographic metadata) contained in your generated ciphertext. If it is the latter case, this situation will demand a deeper inspection of the ciphertext generation process.
+
 ## Porting the VIP Benchmarks to Another Privacy-Enhanced Computation Framework
 
 The benchmarks suite is designed to be readily ported to other privacy-emhanced computation frameworks. To accomplish this, one needs to define
