@@ -13,9 +13,9 @@
 void
 slice_n_dice(FILE *outfile, uint64_t samples)
 {
-  VIP_ENCINT x, y;
-  VIP_ENCFLOAT f, g;
-  VIP_ENCBOOL a, b;
+  VIP_ENCINT x, y, z;
+  VIP_ENCFLOAT f, g, h;
+  VIP_ENCBOOL a, b, c, d;
   uint64_t count = 0;
 
   // continue this test sequence until 
@@ -55,6 +55,19 @@ slice_n_dice(FILE *outfile, uint64_t samples)
       x++;
     }
 
+    fprintf(stdout, "INFO: Running the integer CMOV test...\n");
+    a = false;
+    x = 0; y = 1;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      z = VIP_CMOV(a, x, y);
+      a = !a; x = x + 1; y = y - 1;
+      VIP_EMITCT(outfile, a, count, samples, done);
+      VIP_EMITCT(outfile, x, count, samples, done);
+      VIP_EMITCT(outfile, y, count, samples, done);
+      VIP_EMITCT(outfile, z, count, samples, done);
+    }
+
     fprintf(stdout, "INFO: Running the too-many-0.0s test...\n");
     for (unsigned i=0; i < EXPSIZE; i++)
     {
@@ -88,6 +101,19 @@ slice_n_dice(FILE *outfile, uint64_t samples)
       f = f + 1.0f;
     }
 
+    fprintf(stdout, "INFO: Running the FP CMOV test...\n");
+    a = false;
+    f = 0.0f; g = 1.0f;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      h = VIP_CMOV(a, f, g);
+      a = !a; f = f + 1.0f; g = g - 1.0f;
+      VIP_EMITCT(outfile, a, count, samples, done);
+      VIP_EMITCT(outfile, f, count, samples, done);
+      VIP_EMITCT(outfile, g, count, samples, done);
+      VIP_EMITCT(outfile, h, count, samples, done);
+    }
+
     fprintf(stdout, "INFO: Running the too-many-falses test...\n");
     for (unsigned i=0; i < EXPSIZE; i++)
     {
@@ -114,6 +140,19 @@ slice_n_dice(FILE *outfile, uint64_t samples)
       b = (a || !a) && a;
       VIP_EMITCT(outfile, a, count, samples, done);
       VIP_EMITCT(outfile, b, count, samples, done);
+    }
+
+    fprintf(stdout, "INFO: Running the boolean CMOV test...\n");
+    a = false;
+    b = false; c = true;
+    for (unsigned i=0; i < EXPSIZE; i++)
+    {
+      d = VIP_CMOV(a, b, c);
+      a = !a; b = !b; c = !c;
+      VIP_EMITCT(outfile, a, count, samples, done);
+      VIP_EMITCT(outfile, b, count, samples, done);
+      VIP_EMITCT(outfile, c, count, samples, done);
+      VIP_EMITCT(outfile, d, count, samples, done);
     }
 
   }
