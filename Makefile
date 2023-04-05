@@ -5,6 +5,21 @@ Please choose one of the following target
   config-seal    - configure VIP-Bench to target Microsoft's SEAL Homomorphic Encryption library
   run-tests      - clean, build, and test all benchmarks in all target modes (NA,DO,ENC)
   all-clean      - clean all benchmark directories
+
+Within individual directories, the following Makefile targets are also available:
+  clean          - delete all generated files
+  build          - build the binary
+  test           - run the standard test on the binary
+
+Note that benchmark builds must be parameterized with the build MODE, such as:
+  MODE=na        - build in NATIVE mode, non-data-oblivious build without encryption
+  MODE=do        - build in DATA-OBLIVIOUS mode, data-oblivious build without encryption
+  MODE=enc       - build in DATA-OBLIVIOUS ENCRYPTED mode, data-oblivious build with encrpytion
+
+Example benchmark builds:
+  make MODE=na clean build test
+  make MODE=enc build
+  make MODE=do clean
 endef
 
 export HELP_TEXT
