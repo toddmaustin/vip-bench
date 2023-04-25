@@ -1,7 +1,7 @@
 define HELP_TEXT
 Please choose one of the following target
   config-vip     - configure VIP-Bench to target the VIP-Bench functional library
-  config-meso    - configure VIP-Bench to target Agita Labs' Mesosphere secure computation SDK
+  config-tf      - configure VIP-Bench to target Agita Labs' TrustForge secure computation SDK
   config-seal    - configure VIP-Bench to target Microsoft's SEAL Homomorphic Encryption library
   run-tests      - clean, build, and test all benchmarks in all target modes (NA,DO,ENC)
   all-clean      - clean all benchmark directories
@@ -102,10 +102,10 @@ config-vip:
 	ln -sf configs/config.mk.vip config.mk
 	ln -sf configs/config.h.vip config.h
 
-config-mesa:
-	@echo "Configuring VIP-Bench for Agita Labs' Mesosphere SDK..."
-	ln -sf configs/config.mk.meso config.mk
-	ln -sf configs/config.h.meso config.h
+config-tf:
+	@echo "Configuring VIP-Bench for Agita Labs' TrustForge SDK..."
+	ln -sf configs/config.mk.tf config.mk
+	ln -sf configs/config.h.tf config.h
 
 config-seal:
 	@echo "Configuring VIP-Bench for Microsoft SEAL HE library..."
@@ -119,7 +119,7 @@ run-tests:
 	    echo "--------------------------------" ; \
 	    echo "Running "$$_BMARK" in MODE="$$_MODE ; \
 	    echo "--------------------------------" ; \
-	    make MODE=$$_MODE clean build test ; \
+	    make MODE=$$_MODE clean build test || exit 1; \
 	    cd .. ; \
 	  done \
 	done
