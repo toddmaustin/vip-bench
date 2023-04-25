@@ -46,7 +46,7 @@ compareExchange(VIP_ENCINT *a, int i, int j)
     swaps++;
   }
 #else /* VIP_DO_MODE */
-  VIP_ENCBOOL _pred = (((i < j) && (a[i] > a[j])) || ((i > j) && (a[i] < a[j])));
+  VIP_ENCBOOL _pred = (((VIP_ENCBOOL)(i < j) && (a[i] > a[j])) || ((VIP_ENCBOOL)(i > j) && (a[i] < a[j])));
   VIP_ENCINT temp = a[i];
   a[i] = VIP_CMOV(_pred, a[j], a[i]);
   a[j] = VIP_CMOV(_pred, temp, a[j]);

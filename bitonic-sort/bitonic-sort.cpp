@@ -43,7 +43,7 @@ bitonicsort(VIP_ENCINT *data, unsigned size)
           swaps++;
         }
 #else /* VIP_DO_MODE */
-        VIP_ENCBOOL _pred = ((l > i) && ((((i & k) == 0) && (data[i] > data[l])) || (((i & k) != 0) && (data[i] < data[l]))) );
+        VIP_ENCBOOL _pred = ((VIP_ENCBOOL)(l > i) && (((VIP_ENCBOOL)((i & k) == 0) && (data[i] > data[l])) || ((VIP_ENCBOOL)((i & k) != 0) && (data[i] < data[l]))) );
         VIP_ENCINT tmp = data[i];
         data[i] = VIP_CMOV(_pred, data[l], data[i]);
         data[l] = VIP_CMOV(_pred, tmp, data[l]);

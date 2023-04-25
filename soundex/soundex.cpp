@@ -70,7 +70,7 @@ soundex_equal(sndex_t sndexA, sndex_t sndexB)
   for (int i=0; i < 4; i++)
   {
 #ifdef VIP_DO_MODE
-    equiv = VIP_CMOV(sndexA[i] != sndexB[i], false, equiv);
+    equiv = VIP_CMOV(sndexA[i] != sndexB[i], (VIP_ENCBOOL)false, equiv);
 #else
     if (sndexA[i] != sndexB[i])
     {

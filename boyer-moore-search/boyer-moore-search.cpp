@@ -71,7 +71,7 @@ void badCharHeuristic(vector<VIP_ENCCHAR> str, int size, VIP_ENCINT badchar[NO_O
     // True data-obliviousness requires us to write to all indexes
     for(int j=0; j<NO_OF_CHARS; j++)
     {
-      badchar[j] = VIP_CMOV(j==badchar_index, j, badchar[j]);
+      badchar[j] = VIP_CMOV(badchar_index==j, (VIP_ENCINT)j, badchar[j]);
     }
 #endif
   }
@@ -114,11 +114,11 @@ void search(vector<VIP_ENCCHAR> txt, int n, vector<VIP_ENCCHAR> pat, int m, VIP_
        // Access: pat[VIP_DEC(idx)]
       VIP_ENCCHAR pat_idx = pat[0];
       for(int j=0; j<m; j++)
-        pat_idx = VIP_CMOV(j==idx, pat[j], pat_idx);
+        pat_idx = VIP_CMOV(idx==j, pat[j], pat_idx);
       // Access: txt[VIP_DEC(s+idx)]
       VIP_ENCCHAR txt_idx = txt[0];
       for(int j=0; j<n; j++)
-        txt_idx = VIP_CMOV(j==s+idx, txt[j], txt_idx);
+        txt_idx = VIP_CMOV(s+idx==j, txt[j], txt_idx);
 
       idx = idx - VIP_CMOV(idx >= 0 && pat_idx == txt_idx, (VIP_ENCINT)1,  (VIP_ENCINT)0);
     }
@@ -143,14 +143,14 @@ void search(vector<VIP_ENCCHAR> txt, int n, vector<VIP_ENCCHAR> pat, int m, VIP_
     // True data-obliviousness requires us to write to all indexes
     for(int i=0; i<n; i++)
     {
-      ret[i] = VIP_CMOV(cond && i==s, true, ret[i]);
+      ret[i] = VIP_CMOV(cond && s==i, (VIP_ENCBOOL)true, ret[i]);
     }
 
     // Access: badchar[VIP_DEC(txt[VIP_DEC(s+m)])]
     VIP_ENCINT txt_sm = (VIP_ENCINT) txt[0];
     VIP_ENCINT badchar_txt_sm = badchar[0];
     for(int j=0; j<n; j++)
-      txt_sm = VIP_CMOV(j==s+m, txt[j], txt_sm);
+      txt_sm = VIP_CMOV(s+m==j, (VIP_ENCINT)txt[j], txt_sm);
     for(int j=0; j<NO_OF_CHARS; j++)
       badchar_txt_sm = VIP_CMOV(j==txt_sm, badchar[j], badchar_txt_sm);
 
@@ -158,13 +158,13 @@ void search(vector<VIP_ENCCHAR> txt, int n, vector<VIP_ENCCHAR> pat, int m, VIP_
     VIP_ENCINT txt_sidx = (VIP_ENCINT) txt[0];
     VIP_ENCINT badchar_txt_sidx = badchar[0];
     for(int j=0; j<n; j++)
-      txt_sidx = VIP_CMOV(j==s+idx, txt[j], txt_sidx);
+      txt_sidx = VIP_CMOV(s+idx==j, (VIP_ENCINT)txt[j], txt_sidx);
     for(int j=0; j<NO_OF_CHARS; j++)
       badchar_txt_sidx = VIP_CMOV(j==txt_sidx, badchar[j], badchar_txt_sidx);
 
-    VIP_ENCINT s_if   = VIP_CMOV(s+m < n, m-badchar_txt_sm, 1);
+    VIP_ENCINT s_if   = VIP_CMOV(s+m < n, m-badchar_txt_sm, (VIP_ENCINT)1);
     VIP_ENCINT s_shift = idx - badchar_txt_sidx;
-    VIP_ENCINT s_else =  VIP_CMOV(1 > s_shift, 1, s_shift);
+    VIP_ENCINT s_else =  VIP_CMOV((VIP_ENCINT)1 > s_shift, (VIP_ENCINT)1, s_shift);
     s = s + VIP_CMOV(cond, s_if, s_else);
 #endif
 	}

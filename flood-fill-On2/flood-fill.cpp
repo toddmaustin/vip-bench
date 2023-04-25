@@ -17,7 +17,7 @@ int BITMAPS = 1;
 #define M SIZE
 #define N SIZE
 
-typedef vector<VIP_ENCUINT64> VIP_Enc_Group_t;
+typedef vector<VIP_ENCULONG> VIP_Enc_Group_t;
 VIP_Enc_Group_t initGroup(BITMAPS, 0); //{BITMAPS x 0}
 struct node
 {
@@ -195,7 +195,7 @@ inline VIP_ENCBOOL haveIntersection(VIP_Enc_Group_t bin1, VIP_Enc_Group_t bin2)
 
 	return intersect;
 }
-inline VIP_ENCUINT64 combine(VIP_ENCUINT64 bin1, VIP_ENCUINT64 bin2)
+inline VIP_ENCULONG combine(VIP_ENCULONG bin1, VIP_ENCULONG bin2)
 {
 	return bin1 | bin2;
 }
@@ -210,7 +210,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 	int row[] = {-1, -1, -1, 0, 0, 1, 1, 1, 0};
 	int col[] = {-1, 0, 1, -1, 1, -1, 0, 1, 0};
 	node struct_mat[M][N];
-	VIP_ENCUINT64 currId = 1;
+	VIP_ENCULONG currId = 1;
 	VIP_ENCINT bitMapIdx = 0;
 
 #define SAFELOC(X, Y) ((X) >= 0 && (X) < M && (Y) >= 0 && (Y) < N)
@@ -276,7 +276,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 			VIP_ENCBOOL update_current_id = !matchFound && (currId == 0) && (bitMapIdx + 1 < BITMAPS);
 
 #ifdef VIP_DO_MODE
-			currId = VIP_CMOV(update_current_id, (uint64_t)1, currId);
+			currId = VIP_CMOV(update_current_id, (VIP_ENCULONG)1, currId);
 #else /* VIP_NA_MODE */
 			if (update_current_id)
         currId = (uint64_t)1;
@@ -300,7 +300,7 @@ void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR re
 			}
 
 #ifdef VIP_DO_MODE
-      currId = currId << VIP_CMOV(!matchFound, (VIP_ENCUINT64)1, (VIP_ENCUINT64)0);
+      currId = currId << VIP_CMOV(!matchFound, (VIP_ENCULONG)1, (VIP_ENCULONG)0);
 #else /* VIP_NA_MODE */
       currId = currId << (!matchFound ? 1 : 0);
 #endif
