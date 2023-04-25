@@ -13,6 +13,7 @@
 #define VIP_ENCUCHAR    unsigned char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
 #define VIP_ENCLONG     long
 #define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
@@ -37,6 +38,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_ENCUCHAR    unsigned char
 #define VIP_ENCINT      int
 #define VIP_ENCUINT     unsigned int
+#define VIP_ENCUINT64   uint64_t
 #define VIP_ENCLONG     long
 #define VIP_ENCULONG    unsigned long
 #define VIP_ENCBOOL     bool
@@ -66,6 +68,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_ENCINT      tfInt32
 #define VIP_ENCUINT     tfUInt32
 #define VIP_ENCLONG     tfLong64
+#define VIP_ENCUINT64   tfULong64
 #define VIP_ENCULONG    tfULong64
 #define VIP_ENCBOOL     tfBool
 #define VIP_ENCFLOAT    tfFloat
