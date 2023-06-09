@@ -66,7 +66,7 @@ search(vector<VIP_ENCCHAR> txt, vector<VIP_ENCCHAR> pat, VIP_ENCBOOL *ret)
       }
 #else /* VIP_DO_MODE */
       VIP_ENCBOOL _pred = (txt[i+j] != pat[j]);
-      match = VIP_CMOV(match && _pred, (VIP_ENCBOOL)false, match);
+      match = VIP_CMOV(match & _pred, (VIP_ENCBOOL)false, match);
 #endif /* VIP_DO_MODE */
     }
     ret[i] = match;

@@ -31,8 +31,8 @@
 #define K 16
 
 // primality results
-#define PT_COMPOSITE    0
-#define PT_PRIME        1
+#define PT_COMPOSITE 0
+#define PT_PRIME 1
 #define PT_PRIME_LIKELY 2
 
 /*
@@ -42,27 +42,28 @@
  */
 static VIP_ENCULONG powm(VIP_ENCULONG b, VIP_ENCULONG e, VIP_ENCUINT m)
 {
-	VIP_ENCULONG result = 1;
+  VIP_ENCULONG result = 1;
 
 #ifdef VIP_DO_MODE
   VIP_ENCBOOL _done = false;
-  for (int i=0; i < 64; i++)
+  for (int i = 0; i < 64; i++)
   {
-    _done = _done || (e == 0);
+    _done = _done | (e == 0);
     VIP_ENCBOOL _pred = ((e & 1) == 1);
-    result = VIP_CMOV(!_done && _pred, (result * b) % (VIP_ENCULONG)m, result);
-		b = VIP_CMOV(!_done, (b * b) % (VIP_ENCULONG)m, b);
-		e = VIP_CMOV(!_done, e / 2, e);
+    result = VIP_CMOV(!_done & _pred, (result * b) % (VIP_ENCULONG)m, result);
+    b = VIP_CMOV(!_done, (b * b) % (VIP_ENCULONG)m, b);
+    e = VIP_CMOV(!_done, e / 2, e);
   }
-#else /* !VIP_DO_MODE */
-	while (e != 0) {
-		if ((e & 1) == 1)
-			result = (result * b) % m;
-		b = (b * b) % m;
-		e /= 2;
-	}
+#else  /* !VIP_DO_MODE */
+  while (e != 0)
+  {
+    if ((e & 1) == 1)
+      result = (result * b) % m;
+    b = (b * b) % m;
+    e /= 2;
+  }
 #endif /* VIP_DO_MODE */
-	return result;
+  return result;
 }
 
 /*
@@ -74,10 +75,10 @@ VIP_ENCULONG get_random_int(VIP_ENCULONG low, VIP_ENCULONG high)
 {
 #ifdef VIP_DO_MODE
   VIP_ENCULONG x = (high - low + 1);
-  x = VIP_CMOV(x != 0, x, (VIP_ENCULONG)1); 
-	return (VIP_ENCULONG)myrand() % x + low;
-#else /* !VIP_DO_MODE */
-	return (uint64_t)myrand() % (high - low + 1) + low;
+  x = VIP_CMOV(x != 0, x, (VIP_ENCULONG)1);
+  return (VIP_ENCULONG)myrand() % x + low;
+#else  /* !VIP_DO_MODE */
+  return (uint64_t)myrand() % (high - low + 1) + low;
 #endif /* VIP_DO_MODE */
 }
 
@@ -86,24 +87,24 @@ VIP_ENCULONG get_random_int(VIP_ENCULONG low, VIP_ENCULONG high)
  */
 void split_int(VIP_ENCULONG *s, VIP_ENCULONG *d, VIP_ENCULONG n)
 {
-	*s = 0;
-	*d = n - 1;
+  *s = 0;
+  *d = n - 1;
 
 #ifdef VIP_DO_MODE
   VIP_ENCBOOL _done = false;
-  for (int i=0; i < 64; i++)
+  for (int i = 0; i < 64; i++)
   {
     VIP_ENCBOOL _pred = ((*d & 1) == 0);
-    _done = _done || !_pred;
-		*s = VIP_CMOV(!_done && _pred, *s + 1, *s);
-    *d = VIP_CMOV(!_done && _pred, *d / 2, *d);
-	}
-#else /* !VIP_DO_MODE */
-	while ((*d & 1) == 0)
+    _done = _done | !_pred;
+    *s = VIP_CMOV(!_done & _pred, *s + 1, *s);
+    *d = VIP_CMOV(!_done & _pred, *d / 2, *d);
+  }
+#else  /* !VIP_DO_MODE */
+  while ((*d & 1) == 0)
   {
-		(*s)++;
-		*d /= 2;
-	}
+    (*s)++;
+    *d /= 2;
+  }
 #endif /* VIP_DO_MODE */
 }
 /*
@@ -123,119 +124,120 @@ void split_int(VIP_ENCULONG *s, VIP_ENCULONG *d, VIP_ENCULONG n)
 VIP_ENCINT
 miller_rabin_int(VIP_ENCUINT n, uint32_t k)
 {
-	VIP_ENCULONG s;
-	VIP_ENCULONG a = 0, d, x, nm1;
+  VIP_ENCULONG s;
+  VIP_ENCULONG a = 0, d, x, nm1;
 #ifdef VIP_DO_MODE
   VIP_ENCBOOL _done = false;
   VIP_ENCINT _retval = -1;
 
   VIP_ENCBOOL _pred = ((n & 1) == 0);
   VIP_ENCINT _val = VIP_CMOV(n == 2, (VIP_ENCINT)PT_PRIME, (VIP_ENCINT)PT_COMPOSITE);
-  _retval = VIP_CMOV(!_done && _pred, _val, _retval);
-  _done = _done || _pred;
+  _retval = VIP_CMOV((!_done) & _pred, _val, _retval);
+  _done = _done | _pred;
 
   VIP_ENCBOOL _pred1 = (n == 3);
-  _retval = VIP_CMOV(!_done && _pred1, (VIP_ENCINT)PT_PRIME, _retval);
-  _done = _done || _pred1;
+  _retval = VIP_CMOV((!_done) & _pred1, (VIP_ENCINT)PT_PRIME, _retval);
+  _done = _done | _pred1;
 
   VIP_ENCBOOL _pred2 = (n < 3);
-  _retval = VIP_CMOV(!_done && _pred2, (VIP_ENCINT)PT_COMPOSITE, _retval);
-  _done = _done || _pred2;
+  _retval = VIP_CMOV((!_done) & _pred2, (VIP_ENCINT)PT_COMPOSITE, _retval);
+  _done = _done | _pred2;
 
-	nm1 = n - 1;
+  nm1 = n - 1;
 
-	/* compute s and d s.t. n-1=2^s*d */
-	split_int(&s, &d, n);
+  /* compute s and d s.t. n-1=2^s*d */
+  split_int(&s, &d, n);
 
-	/* Repeat the test itself k times to increase the accuracy */
-	for (unsigned i = 0; i < k; i++)
+  /* Repeat the test itself k times to increase the accuracy */
+  for (unsigned i = 0; i < k; i++)
   {
     VIP_ENCBOOL _continued = false;
 
-		if (!VIP_DEC(_done)) // FIXME: avoid RNG desync
-      a = get_random_int(2, n - 2);
+    a = get_random_int(2, n - 2);
 
-		/* compute a^d mod n */
-		x = powm(a, d, n);
+    /* compute a^d mod n */
+    x = powm(a, d, n);
 
-    VIP_ENCBOOL _ccheck = (x == 1 || x == nm1);
-    _continued = _continued || (!_done && _ccheck);
+    _continued = ((x == 1) | (x == nm1)); // LB: Skip loop if continue condition is met;
 
     VIP_ENCBOOL _breakout = false;
     VIP_ENCULONG r = 1;
-		for (int ii=0; ii < 64; ii++)
+    for (int ii = 0; ii < 64; ii++)
     {
-     VIP_ENCBOOL _pred = (r <= s);
+      _breakout = _breakout | !(r <= s);
 
-		 x = VIP_CMOV(!_done && !_continued && !_breakout && _pred, (x * x) % (VIP_ENCULONG)n, x);
+      x = VIP_CMOV((!_done) & (!_continued) & (!_breakout), (x * x) % ((VIP_ENCULONG) n), x);
 
       VIP_ENCBOOL _pred1 = (x == 1);
-      _retval = VIP_CMOV(!_done && !_continued && !_breakout && _pred && _pred1, (VIP_ENCINT)PT_COMPOSITE, _retval);
-      _done = _done || (!_continued && !_breakout && _pred && _pred1);
+      _retval = VIP_CMOV((!_done) & (!_continued) & (!_breakout) & _pred1, (VIP_ENCINT)PT_COMPOSITE, _retval);
+      _done = _done | ((!_done) & (!_continued) & (!_breakout) & _pred1);
 
       VIP_ENCBOOL _pred2 = (x == nm1);
-      _breakout = _breakout || (!_done && !_continued && _pred && _pred2);
+      _breakout = _breakout | ((!_done) & (!_continued) & _pred2);
 
       r++;
-		}
+    }
 
     VIP_ENCBOOL _pred3 = (x != nm1);
-    _retval = VIP_CMOV(!_done && !_continued &&  _pred3, (VIP_ENCINT)PT_COMPOSITE, _retval);
-    _done = _done || (!_continued && _pred3);
-	}
+    _retval = VIP_CMOV((!_done) & (!_continued) & _pred3, (VIP_ENCINT)PT_COMPOSITE, _retval);
+    _done = _done | ((!_done) & (!_continued) & _pred3);
+  }
 
   _retval = VIP_CMOV(!_done, (VIP_ENCINT)PT_PRIME_LIKELY, _retval);
-	return _retval;
-#else /* !VIP_DO_MODE */
-	/* We need an odd integer greater than 3 */
-	if ((n & 1) == 0)
-		return n == 2 ? PT_PRIME : PT_COMPOSITE;
-	if (n == 3)
-		return PT_PRIME;
-	else if (n < 3)
-		return PT_COMPOSITE;
+  return _retval;
 
-	nm1 = n - 1;
+#else  /* !VIP_DO_MODE */
+  /* We need an odd integer greater than 3 */
+  if ((n & 1) == 0)
+    return n == 2 ? PT_PRIME : PT_COMPOSITE;
+  if (n == 3)
+    return PT_PRIME;
+  else if (n < 3)
+    return PT_COMPOSITE;
 
-	/* compute s and d s.t. n-1=2^s*d */
-	split_int(&s, &d, n);
+  nm1 = n - 1;
 
-	/* Repeat the test itself k times to increase the accuracy */
-	for (unsigned i = 0; i < k; i++) {
-		a = get_random_int(2, n - 2);
+  /* compute s and d s.t. n-1=2^s*d */
+  split_int(&s, &d, n);
 
-		/* compute a^d mod n */
-		x = powm(a, d, n);
+  /* Repeat the test itself k times to increase the accuracy */
+  for (unsigned i = 0; i < k; i++)
+  {
+    a = get_random_int(2, n - 2);
 
-		if (x == 1 || x == nm1)
-			continue;
+    /* compute a^d mod n */
+    x = powm(a, d, n);
 
-		for (uint64_t r = 1; r <= s; r++) {
-			x = (x * x) % n;
-			if (x == 1)
-				return PT_COMPOSITE;
-			if (x == nm1)
-				break;
-		}
+    if (x == 1 || x == nm1)
+      continue;
 
-		if (x != nm1)
-			return PT_COMPOSITE;
-	}
+    for (uint64_t r = 1; r <= s; r++)
+    {
+      x = (x * x) % n;
+      if (x == 1)
+        return PT_COMPOSITE;
+      if (x == nm1)
+        break;
+    }
 
-	return PT_PRIME_LIKELY;
+    if (x != nm1)
+      return PT_COMPOSITE;
+  }
+
+  return PT_PRIME_LIKELY;
 #endif /* VIP_DO_MODE */
 }
 
 // blind queue for results
 #define Q_SIZE 64
-struct {
+struct
+{
   VIP_ENCUINT val;
   VIP_ENCINT prim;
 } q[Q_SIZE];
 int q_head = 0;
 
-int
-main(void)
+int main(void)
 {
   // initialize the RNG
   mysrand(42);
@@ -245,7 +247,9 @@ main(void)
     Stopwatch s("VIP_Bench Runtime");
 
     VIP_ENCUINT val = 3;
-    for (int i=0; i < 200; i++)
+       fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", VIP_DEC(val));
+
+    for (int i = 0; i < 200; i++)
     {
       VIP_ENCINT prim = miller_rabin_int(val, K);
       VIP_ENCBOOL _pred = (prim != PT_COMPOSITE);
@@ -253,16 +257,17 @@ main(void)
       {
         q[q_head].val = val;
         q[q_head].prim = prim;
-        if (q_head+1 < Q_SIZE)
+        if (q_head + 1 < Q_SIZE)
           q_head++;
       }
       val = myrand();
-    } 
+       fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", VIP_DEC(val));
+    }
   }
 
   // print out the primes that were found
   fprintf(stdout, "Primality tests found %d primes...\n", q_head);
-  for (int i=0; i < q_head; i++)
+  for (int i = 0; i < q_head; i++)
   {
     if (VIP_DEC(q[i].prim) == PT_PRIME)
       fprintf(stdout, "Value %u is `prime' with failure probability (0)\n", VIP_DEC(q[i].val));

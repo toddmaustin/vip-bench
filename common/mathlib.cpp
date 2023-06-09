@@ -30,11 +30,11 @@ myround(VIP_ENCDOUBLE x)
   VIP_ENCBOOL _pred = (x >= 0);
   t = VIP_CMOV(_pred, myfloor(x), t);
   VIP_ENCBOOL _pred1 = ((t - x) <= -0.5);
-  t = VIP_CMOV(_pred && _pred1, t + 1, t);
+  t = VIP_CMOV(_pred & _pred1, t + 1, t);
 
   t = VIP_CMOV(!_pred, myfloor(-x), t);
   VIP_ENCBOOL _pred2 = ((t + x) <= -0.5);
-  t = VIP_CMOV(!_pred && _pred2, t + 1, t);
+  t = VIP_CMOV(!_pred & _pred2, t + 1, t);
   t = VIP_CMOV(!_pred, -t, t);
 #else /* !VIP_DO_MODE */
   if (x >= 0)
@@ -129,20 +129,20 @@ sincos(VIP_ENCDOUBLE *psin, VIP_ENCDOUBLE *pcos, VIP_ENCDOUBLE x)
   VIP_ENCBOOL _pred1 = (x < -3.14159265);
   VIP_ENCBOOL _pred2 = (x >  3.14159265);
   x = VIP_CMOV(_pred1, x + 6.28318531, x);
-  x = VIP_CMOV(!_pred1 && _pred2, x - 6.28318531, x);
+  x = VIP_CMOV(!_pred1 & _pred2, x - 6.28318531, x);
 
   //compute sine
   VIP_ENCBOOL _pred3 = (x < 0);
 
   sin = VIP_CMOV(_pred3, (VIP_ENCDOUBLE)1.27323954 * x + (VIP_ENCDOUBLE).405284735 * x * x, x);
   VIP_ENCBOOL _pred4 = (sin < 0);
-  sin = VIP_CMOV(_pred3 && _pred4, (VIP_ENCDOUBLE)0.225 * (sin *-sin - sin) + sin, sin);
-  sin = VIP_CMOV(_pred3 && !_pred4, (VIP_ENCDOUBLE)0.225 * (sin * sin - sin) + sin, sin);
+  sin = VIP_CMOV(_pred3 & _pred4, (VIP_ENCDOUBLE)0.225 * (sin *-sin - sin) + sin, sin);
+  sin = VIP_CMOV(_pred3 & !_pred4, (VIP_ENCDOUBLE)0.225 * (sin * sin - sin) + sin, sin);
 
   sin = VIP_CMOV(!_pred3, (VIP_ENCDOUBLE)1.27323954 * x - (VIP_ENCDOUBLE)0.405284735 * x * x, sin);
   VIP_ENCBOOL _pred5 = (sin < 0);
-  sin = VIP_CMOV(!_pred3 && _pred5, (VIP_ENCDOUBLE)0.225 * (sin *-sin - sin) + sin, sin);
-  sin = VIP_CMOV(!_pred3 && !_pred5, (VIP_ENCDOUBLE)0.225 * (sin * sin - sin) + sin, sin);
+  sin = VIP_CMOV(!_pred3 & _pred5, (VIP_ENCDOUBLE)0.225 * (sin *-sin - sin) + sin, sin);
+  sin = VIP_CMOV(!_pred3 & !_pred5, (VIP_ENCDOUBLE)0.225 * (sin * sin - sin) + sin, sin);
 
   //compute cosine: sin(x + PI/2) = cos(x)
   x += 1.57079632;
@@ -154,13 +154,13 @@ sincos(VIP_ENCDOUBLE *psin, VIP_ENCDOUBLE *pcos, VIP_ENCDOUBLE x)
 
   cos = VIP_CMOV(_pred7, (VIP_ENCDOUBLE)1.27323954 * x + (VIP_ENCDOUBLE)0.405284735 * x * x, cos);
   VIP_ENCBOOL _pred8 = (cos < 0);
-  cos = VIP_CMOV(_pred7 && _pred8, (VIP_ENCDOUBLE)0.225 * (cos *-cos - cos) + cos, cos);
-  cos = VIP_CMOV(_pred7 && !_pred8, (VIP_ENCDOUBLE)0.225 * (cos * cos - cos) + cos, cos);
+  cos = VIP_CMOV(_pred7 & _pred8, (VIP_ENCDOUBLE)0.225 * (cos *-cos - cos) + cos, cos);
+  cos = VIP_CMOV(_pred7 & !_pred8, (VIP_ENCDOUBLE)0.225 * (cos * cos - cos) + cos, cos);
 
   cos = VIP_CMOV(!_pred7, (VIP_ENCDOUBLE)1.27323954 * x - (VIP_ENCDOUBLE)0.405284735 * x * x, cos);
   VIP_ENCBOOL _pred9 = (cos < 0);
-  cos = VIP_CMOV(!_pred7 && _pred9, (VIP_ENCDOUBLE)0.225 * (cos *-cos - cos) + cos, cos);
-  cos = VIP_CMOV(!_pred7 && !_pred9, (VIP_ENCDOUBLE)0.225 * (cos * cos - cos) + cos, cos);
+  cos = VIP_CMOV(!_pred7 & _pred9, (VIP_ENCDOUBLE)0.225 * (cos *-cos - cos) + cos, cos);
+  cos = VIP_CMOV(!_pred7 & !_pred9, (VIP_ENCDOUBLE)0.225 * (cos * cos - cos) + cos, cos);
 #else /* !VIP_DO_MODE */
   //always wrap input angle to -PI..PI
   if (x < -3.14159265) /* _pred1: ... */
@@ -316,83 +316,83 @@ myexp(VIP_ENCDOUBLE x)  /* default IEEE double exp */
   VIP_ENCUINT lx;
   GET_LOW_WORD(lx,x);
   VIP_ENCBOOL _pred3 = (((hx&0xfffff)|lx)!=0);  /* _pred3: ... */
-  retval = VIP_CMOV(_pred1 && _pred2 && _pred3, x+x, retval);
+  retval = VIP_CMOV(_pred1 & _pred2 & _pred3, x+x, retval);
   VIP_ENCBOOL _pred3a = (xsb == 0);  /* _pred3a: exp(+-inf)={inf,0} */
-  retval = VIP_CMOV(_pred1 && _pred2 && !_pred3 && _pred3a, x, retval);
-  retval = VIP_CMOV(_pred1 && _pred2 && !_pred3 && !_pred3a, (VIP_ENCDOUBLE)0.0, retval);
+  retval = VIP_CMOV(_pred1 & _pred2 & !_pred3 & _pred3a, x, retval);
+  retval = VIP_CMOV(_pred1 & _pred2 & !_pred3 & !_pred3a, (VIP_ENCDOUBLE)0.0, retval);
 
   // /* ignore FP exceptions: */ fegetexceptflag(&except, FE_ALL_EXCEPT);
 
   VIP_ENCBOOL _pred4 = (x > o_threshold);  /* _pred4: ... */
   VIP_ENCBOOL _pred5 = (x < u_threshold);  /* _pred5: ... */
-  retval = VIP_CMOV(_pred1 && !_pred2 && _pred4, (VIP_ENCDOUBLE)(huge*huge), retval); /* overflow */
-  retval = VIP_CMOV(_pred1 && !_pred2 && !_pred4 && _pred5, (VIP_ENCDOUBLE)(twom1000*twom1000), retval); /* underflow */
+  retval = VIP_CMOV(_pred1 & !_pred2 & _pred4, (VIP_ENCDOUBLE)(huge*huge), retval); /* overflow */
+  retval = VIP_CMOV(_pred1 & !_pred2 & !_pred4 & _pred5, (VIP_ENCDOUBLE)(twom1000*twom1000), retval); /* underflow */
 
   /* pre-check escape predicate, must be true for all later CMOV's */
-  VIP_ENCBOOL _escape1 = (!_pred1 || (_pred1 && !_pred2 && !_pred4 && !_pred5));
+  VIP_ENCBOOL _escape1 = (!_pred1 || (_pred1 & !_pred2 & !_pred4 & !_pred5));
 
   /* this implementation gives 2.7182818284590455 for exp(1.0),
      which is well within the allowable error. however,
      2.718281828459045 is closer to the true value so we prefer that
      answer, given that 1.0 is such an important argument value. */
   VIP_ENCBOOL _pred6 = (x == 1.0); /* _pred6: x == 1.0 */
-  retval = VIP_CMOV(_escape1 && _pred6, (VIP_ENCDOUBLE)2.718281828459045235360, retval);
+  retval = VIP_CMOV(_escape1 & _pred6, (VIP_ENCDOUBLE)2.718281828459045235360, retval);
 
   /* pre-check escape predicate, must be true for all later CMOV's */
-  VIP_ENCBOOL _escape2 = (_escape1 && !_pred6);
+  VIP_ENCBOOL _escape2 = (_escape1 & !_pred6);
 
   /* argument reduction */
   VIP_ENCBOOL _pred7 = (hx > 0x3fd62e42); /* _pred7: if  |x| > 0.5 ln2 */
   VIP_ENCBOOL _pred8 = (hx < 0x3FF0A2B2); /* _pred8: and |x| < 1.5 ln2 */
   VIP_ENCDOUBLE _xsbval = VIP_CMOV(xsb == 1, x-ln2HI[1], x-ln2HI[0]);
-  hi = VIP_CMOV(_escape2 && _pred7 && _pred8, _xsbval, hi);
+  hi = VIP_CMOV(_escape2 & _pred7 & _pred8, _xsbval, hi);
   _xsbval = VIP_CMOV(xsb == 1, (VIP_ENCDOUBLE)ln2LO[1], (VIP_ENCDOUBLE)ln2LO[0]);
-  lo = VIP_CMOV(_escape2 && _pred7 && _pred8, _xsbval, lo);
-  k = VIP_CMOV(_escape2 && _pred7 && _pred8, (VIP_ENCINT)1-xsb-xsb, k);
+  lo = VIP_CMOV(_escape2 & _pred7 & _pred8, _xsbval, lo);
+  k = VIP_CMOV(_escape2 & _pred7 & _pred8, (VIP_ENCINT)1-xsb-xsb, k);
 
   _xsbval = VIP_CMOV(xsb == 1, (VIP_ENCDOUBLE)invln2*x+halF[1], (VIP_ENCDOUBLE)invln2*x+halF[0]);
-  k = VIP_CMOV(_escape2 && _pred7 && !_pred8, (VIP_ENCINT)(_xsbval), k);
-  t = VIP_CMOV(_escape2 && _pred7 && !_pred8, (VIP_ENCDOUBLE)k, t);
-  hi = VIP_CMOV(_escape2 && _pred7 && !_pred8, x - t*ln2HI[0], hi); /* t*ln2HI is exact here */
-  lo = VIP_CMOV(_escape2 && _pred7 && !_pred8, t*ln2LO[0], lo);
+  k = VIP_CMOV(_escape2 & _pred7 & !_pred8, (VIP_ENCINT)(_xsbval), k);
+  t = VIP_CMOV(_escape2 & _pred7 & !_pred8, (VIP_ENCDOUBLE)k, t);
+  hi = VIP_CMOV(_escape2 & _pred7 & !_pred8, x - t*ln2HI[0], hi); /* t*ln2HI is exact here */
+  lo = VIP_CMOV(_escape2 & _pred7 & !_pred8, t*ln2LO[0], lo);
 
   VIP_ENCDOUBLE tmpx;
   STRICT_ASSIGN(VIP_ENCDOUBLE, tmpx, hi - lo);
-  x = VIP_CMOV(_escape2 && _pred7, tmpx, x);
+  x = VIP_CMOV(_escape2 & _pred7, tmpx, x);
 
   VIP_ENCBOOL _pred9 = (hx < 0x3e300000); /* _pred9: when |x|<2**-28 */
   VIP_ENCBOOL _pred10 = ((VIP_ENCDOUBLE)huge+x>one); /* _pred10: ... */
-  retval = VIP_CMOV(_escape2 && !_pred7 && _pred9 && _pred10, (VIP_ENCDOUBLE)one+x, retval);/* trigger inexact */
+  retval = VIP_CMOV(_escape2 & !_pred7 & _pred9 & _pred10, (VIP_ENCDOUBLE)one+x, retval);/* trigger inexact */
 
-  k = VIP_CMOV(_escape2 && !_pred7 && !_pred9, (VIP_ENCINT)0, k);
+  k = VIP_CMOV(_escape2 & !_pred7 & !_pred9, (VIP_ENCINT)0, k);
 
   /* pre-check escape predicate, must be true for all later CMOV's */
-  VIP_ENCBOOL _escape3 = (_escape2 && !(!_pred7 && _pred9 && _pred10));
+  VIP_ENCBOOL _escape3 = (_escape2 & !(!_pred7 & _pred9 & _pred10));
 
   /* x is now in primary range */
   t  = x*x;
   VIP_ENCBOOL _pred11 = (k >= -1021); /* _pred11: ... */
   VIP_ENCDOUBLE tmp_twopk;
   INSERT_WORDS(tmp_twopk,(VIP_ENCINT)0x3ff00000+(k<<20), 0);
-  twopk = VIP_CMOV(_escape3 && _pred11, tmp_twopk, twopk);
+  twopk = VIP_CMOV(_escape3 & _pred11, tmp_twopk, twopk);
 
   INSERT_WORDS(tmp_twopk,(VIP_ENCINT)0x3ff00000+((k+1000)<<20), 0);
-  twopk = VIP_CMOV(_escape3 && !_pred11, tmp_twopk, twopk);
+  twopk = VIP_CMOV(_escape3 & !_pred11, tmp_twopk, twopk);
 
   c = x - t*((VIP_ENCDOUBLE)P1+t*((VIP_ENCDOUBLE)P2+t*((VIP_ENCDOUBLE)P3+t*((VIP_ENCDOUBLE)P4+t*P5))));
   VIP_ENCBOOL _pred12 = (k==0); /* _pred12: ... */
-  retval = VIP_CMOV(_escape3 && _pred12, (VIP_ENCDOUBLE)one-((x*c)/(c-2.0)-x), retval);
+  retval = VIP_CMOV(_escape3 & _pred12, (VIP_ENCDOUBLE)one-((x*c)/(c-2.0)-x), retval);
 
-  y = VIP_CMOV(_escape3 && !_pred12, (VIP_ENCDOUBLE)one-((lo-(x*c)/((VIP_ENCDOUBLE)2.0-c))-hi), y);
+  y = VIP_CMOV(_escape3 & !_pred12, (VIP_ENCDOUBLE)one-((lo-(x*c)/((VIP_ENCDOUBLE)2.0-c))-hi), y);
 
   /* pre-check escape predicate, must be true for all later CMOV's */
-  VIP_ENCBOOL _escape4 = (_escape3 && !_pred12);
+  VIP_ENCBOOL _escape4 = (_escape3 & !_pred12);
 
   VIP_ENCBOOL _pred13 = (k >= -1021); /* _pred13: ... */
   VIP_ENCBOOL _pred14 = (k == 1024);  /* _pred14: ... */
-  retval = VIP_CMOV(_escape4 && _pred13 && _pred14, y*2.0*0x1p1023, retval);
-  retval = VIP_CMOV(_escape4 && _pred13 && !_pred14, y*twopk, retval);
-  retval = VIP_CMOV(_escape4 && !_pred13, y*twopk*twom1000, retval);
+  retval = VIP_CMOV(_escape4 & _pred13 & _pred14, y*2.0*0x1p1023, retval);
+  retval = VIP_CMOV(_escape4 & _pred13 & !_pred14, y*twopk, retval);
+  retval = VIP_CMOV(_escape4 & !_pred13, y*twopk*twom1000, retval);
 
   // /* resume FP exceptions: */ fesetexceptflag(&except, FE_ALL_EXCEPT);
 
@@ -497,20 +497,20 @@ mylog(VIP_ENCDOUBLE x)
   k=0;
   VIP_ENCBOOL _pred0 = (hx < 0x00100000); /* _pred0: x < 2**-1022  */
   VIP_ENCBOOL _pred1 = (((hx&0x7fffffff)|(/*FIXME*/VIP_ENCINT)lx)==0); /* _pred1 */
-  retval = VIP_CMOV(_pred0 && _pred1, -((VIP_ENCDOUBLE)two54)/zero, retval); /* log(+-0)=-inf */
-  _returned = _returned || (_pred0 && _pred1);
+  retval = VIP_CMOV(_pred0 & _pred1, -((VIP_ENCDOUBLE)two54)/zero, retval); /* log(+-0)=-inf */
+  _returned = _returned | (_pred0 & _pred1);
 
   VIP_ENCBOOL _pred2 = (hx<0); /* _pred2 */
-  retval = VIP_CMOV(!_returned && _pred0 && _pred2, (x-x)/zero, retval); /* log(-#) = NaN */
-  _returned = _returned || (_pred0 && _pred2);
-  k = VIP_CMOV(!_returned && _pred0, k - 54, k); /* subnormal number, scale up */
-  x = VIP_CMOV(!_returned && _pred0, x * two54, x);
+  retval = VIP_CMOV(!_returned & _pred0 & _pred2, (x-x)/zero, retval); /* log(-#) = NaN */
+  _returned = _returned | (_pred0 & _pred2);
+  k = VIP_CMOV(!_returned & _pred0, k - 54, k); /* subnormal number, scale up */
+  x = VIP_CMOV(!_returned & _pred0, x * two54, x);
   GET_HIGH_WORD(_tmp,x);
-  hx = VIP_CMOV(!_returned && _pred0, _tmp, hx);
+  hx = VIP_CMOV(!_returned & _pred0, _tmp, hx);
 
   VIP_ENCBOOL _pred3 = (hx >= 0x7ff00000); /* _pred3 */
-  retval = VIP_CMOV(!_returned && _pred3, x+x, retval);
-  _returned = _returned || _pred3;
+  retval = VIP_CMOV(!_returned & _pred3, x+x, retval);
+  _returned = _returned | _pred3;
 
   k += (hx>>20)-1023;
   hx = hx & 0x000fffff;
@@ -522,21 +522,21 @@ mylog(VIP_ENCDOUBLE x)
   VIP_ENCBOOL _pred4 = ((((VIP_ENCINT)0x000fffff)&((VIP_ENCINT)2+hx))<3); /* _pred4: -2**-20 <= f < 2**-20 */
   VIP_ENCBOOL _pred5 = (f==zero); /* _pred5 */
   VIP_ENCBOOL _pred6 = (k==0); /* _pred6 */
-  retval = VIP_CMOV(!_returned && _pred4 && _pred5 && _pred6, (VIP_ENCDOUBLE)zero, retval);
-  _returned = _returned || (_pred4 && _pred5 && _pred6);
+  retval = VIP_CMOV(!_returned & _pred4 & _pred5 & _pred6, (VIP_ENCDOUBLE)zero, retval);
+  _returned = _returned | (_pred4 & _pred5 & _pred6);
 
-  dk = VIP_CMOV(!_returned && _pred4 && _pred5 && !_pred6, (VIP_ENCDOUBLE)k, dk);
-  retval = VIP_CMOV(!_returned && _pred4 && _pred5 && !_pred6, dk*ln2_hi+dk*ln2_lo, retval);
-  _returned = _returned || (_pred4 && _pred5 && !_pred6);
+  dk = VIP_CMOV(!_returned & _pred4 & _pred5 & !_pred6, (VIP_ENCDOUBLE)k, dk);
+  retval = VIP_CMOV(!_returned & _pred4 & _pred5 & !_pred6, dk*ln2_hi+dk*ln2_lo, retval);
+  _returned = _returned | (_pred4 & _pred5 & !_pred6);
 
-  R = VIP_CMOV(!_returned && _pred4, f*f*((VIP_ENCDOUBLE)0.5-(VIP_ENCDOUBLE)0.33333333333333333*f), R);
+  R = VIP_CMOV(!_returned & _pred4, f*f*((VIP_ENCDOUBLE)0.5-(VIP_ENCDOUBLE)0.33333333333333333*f), R);
   VIP_ENCBOOL _pred7 = (k==0); /* _pred7 */
-  retval = VIP_CMOV(!_returned && _pred4 && _pred7, f-R, retval);
-  _returned = _returned || (_pred4 && _pred7);
+  retval = VIP_CMOV(!_returned & _pred4 & _pred7, f-R, retval);
+  _returned = _returned | (_pred4 & _pred7);
 
-  dk = VIP_CMOV(!_returned && _pred4 && !_pred7, (VIP_ENCDOUBLE)k, dk);
-  retval = VIP_CMOV(!_returned && _pred4 && !_pred7, dk*ln2_hi-((R-dk*ln2_lo)-f), retval);
-  _returned = _returned || (_pred4 && !_pred7);
+  dk = VIP_CMOV(!_returned & _pred4 & !_pred7, (VIP_ENCDOUBLE)k, dk);
+  retval = VIP_CMOV(!_returned & _pred4 & !_pred7, dk*ln2_hi-((R-dk*ln2_lo)-f), retval);
+  _returned = _returned | (_pred4 & !_pred7);
 
   s = f/((VIP_ENCDOUBLE)2.0+f);
   dk = (VIP_ENCDOUBLE)k;
@@ -550,20 +550,20 @@ mylog(VIP_ENCDOUBLE x)
   R = t2+t1;
 
   VIP_ENCBOOL _pred8 = (i>0);
-  hfsq = VIP_CMOV(!_returned && _pred8, (VIP_ENCDOUBLE)0.5*f*f, hfsq);
+  hfsq = VIP_CMOV(!_returned & _pred8, (VIP_ENCDOUBLE)0.5*f*f, hfsq);
 
   VIP_ENCBOOL _pred9 = (k==0);
-  retval = VIP_CMOV(!_returned && _pred8 && _pred9, f-(hfsq-s*(hfsq+R)), retval);
-  _returned = _returned || (_pred8 && _pred9);
+  retval = VIP_CMOV(!_returned & _pred8 & _pred9, f-(hfsq-s*(hfsq+R)), retval);
+  _returned = _returned | (_pred8 & _pred9);
 
-  retval = VIP_CMOV(!_returned && _pred8 && !_pred9, dk*ln2_hi-((hfsq-(s*(hfsq+R)+dk*ln2_lo))-f), retval);
-  _returned = _returned || (_pred8 && !_pred9);
+  retval = VIP_CMOV(!_returned & _pred8 & !_pred9, dk*ln2_hi-((hfsq-(s*(hfsq+R)+dk*ln2_lo))-f), retval);
+  _returned = _returned | (_pred8 & !_pred9);
 
-  retval = VIP_CMOV(!_returned && !_pred8 && _pred9, f-s*(f-R), retval);
-  _returned = _returned || (!_pred8 && _pred9);
+  retval = VIP_CMOV(!_returned & !_pred8 & _pred9, f-s*(f-R), retval);
+  _returned = _returned | (!_pred8 & _pred9);
 
-  retval = VIP_CMOV(!_returned && !_pred8 && !_pred9, dk*ln2_hi-((s*(f-R)-dk*ln2_lo)-f), retval);
-  _returned = _returned || (!_pred8 && !_pred9);
+  retval = VIP_CMOV(!_returned & !_pred8 & !_pred9, dk*ln2_hi-((s*(f-R)-dk*ln2_lo)-f), retval);
+  _returned = _returned || (!_pred8 & !_pred9);
 
   return retval;
 #else /* VIP_DO_MODE */

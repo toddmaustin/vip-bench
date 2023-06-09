@@ -38,7 +38,7 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 
 #include <valarray>
 #include <vector>
-
+#include "lib/do-operators/do.h"
 
 #define VIP_INIT
 #define VIP_ENCCHAR         char
@@ -54,7 +54,11 @@ inline VIP_VEC_ENCINT   operator>>   (VIP_VEC_ENCINT lhs, int rhs)   { return lh
 #define VIP_VEC_ENCINT      std::valarray<VIP_ENCINT>
 #define VIP_DEC(X)          (X)
 #define VIP_DEC_VEC(X)      (X) 
-#define VIP_CMOV(P,A,B)     ((P) ? (A) : (B))
+#if defined(X86)
+    #define VIP_CMOV(P, A, B) (CMOV_X86((P), (A), (B)))
+#else
+    #define VIP_CMOV(P, A, B) (CMOV((P), (A), (B)))
+#endif
 #define VIP_EMITCT(F,X,C,S,D) ({ (void)(X); if (((C) = (C) + 1) >= (S)) goto D; })
 
 extern inline void vip_init_vector(VIP_VEC_ENCINT* dest, std::vector<int>* source) {

@@ -24,24 +24,28 @@ static void kad_ext_collate(int n, kad_node_t **a, VIP_ENCFLOAT **_x, VIP_ENCFLO
 	g = *_g = (VIP_ENCFLOAT *)realloc(*_g, n_var * sizeof(VIP_ENCFLOAT));
 	c = *_c = (VIP_ENCFLOAT *)realloc(*_c, kad_size_const(n, a) * sizeof(VIP_ENCFLOAT));
 	/* TMA: memset(g, 0, n_var * sizeof(float)); */
-  for (int qq=0; qq < n_var; qq++)
-    g[qq] = 0.0;
-	for (i = j = k = 0; i < n; ++i) {
+	for (int qq = 0; qq < n_var; qq++)
+		g[qq] = 0.0;
+	for (i = j = k = 0; i < n; ++i)
+	{
 		kad_node_t *v = a[i];
-		if (kad_is_var(v)) {
+		if (kad_is_var(v))
+		{
 			l = kad_len(v);
 			/* TMA: memcpy(&x[j], v->x, l * sizeof(float)); */
-      for (int qq=0; qq < l; qq++)
-        (&x[j])[qq] = v->x[qq];
+			for (int qq = 0; qq < l; qq++)
+				(&x[j])[qq] = v->x[qq];
 			free(v->x);
 			v->x = &x[j];
 			v->g = &g[j];
 			j += l;
-		} else if (kad_is_const(v)) {
+		}
+		else if (kad_is_const(v))
+		{
 			l = kad_len(v);
 			/* TMA: memcpy(&c[k], v->x, l * sizeof(float)); */
-      for (int qq=0; qq < l; qq++)
-        (&c[k])[qq] = v->x[qq];
+			for (int qq = 0; qq < l; qq++)
+				(&c[k])[qq] = v->x[qq];
 			free(v->x);
 			v->x = &c[k];
 			k += l;
@@ -52,13 +56,17 @@ static void kad_ext_collate(int n, kad_node_t **a, VIP_ENCFLOAT **_x, VIP_ENCFLO
 static void kad_ext_sync(int n, kad_node_t **a, VIP_ENCFLOAT *x, VIP_ENCFLOAT *g, VIP_ENCFLOAT *c)
 {
 	int i, j, k;
-	for (i = j = k = 0; i < n; ++i) {
+	for (i = j = k = 0; i < n; ++i)
+	{
 		kad_node_t *v = a[i];
-		if (kad_is_var(v)) {
+		if (kad_is_var(v))
+		{
 			v->x = &x[j];
 			v->g = &g[j];
 			j += kad_len(v);
-		} else if (kad_is_const(v)) {
+		}
+		else if (kad_is_const(v))
+		{
 			v->x = &c[k];
 			k += kad_len(v);
 		}
@@ -72,26 +80,31 @@ kann_t *kann_new(kad_node_t *cost, int n_rest, ...)
 	kad_node_t **roots;
 	va_list ap;
 
-	if (cost->n_d != 0) return 0;
+	if (cost->n_d != 0)
+		return 0;
 
 	va_start(ap, n_rest);
-	roots = (kad_node_t**)malloc((n_roots + 1) * sizeof(kad_node_t*));
+	roots = (kad_node_t **)malloc((n_roots + 1) * sizeof(kad_node_t *));
 	for (i = 0; i < n_rest; ++i)
-		roots[i] = va_arg(ap, kad_node_t*);
+		roots[i] = va_arg(ap, kad_node_t *);
 	roots[i++] = cost;
 	va_end(ap);
 
 	cost->ext_flag |= KANN_F_COST;
-	a = (kann_t*)calloc(1, sizeof(kann_t));
+	a = (kann_t *)calloc(1, sizeof(kann_t));
 	a->v = kad_compile_array(&a->n, n_roots, roots);
 
-	for (i = 0; i < a->n; ++i) {
-		if (a->v[i]->pre) has_recur = 1;
-		if (kad_is_pivot(a->v[i])) has_pivot = 1;
+	for (i = 0; i < a->n; ++i)
+	{
+		if (a->v[i]->pre)
+			has_recur = 1;
+		if (kad_is_pivot(a->v[i]))
+			has_pivot = 1;
 	}
-	if (has_recur && !has_pivot) { /* an RNN that doesn't have a pivot; then add a pivot on top of cost and recompile */
+	if (has_recur && !has_pivot)
+	{ /* an RNN that doesn't have a pivot; then add a pivot on top of cost and recompile */
 		cost->ext_flag &= ~KANN_F_COST;
-		roots[n_roots-1] = cost = kad_avg(1, &cost), cost->ext_flag |= KANN_F_COST;
+		roots[n_roots - 1] = cost = kad_avg(1, &cost), cost->ext_flag |= KANN_F_COST;
 		free(a->v);
 		a->v = kad_compile_array(&a->n, n_roots, roots);
 	}
@@ -103,7 +116,7 @@ kann_t *kann_new(kad_node_t *cost, int n_rest, ...)
 kann_t *kann_clone(kann_t *a, int batch_size)
 {
 	kann_t *b;
-	b = (kann_t*)calloc(1, sizeof(kann_t));
+	b = (kann_t *)calloc(1, sizeof(kann_t));
 	b->n = a->n;
 	b->v = kad_clone(a->n, a->v, batch_size);
 	kad_ext_collate(b->n, b->v, &b->x, &b->g, &b->c);
@@ -113,7 +126,7 @@ kann_t *kann_clone(kann_t *a, int batch_size)
 kann_t *kann_unroll_array(kann_t *a, int *len)
 {
 	kann_t *b;
-	b = (kann_t*)calloc(1, sizeof(kann_t));
+	b = (kann_t *)calloc(1, sizeof(kann_t));
 	b->x = a->x, b->g = a->g, b->c = a->c; /* these arrays are shared */
 	b->v = kad_unroll(a->n, a->v, &b->n, len);
 	return b;
@@ -125,9 +138,10 @@ kann_t *kann_unroll(kann_t *a, ...)
 	va_list ap;
 	int i, n_pivots, *len;
 	n_pivots = kad_n_pivots(a->n, a->v);
-	len = (int*)calloc(n_pivots, sizeof(int));
+	len = (int *)calloc(n_pivots, sizeof(int));
 	va_start(ap, a);
-	for (i = 0; i < n_pivots; ++i) len[i] = va_arg(ap, int);
+	for (i = 0; i < n_pivots; ++i)
+		len[i] = va_arg(ap, int);
 	va_end(ap);
 	b = kann_unroll_array(a, len);
 	free(len);
@@ -136,15 +150,20 @@ kann_t *kann_unroll(kann_t *a, ...)
 
 void kann_delete_unrolled(kann_t *a)
 {
-	if (a && a->mt) kann_mt(a, 0, 0);
-	if (a && a->v) kad_delete(a->n, a->v);
+	if (a && a->mt)
+		kann_mt(a, 0, 0);
+	if (a && a->v)
+		kad_delete(a->n, a->v);
 	free(a);
 }
 
 void kann_delete(kann_t *a)
 {
-	if (a == 0) return;
-	free(a->x); free(a->g); free(a->c);
+	if (a == 0)
+		return;
+	free(a->x);
+	free(a->g);
+	free(a->c);
 	kann_delete_unrolled(a);
 }
 
@@ -153,7 +172,7 @@ static void kann_switch_core(kann_t *a, int is_train)
 	int i;
 	for (i = 0; i < a->n; ++i)
 		if (a->v[i]->op == 12 && a->v[i]->n_child == 2)
-			*(int32_t*)a->v[i]->ptr = !!is_train;
+			*(int32_t *)a->v[i]->ptr = !!is_train;
 }
 
 #define chk_flg(flag, mask) ((mask) == 0 || ((flag) & (mask)))
@@ -165,13 +184,15 @@ int kann_find(const kann_t *a, uint32_t ext_flag, int32_t ext_label)
 	for (i = k = 0; i < a->n; ++i)
 		if (chk_flg(a->v[i]->ext_flag, ext_flag) && chk_lbl(a->v[i]->ext_label, ext_label))
 			++k, r = i;
-	return k == 1? r : k == 0? -1 : -2;
+	return k == 1 ? r : k == 0 ? -1
+							   : -2;
 }
 
 int kann_feed_bind(kann_t *a, uint32_t ext_flag, int32_t ext_label, VIP_ENCFLOAT **x)
 {
 	int i, k;
-	if (x == 0) return 0;
+	if (x == 0)
+		return 0;
 	for (i = k = 0; i < a->n; ++i)
 		if (kad_is_feed(a->v[i]) && chk_flg(a->v[i]->ext_flag, ext_flag) && chk_lbl(a->v[i]->ext_label, ext_label))
 			a->v[i]->x = x[k++];
@@ -183,20 +204,23 @@ int kann_feed_dim(const kann_t *a, uint32_t ext_flag, int32_t ext_label)
 	int i, k, n = 0;
 	for (i = k = 0; i < a->n; ++i)
 		if (kad_is_feed(a->v[i]) && chk_flg(a->v[i]->ext_flag, ext_flag) && chk_lbl(a->v[i]->ext_label, ext_label))
-			++k, n = a->v[i]->n_d > 1? kad_len(a->v[i]) / a->v[i]->d[0] : a->v[i]->n_d == 1? a->v[i]->d[0] : 1;
-	return k == 1? n : k == 0? -1 : -2;
+			++k, n = a->v[i]->n_d > 1 ? kad_len(a->v[i]) / a->v[i]->d[0] : a->v[i]->n_d == 1 ? a->v[i]->d[0]
+																							 : 1;
+	return k == 1 ? n : k == 0 ? -1
+							   : -2;
 }
 
 static VIP_ENCFLOAT kann_cost_core(kann_t *a, int cost_label, int cal_grad)
 {
 	VIP_ENCFLOAT cost;
-/* TMA: #ifdef FIXME */
+	/* TMA: #ifdef FIXME */
 	int i_cost;
 	i_cost = kann_find(a, KANN_F_COST, cost_label);
 	assert(i_cost >= 0);
 	cost = *kad_eval_at(a->n, a->v, i_cost);
-  // fprintf(stderr, "cost: %f i_cost: %d, cal_grad: %d\n", VIP_DEC(cost), i_cost, cal_grad);
-	if (cal_grad) kad_grad(a->n, a->v, i_cost);
+	// fprintf(stderr, "cost: %f i_cost: %d, cal_grad: %d\n", VIP_DEC(cost), i_cost, cal_grad);
+	if (cal_grad)
+		kad_grad(a->n, a->v, i_cost);
 	return cost;
 }
 
@@ -212,17 +236,22 @@ int kann_eval(kann_t *a, uint32_t ext_flag, int ext_label)
 
 void kann_rnn_start(kann_t *a)
 {
-  abort();
+	abort();
 #ifdef FIXME
 	int i;
 	kann_set_batch_size(a, 1);
-	for (i = 0; i < a->n; ++i) {
+	for (i = 0; i < a->n; ++i)
+	{
 		kad_node_t *p = a->v[i];
-		if (p->pre) { /* NB: BE CAREFUL of the interaction between kann_rnn_start() and kann_set_batch_size() */
+		if (p->pre)
+		{ /* NB: BE CAREFUL of the interaction between kann_rnn_start() and kann_set_batch_size() */
 			kad_node_t *q = p->pre;
-			if (q->x) memcpy(p->x, q->x, kad_len(p) * sizeof(float));
-			else memset(p->x, 0, kad_len(p) * sizeof(float));
-			if (q->n_child > 0) free(q->x);
+			if (q->x)
+				memcpy(p->x, q->x, kad_len(p) * sizeof(float));
+			else
+				memset(p->x, 0, kad_len(p) * sizeof(float));
+			if (q->n_child > 0)
+				free(q->x);
 			q->x = p->x;
 		}
 	}
@@ -231,52 +260,60 @@ void kann_rnn_start(kann_t *a)
 
 void kann_rnn_end(kann_t *a)
 {
-  abort();
+	abort();
 #ifdef FIXME
 	int i;
 	kad_ext_sync(a->n, a->v, a->x, a->g, a->c);
 	for (i = 0; i < a->n; ++i)
 		if (a->v[i]->pre && a->v[i]->pre->n_child > 0)
-			a->v[i]->pre->x = (float*)calloc(kad_len(a->v[i]->pre), sizeof(float));
+			a->v[i]->pre->x = (float *)calloc(kad_len(a->v[i]->pre), sizeof(float));
 #endif
 }
 
 static int kann_class_error_core(const kann_t *ann, int *base)
 {
 	int i, j, k, m, n, off, n_err = 0;
-	for (i = 0, *base = 0; i < ann->n; ++i) {
+	for (i = 0, *base = 0; i < ann->n; ++i)
+	{
 		kad_node_t *p = ann->v[i];
-		if (((p->op == 13 && (p->n_child == 2 || p->n_child == 3)) || (p->op == 22 && p->n_child == 2)) && p->n_d == 0) { /* ce_bin or ce_multi */
+		if (((p->op == 13 && (p->n_child == 2 || p->n_child == 3)) || (p->op == 22 && p->n_child == 2)) && p->n_d == 0)
+		{ /* ce_bin or ce_multi */
 			kad_node_t *x = p->child[0], *t = p->child[1];
 			n = t->d[t->n_d - 1], m = kad_len(t) / n;
-			for (j = off = 0; j < m; ++j, off += n) {
+			for (j = off = 0; j < m; ++j, off += n)
+			{
 				VIP_ENCFLOAT t_sum = 0.0f, t_min = 1.0f, t_max = 0.0f, x_max = 0.0f, x_min = 1.0f;
 				VIP_ENCINT x_max_k = -1, t_max_k = -1;
-				for (k = 0; k < n; ++k) {
-					VIP_ENCFLOAT xk = x->x[off+k], tk = t->x[off+k];
+				for (k = 0; k < n; ++k)
+				{
+					VIP_ENCFLOAT xk = x->x[off + k], tk = t->x[off + k];
 					t_sum += tk;
 #ifdef VIP_DO_MODE
 					t_min = VIP_CMOV(t_min < tk, t_min, tk);
 					x_min = VIP_CMOV(x_min < xk, x_min, xk);
-          VIP_ENCBOOL _pred1 = (t_max < tk);
+					VIP_ENCBOOL _pred1 = (t_max < tk);
 					t_max = VIP_CMOV(_pred1, tk, t_max);
 					t_max_k = VIP_CMOV(_pred1, (VIP_ENCINT)k, t_max_k);
-          VIP_ENCBOOL _pred2 = (x_max < xk);
+					VIP_ENCBOOL _pred2 = (x_max < xk);
 					x_max = VIP_CMOV(_pred2, xk, x_max);
 					x_max_k = VIP_CMOV(_pred2, (VIP_ENCINT)k, x_max_k);
-#else /* !VIP_DO_MODE */
-					t_min = t_min < tk? t_min : tk;
-					x_min = x_min < xk? x_min : xk;
-					if (t_max < tk) t_max = tk, t_max_k = k;
-					if (x_max < xk) x_max = xk, x_max_k = k;
+#else  /* !VIP_DO_MODE */
+					t_min = t_min < tk ? t_min : tk;
+					x_min = x_min < xk ? x_min : xk;
+					if (t_max < tk)
+						t_max = tk, t_max_k = k;
+					if (x_max < xk)
+						x_max = xk, x_max_k = k;
 #endif /* VIP_DO_MODE */
 				}
+/**** Comment exported: [IISWC DO Transformation: IF, NOT CALLED - LB] ****/
 #ifdef VIP_DO_MODE
-        VIP_ENCBOOL _pred3 = ((t_sum - 1.0f) == 0 && t_min >= 0.0f && x_min >= 0.0f && x_max <= 1.0f);
-        *base = /* FIXME */VIP_DEC(_pred3) ? (*base + 1) : *base;
-        n_err = /* FIXME */VIP_DEC(_pred3) ? (n_err + VIP_DEC(x_max_k != t_max_k)) : n_err;
-#else /* !VIP_DO_MODE */
-				if (t_sum - 1.0f == 0 && t_min >= 0.0f && x_min >= 0.0f && x_max <= 1.0f) {
+				VIP_ENCBOOL _pred3 = (((t_sum - 1.0f) == 0) & (t_min >= 0.0f) & (x_min >= 0.0f) & (x_max <= 1.0f));
+				*base = /* FIXME */ VIP_DEC(_pred3) ? (*base + 1) : *base;
+				n_err = /* FIXME */ VIP_DEC(_pred3) ? (n_err + VIP_DEC(x_max_k != t_max_k)) : n_err;
+#else  /* !VIP_DO_MODE */
+				if (t_sum - 1.0f == 0 && t_min >= 0.0f && x_min >= 0.0f && x_max <= 1.0f)
+				{
 					++(*base);
 					n_err += (x_max_k != t_max_k);
 				}
@@ -287,33 +324,29 @@ static int kann_class_error_core(const kann_t *ann, int *base)
 	return n_err;
 }
 
-void
-kann_mt(kann_t *ann, int n_threads, int max_batch_size)
+void kann_mt(kann_t *ann, int n_threads, int max_batch_size)
 {
 }
 
 VIP_ENCFLOAT
 kann_cost(kann_t *a, int cost_label, int cal_grad)
 {
-  return kann_cost_core(a, cost_label, cal_grad);
+	return kann_cost_core(a, cost_label, cal_grad);
 }
 
-int
-kann_eval_out(kann_t *a)
+int kann_eval_out(kann_t *a)
 {
-  return kann_eval(a, KANN_F_OUT, 0);
+	return kann_eval(a, KANN_F_OUT, 0);
 }
 
-int
-kann_class_error(const kann_t *a, int *base)
+int kann_class_error(const kann_t *a, int *base)
 {
-  return kann_class_error_core(a, base);
+	return kann_class_error_core(a, base);
 }
 
-void
-kann_switch(kann_t *ann, int is_train)
+void kann_switch(kann_t *ann, int is_train)
 {
-  return kann_switch_core(ann, is_train);
+	return kann_switch_core(ann, is_train);
 }
 
 /***********************
@@ -334,7 +367,7 @@ void kann_save_fp(FILE *fp, kann_t *ann)
 void kann_save(const char *fn, kann_t *ann)
 {
 	FILE *fp;
-	fp = fn && strcmp(fn, "-")? fopen(fn, "wb") : stdout;
+	fp = fn && strcmp(fn, "-") ? fopen(fn, "wb") : stdout;
 	kann_save_fp(fp, ann);
 	fclose(fp);
 }
@@ -344,34 +377,35 @@ kann_t *kann_load_fp(FILE *fp)
 	char magic[4];
 	kann_t *ann;
 	int n_var, n_const;
-  float *_x, *_c;
+	float *_x, *_c;
 
 	fread(magic, 1, 4, fp);
-	if (strncmp(magic, KANN_MAGIC, 4) != 0) {
+	if (strncmp(magic, KANN_MAGIC, 4) != 0)
+	{
 		fclose(fp);
 		return 0;
 	}
-	ann = (kann_t*)calloc(1, sizeof(kann_t));
+	ann = (kann_t *)calloc(1, sizeof(kann_t));
 	ann->v = kad_load(fp, &ann->n);
 	n_var = kad_size_var(ann->n, ann->v);
 	n_const = kad_size_const(ann->n, ann->v);
-	_x = (float*)malloc(n_var * sizeof(float));
-	_c = (float*)malloc(n_const * sizeof(float));
+	_x = (float *)malloc(n_var * sizeof(float));
+	_c = (float *)malloc(n_const * sizeof(float));
 	fread(_x, sizeof(float), n_var, fp);
 	fread(_c, sizeof(float), n_const, fp);
 	ann->x = (VIP_ENCFLOAT *)malloc(n_var * sizeof(VIP_ENCFLOAT));
 	ann->g = (VIP_ENCFLOAT *)calloc(n_var, sizeof(VIP_ENCFLOAT));
-  for (int qq=0; qq < n_var; qq++)
-    ann->g[qq] = 0.0;
+	for (int qq = 0; qq < n_var; qq++)
+		ann->g[qq] = 0.0;
 	ann->c = (VIP_ENCFLOAT *)malloc(n_const * sizeof(VIP_ENCFLOAT));
-  // copy/encrypt the data
-  for (int qq=0; qq < n_var; qq++)
-    ann->x[qq] = _x[qq];
-  for (int qq=0; qq < n_const; qq++)
-    ann->c[qq] = _c[qq];
+	// copy/encrypt the data
+	for (int qq = 0; qq < n_var; qq++)
+		ann->x[qq] = _x[qq];
+	for (int qq = 0; qq < n_const; qq++)
+		ann->c[qq] = _c[qq];
 	kad_ext_sync(ann->n, ann->v, ann->x, ann->g, ann->c);
-  free(_x);
-  free(_c);
+	free(_x);
+	free(_c);
 	return ann;
 }
 
@@ -379,7 +413,7 @@ kann_t *kann_load(const char *fn)
 {
 	FILE *fp;
 	kann_t *ann;
-	fp = fn && strcmp(fn, "-")? fopen(fn, "rb") : stdin;
+	fp = fn && strcmp(fn, "-") ? fopen(fn, "rb") : stdin;
 	ann = kann_load_fp(fp);
 	fclose(fp);
 	return ann;
@@ -393,28 +427,33 @@ kann_t *kann_load(const char *fn)
 
 kad_node_t *kann_new_leaf_array(int *offset, kad_node_p *par, uint8_t flag, float x0_01, int n_d, int32_t d[KAD_MAX_DIM])
 {
-/* TMA: #ifdef FIXME */
-	int i, len, off = offset && par? *offset : -1;
+	/* TMA: #ifdef FIXME */
+	int i, len, off = offset && par ? *offset : -1;
 	kad_node_t *p;
 
-	if (off >= 0 && par[off]) return par[(*offset)++];
-	p = (kad_node_t*)calloc(1, sizeof(kad_node_t));
+	if (off >= 0 && par[off])
+		return par[(*offset)++];
+	p = (kad_node_t *)calloc(1, sizeof(kad_node_t));
 	p->n_d = n_d, p->flag = flag;
 	memcpy(p->d, d, n_d * sizeof(int32_t));
 	len = kad_len(p);
 	p->x = (VIP_ENCFLOAT *)calloc(len, sizeof(VIP_ENCFLOAT));
-  for (int qq=0; qq < len; qq++)
-    p->x[qq] = 0.0;
-	if (p->n_d <= 1) {
+	for (int qq = 0; qq < len; qq++)
+		p->x[qq] = 0.0;
+	if (p->n_d <= 1)
+	{
 		for (i = 0; i < len; ++i)
 			p->x[i] = x0_01;
-	} else {
+	}
+	else
+	{
 		double sdev_inv;
 		sdev_inv = 1.0 / sqrt((double)len / p->d[0]);
 		for (i = 0; i < len; ++i)
 			p->x[i] = (float)(kad_drand_normal(0) * sdev_inv);
 	}
-	if (off >= 0) par[off] = p, ++(*offset);
+	if (off >= 0)
+		par[off] = p, ++(*offset);
 	return p;
 }
 
@@ -422,7 +461,10 @@ kad_node_t *kann_new_leaf2(int *offset, kad_node_p *par, uint8_t flag, float x0_
 {
 	int32_t i, d[KAD_MAX_DIM];
 	va_list ap;
-	va_start(ap, n_d); for (i = 0; i < n_d; ++i) d[i] = va_arg(ap, int); va_end(ap);
+	va_start(ap, n_d);
+	for (i = 0; i < n_d; ++i)
+		d[i] = va_arg(ap, int);
+	va_end(ap);
 	return kann_new_leaf_array(offset, par, flag, x0_01, n_d, d);
 }
 
@@ -430,7 +472,7 @@ kad_node_t *kann_layer_dense2(int *offset, kad_node_p *par, kad_node_t *in, int 
 {
 	int n0;
 	kad_node_t *w, *b;
-	n0 = in->n_d >= 2? kad_len(in) / in->d[0] : kad_len(in);
+	n0 = in->n_d >= 2 ? kad_len(in) / in->d[0] : kad_len(in);
 	w = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n0);
 	b = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n1);
 	return kad_add(kad_cmul(in, w), b);
@@ -448,27 +490,28 @@ kad_node_t *kann_layer_layernorm2(int *offset, kad_node_t **par, kad_node_t *in)
 {
 	int n0;
 	kad_node_t *alpha, *beta;
-	n0 = in->n_d >= 2? kad_len(in) / in->d[0] : kad_len(in);
+	n0 = in->n_d >= 2 ? kad_len(in) / in->d[0] : kad_len(in);
 	alpha = kann_new_leaf2(offset, par, KAD_VAR, 1.0f, 1, n0);
-	beta  = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n0);
+	beta = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n0);
 	return kad_add(kad_mul(kad_stdnorm(in), alpha), beta);
 }
 
 static inline kad_node_t *cmul_norm2(int *offset, kad_node_t **par, kad_node_t *x, kad_node_t *w, int use_norm)
 {
-	return use_norm? kann_layer_layernorm2(offset, par, kad_cmul(x, w)) : kad_cmul(x, w);
+	return use_norm ? kann_layer_layernorm2(offset, par, kad_cmul(x, w)) : kad_cmul(x, w);
 }
 
 kad_node_t *kann_layer_rnn2(int *offset, kad_node_t **par, kad_node_t *in, kad_node_t *h0, int rnn_flag)
 {
-	int n0, n1 = h0->d[h0->n_d-1], use_norm = !!(rnn_flag & KANN_RNN_NORM);
+	int n0, n1 = h0->d[h0->n_d - 1], use_norm = !!(rnn_flag & KANN_RNN_NORM);
 	kad_node_t *t, *w, *u, *b, *out;
 
 	u = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n1);
 	b = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n1);
 	t = cmul_norm2(offset, par, h0, u, use_norm);
-	if (in) {
-		n0 = in->n_d >= 2? kad_len(in) / in->d[0] : kad_len(in);
+	if (in)
+	{
+		n0 = in->n_d >= 2 ? kad_len(in) / in->d[0] : kad_len(in);
 		w = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n0);
 		t = kad_add(cmul_norm2(offset, par, in, w, use_norm), t);
 	}
@@ -479,15 +522,17 @@ kad_node_t *kann_layer_rnn2(int *offset, kad_node_t **par, kad_node_t *in, kad_n
 
 kad_node_t *kann_layer_gru2(int *offset, kad_node_t **par, kad_node_t *in, kad_node_t *h0, int rnn_flag)
 {
-	int n0 = 0, n1 = h0->d[h0->n_d-1], use_norm = !!(rnn_flag & KANN_RNN_NORM);
+	int n0 = 0, n1 = h0->d[h0->n_d - 1], use_norm = !!(rnn_flag & KANN_RNN_NORM);
 	kad_node_t *t, *r, *z, *w, *u, *b, *s, *out;
 
-	if (in) n0 = in->n_d >= 2? kad_len(in) / in->d[0] : kad_len(in);
+	if (in)
+		n0 = in->n_d >= 2 ? kad_len(in) / in->d[0] : kad_len(in);
 	/* z = sigm(x_t * W_z + h_{t-1} * U_z + b_z) */
 	u = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n1);
 	b = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n1);
 	t = cmul_norm2(offset, par, h0, u, use_norm);
-	if (in) {
+	if (in)
+	{
 		w = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n0);
 		t = kad_add(cmul_norm2(offset, par, in, w, use_norm), t);
 	}
@@ -496,7 +541,8 @@ kad_node_t *kann_layer_gru2(int *offset, kad_node_t **par, kad_node_t *in, kad_n
 	u = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n1);
 	b = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n1);
 	t = cmul_norm2(offset, par, h0, u, use_norm);
-	if (in) {
+	if (in)
+	{
 		w = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n0);
 		t = kad_add(cmul_norm2(offset, par, in, w, use_norm), t);
 	}
@@ -505,7 +551,8 @@ kad_node_t *kann_layer_gru2(int *offset, kad_node_t **par, kad_node_t *in, kad_n
 	u = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n1);
 	b = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 1, n1);
 	t = cmul_norm2(offset, par, kad_mul(r, h0), u, use_norm);
-	if (in) {
+	if (in)
+	{
 		w = kann_new_leaf2(offset, par, KAD_VAR, 0.0f, 2, n1, n0);
 		t = kad_add(cmul_norm2(offset, par, in, w, use_norm), t);
 	}
@@ -522,7 +569,10 @@ kad_node_t *kann_new_leaf(uint8_t flag, float x0_01, int n_d, ...)
 {
 	int32_t i, d[KAD_MAX_DIM];
 	va_list ap;
-	va_start(ap, n_d); for (i = 0; i < n_d; ++i) d[i] = va_arg(ap, int); va_end(ap);
+	va_start(ap, n_d);
+	for (i = 0; i < n_d; ++i)
+		d[i] = va_arg(ap, int);
+	va_end(ap);
 	return kann_new_leaf_array(0, 0, flag, x0_01, n_d, d);
 }
 
@@ -546,26 +596,26 @@ kad_node_t *kann_layer_layernorm(kad_node_t *in) { return kann_layer_layernorm2(
 
 kad_node_t *kann_layer_rnn(kad_node_t *in, int n1, int rnn_flag)
 {
-  abort();
+	abort();
 #ifdef FIXME
 	kad_node_t *h0;
-	h0 = (rnn_flag & KANN_RNN_VAR_H0)? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
-	h0->x = (float*)calloc(n1, sizeof(float));
+	h0 = (rnn_flag & KANN_RNN_VAR_H0) ? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
+	h0->x = (float *)calloc(n1, sizeof(float));
 	return kann_layer_rnn2(0, 0, in, h0, rnn_flag);
 #endif
-  return NULL;
+	return NULL;
 }
 
 kad_node_t *kann_layer_gru(kad_node_t *in, int n1, int rnn_flag)
 {
-  abort();
+	abort();
 #ifdef FIXME
 	kad_node_t *h0;
-	h0 = (rnn_flag & KANN_RNN_VAR_H0)? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
-	h0->x = (float*)calloc(n1, sizeof(float));
+	h0 = (rnn_flag & KANN_RNN_VAR_H0) ? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
+	h0->x = (float *)calloc(n1, sizeof(float));
 	return kann_layer_gru2(0, 0, in, h0, rnn_flag);
 #endif
-  return NULL;
+	return NULL;
 }
 
 static kad_node_t *kann_cmul_norm(kad_node_t *x, kad_node_t *w)
@@ -575,17 +625,17 @@ static kad_node_t *kann_cmul_norm(kad_node_t *x, kad_node_t *w)
 
 kad_node_t *kann_layer_lstm(kad_node_t *in, int n1, int rnn_flag)
 {
-  abort();
+	abort();
 #ifdef FIXME
 	int n0;
 	kad_node_t *i, *f, *o, *g, *w, *u, *b, *h0, *c0, *c, *out;
-	kad_node_t *(*cmul)(kad_node_t*, kad_node_t*) = (rnn_flag & KANN_RNN_NORM)? kann_cmul_norm : kad_cmul;
+	kad_node_t *(*cmul)(kad_node_t *, kad_node_t *) = (rnn_flag & KANN_RNN_NORM) ? kann_cmul_norm : kad_cmul;
 
-	n0 = in->n_d >= 2? kad_len(in) / in->d[0] : kad_len(in);
-	h0 = (rnn_flag & KANN_RNN_VAR_H0)? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
-	h0->x = (float*)calloc(n1, sizeof(float));
-	c0 = (rnn_flag & KANN_RNN_VAR_H0)? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
-	c0->x = (float*)calloc(n1, sizeof(float));
+	n0 = in->n_d >= 2 ? kad_len(in) / in->d[0] : kad_len(in);
+	h0 = (rnn_flag & KANN_RNN_VAR_H0) ? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
+	h0->x = (float *)calloc(n1, sizeof(float));
+	c0 = (rnn_flag & KANN_RNN_VAR_H0) ? kad_var(0, 0, 2, 1, n1) : kad_const(0, 2, 1, n1);
+	c0->x = (float *)calloc(n1, sizeof(float));
 
 	/* i = sigm(x_t * W_i + h_{t-1} * U_i + b_i) */
 	w = kann_new_weight(n1, n0);
@@ -611,12 +661,13 @@ kad_node_t *kann_layer_lstm(kad_node_t *in, int n1, int rnn_flag)
 	c = kad_add(kad_mul(f, c0), kad_mul(g, i)); /* can't be kad_mul(c0, f)!!! */
 	c->pre = c0;
 	/* h_t = tanh(c_t) # o */
-	if (rnn_flag & KANN_RNN_NORM) c = kann_layer_layernorm(c); /* see Ba et al (2016) about how to apply layer normalization to LSTM */
+	if (rnn_flag & KANN_RNN_NORM)
+		c = kann_layer_layernorm(c); /* see Ba et al (2016) about how to apply layer normalization to LSTM */
 	out = kad_mul(kad_tanh(c), o);
 	out->pre = h0;
 	return out;
 #endif
-  return NULL;
+	return NULL;
 }
 
 kad_node_t *kann_layer_conv2d(kad_node_t *in, int n_flt, int k_rows, int k_cols, int stride_r, int stride_c, int pad_r, int pad_c)
@@ -639,15 +690,22 @@ kad_node_t *kann_layer_cost(kad_node_t *t, int n_out, int cost_type)
 	assert(cost_type == KANN_C_CEB || cost_type == KANN_C_CEM || cost_type == KANN_C_CEB_NEG || cost_type == KANN_C_MSE);
 	t = kann_layer_dense(t, n_out);
 	truth = kad_feed(2, 1, n_out), truth->ext_flag |= KANN_F_TRUTH;
-	if (cost_type == KANN_C_MSE) {
+	if (cost_type == KANN_C_MSE)
+	{
 		cost = kad_mse(t, truth);
-	} else if (cost_type == KANN_C_CEB) {
+	}
+	else if (cost_type == KANN_C_CEB)
+	{
 		t = kad_sigm(t);
 		cost = kad_ce_bin(t, truth);
-	} else if (cost_type == KANN_C_CEB_NEG) {
+	}
+	else if (cost_type == KANN_C_CEB_NEG)
+	{
 		t = kad_tanh(t);
 		cost = kad_ce_bin_neg(t, truth);
-	} else if (cost_type == KANN_C_CEM) {
+	}
+	else if (cost_type == KANN_C_CEM)
+	{
 		t = kad_softmax(t);
 		cost = kad_ce_multi(t, truth);
 	}
@@ -658,10 +716,12 @@ kad_node_t *kann_layer_cost(kad_node_t *t, int n_out, int cost_type)
 void kann_shuffle(int n, int *s)
 {
 	int i, j, t;
-	for (i = 0; i < n; ++i) s[i] = i;
-	for (i = n; i > 0; --i) {
+	for (i = 0; i < n; ++i)
+		s[i] = i;
+	for (i = n; i > 0; --i)
+	{
 		j = (int)(i * kad_drand(0));
-		t = s[j], s[j] = s[i-1], s[i-1] = t;
+		t = s[j], s[j] = s[i - 1], s[i - 1] = t;
 	}
 }
 
@@ -672,10 +732,11 @@ void kann_shuffle(int n, int *s)
 void kann_RMSprop(int n, float h0, VIP_ENCFLOAT *h, float decay, VIP_ENCFLOAT *g, VIP_ENCFLOAT *t, VIP_ENCFLOAT *r)
 {
 	int i;
-  // for (i=0; i < 500; i++)
-  //   fprintf(stderr, "r[%d] = %f, g[%d] = %f\n", i, VIP_DEC(r[i]), i, VIP_DEC(g[i]));
-	for (i = 0; i < n; ++i) {
-		float lr = h? VIP_DEC(h[i]) : h0;
+	// for (i=0; i < 500; i++)
+	//   fprintf(stderr, "r[%d] = %f, g[%d] = %f\n", i, VIP_DEC(r[i]), i, VIP_DEC(g[i]));
+	for (i = 0; i < n; ++i)
+	{
+		float lr = h ? VIP_DEC(h[i]) : h0;
 		r[i] = (VIP_ENCFLOAT)(1.0f - decay) * g[i] * g[i] + (VIP_ENCFLOAT)decay * r[i];
 		t[i] = t[i] - ((VIP_ENCFLOAT)lr / (VIP_ENCFLOAT)mysqrt((VIP_ENCDOUBLE)((VIP_ENCFLOAT)1e-6f + r[i])) * g[i]);
 	}
@@ -698,23 +759,23 @@ float kann_grad_clip(float thres, int n, float *g)
  *** @@XY: simpler API for network with a single input/output ***
  ****************************************************************/
 
-int
-kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_drop_streak, float frac_val, int n, VIP_ENCFLOAT **_x, VIP_ENCFLOAT **_y)
+int kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_drop_streak, float frac_val, int n, VIP_ENCFLOAT **_x, VIP_ENCFLOAT **_y)
 {
-/* TMA: #ifdef FIXME */
+	/* TMA: #ifdef FIXME */
 	int i, j, *shuf, n_train, n_val, n_in, n_out, n_var, n_const, drop_streak = 0, min_set = 0;
 	float min_val_cost = FLT_MAX;
-  VIP_ENCFLOAT **x, **y, *r, *x1, *y1, *min_x, *min_c;
+	VIP_ENCFLOAT **x, **y, *r, *x1, *y1, *min_x, *min_c;
 
 	n_in = kann_dim_in(ann);
 	n_out = kann_dim_out(ann);
-	if (n_in < 0 || n_out < 0) return -1;
+	if (n_in < 0 || n_out < 0)
+		return -1;
 	n_var = kann_size_var(ann);
 	n_const = kann_size_const(ann);
 	r = (VIP_ENCFLOAT *)calloc(n_var, sizeof(VIP_ENCFLOAT));
-  for (int qq=0; qq < n_var; qq++)
-    r[qq] = 0.0;
-	shuf = (int*)malloc(n * sizeof(int));
+	for (int qq = 0; qq < n_var; qq++)
+		r[qq] = 0.0;
+	shuf = (int *)malloc(n * sizeof(int));
 	x = (VIP_ENCFLOAT **)malloc(n * sizeof(VIP_ENCFLOAT *));
 	y = (VIP_ENCFLOAT **)malloc(n * sizeof(VIP_ENCFLOAT *));
 	kann_shuffle(n, shuf);
@@ -725,21 +786,24 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 	min_x = (VIP_ENCFLOAT *)malloc(n_var * sizeof(VIP_ENCFLOAT));
 	min_c = (VIP_ENCFLOAT *)malloc(n_const * sizeof(VIP_ENCFLOAT));
 
-	x1 = (VIP_ENCFLOAT *)malloc(n_in  * mini_size * sizeof(VIP_ENCFLOAT));
+	x1 = (VIP_ENCFLOAT *)malloc(n_in * mini_size * sizeof(VIP_ENCFLOAT));
 	y1 = (VIP_ENCFLOAT *)malloc(n_out * mini_size * sizeof(VIP_ENCFLOAT));
-	kann_feed_bind(ann, KANN_F_IN,    0, &x1);
+	kann_feed_bind(ann, KANN_F_IN, 0, &x1);
 	kann_feed_bind(ann, KANN_F_TRUTH, 0, &y1);
 
-	for (i = 0; i < max_epoch; ++i) {
+	for (i = 0; i < max_epoch; ++i)
+	{
 		int n_proc = 0, n_train_err = 0, n_val_err = 0, n_train_base = 0, n_val_base = 0;
 		VIP_ENCDOUBLE train_cost = 0.0, val_cost = 0.0;
 		kann_shuffle(n_train, shuf);
 		kann_switch(ann, 1);
-		while (n_proc < n_train) {
-			int b, c, ms = n_train - n_proc < mini_size? n_train - n_proc : mini_size;
-			for (b = 0; b < ms; ++b) {
-				memcpy(&x1[b*n_in],  x[shuf[n_proc+b]], n_in  * sizeof(VIP_ENCFLOAT));
-				memcpy(&y1[b*n_out], y[shuf[n_proc+b]], n_out * sizeof(VIP_ENCFLOAT));
+		while (n_proc < n_train)
+		{
+			int b, c, ms = n_train - n_proc < mini_size ? n_train - n_proc : mini_size;
+			for (b = 0; b < ms; ++b)
+			{
+				memcpy(&x1[b * n_in], x[shuf[n_proc + b]], n_in * sizeof(VIP_ENCFLOAT));
+				memcpy(&y1[b * n_out], y[shuf[n_proc + b]], n_out * sizeof(VIP_ENCFLOAT));
 			}
 			kann_set_batch_size(ann, ms);
 			train_cost = train_cost + (kann_cost(ann, 0, 1) * ms);
@@ -747,17 +811,19 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 			n_train_err += c, n_train_base += b;
 			kann_RMSprop(n_var, lr, 0, 0.9f, ann->g, ann->x, r);
 			n_proc += ms;
-		  if (kann_verbose >= 3)
-			  fprintf(stdout, "epoch: %d; training cost: %g ms:%d m_train_err:%d n_train_base:%d\n", i+1, VIP_DEC(train_cost), ms, n_train_err, n_train_base);
+			if (kann_verbose >= 3)
+				fprintf(stdout, "epoch: %d; training cost: %g ms:%d m_train_err:%d n_train_base:%d\n", i + 1, VIP_DEC(train_cost), ms, n_train_err, n_train_base);
 		}
 		train_cost = train_cost / n_train;
 		kann_switch(ann, 0);
 		n_proc = 0;
-		while (n_proc < n_val) {
-			int b, c, ms = n_val - n_proc < mini_size? n_val - n_proc : mini_size;
-			for (b = 0; b < ms; ++b) {
-				memcpy(&x1[b*n_in],  x[n_train+n_proc+b], n_in  * sizeof(VIP_ENCFLOAT));
-				memcpy(&y1[b*n_out], y[n_train+n_proc+b], n_out * sizeof(VIP_ENCFLOAT));
+		while (n_proc < n_val)
+		{
+			int b, c, ms = n_val - n_proc < mini_size ? n_val - n_proc : mini_size;
+			for (b = 0; b < ms; ++b)
+			{
+				memcpy(&x1[b * n_in], x[n_train + n_proc + b], n_in * sizeof(VIP_ENCFLOAT));
+				memcpy(&y1[b * n_out], y[n_train + n_proc + b], n_out * sizeof(VIP_ENCFLOAT));
 			}
 			kann_set_batch_size(ann, ms);
 			val_cost = val_cost + (kann_cost(ann, 0, 0) * ms);
@@ -765,74 +831,95 @@ kann_train_fnn1(kann_t *ann, float lr, int mini_size, int max_epoch, int max_dro
 			n_val_err += c, n_val_base += b;
 			n_proc += ms;
 		}
-		if (n_val > 0) val_cost = val_cost / n_val;
-		if (kann_verbose >= 3) {
-			fprintf(stdout, "epoch: %d; training cost: %g", i+1, VIP_DEC(train_cost));
-			if (n_train_base) fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_train_err / n_train);
-			if (n_val > 0) {
+		if (n_val > 0)
+			val_cost = val_cost / n_val;
+		if (kann_verbose >= 3)
+		{
+			fprintf(stdout, "epoch: %d; training cost: %g", i + 1, VIP_DEC(train_cost));
+			if (n_train_base)
+				fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_train_err / n_train);
+			if (n_val > 0)
+			{
 				fprintf(stdout, "; validation cost: %g", VIP_DEC(val_cost));
-				if (n_val_base) fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_val_err / n_val);
+				if (n_val_base)
+					fprintf(stdout, " (class error: %.2f%%)", 100.0f * n_val_err / n_val);
 			}
 			fputc('\n', stdout);
 		}
-		if (i >= max_drop_streak && n_val > 0) {
-			if (VIP_DEC(val_cost) < min_val_cost) {
+		if (i >= max_drop_streak && n_val > 0)
+		{
+			if (VIP_DEC(val_cost) < min_val_cost)
+			{
 				min_set = 1;
 				memcpy(min_x, ann->x, n_var * sizeof(VIP_ENCFLOAT));
 				memcpy(min_c, ann->c, n_const * sizeof(VIP_ENCFLOAT));
 				drop_streak = 0;
 				min_val_cost = (float)VIP_DEC(val_cost);
-			} else if (++drop_streak >= max_drop_streak)
+			}
+			else if (++drop_streak >= max_drop_streak)
 				break;
 		}
 	}
-	if (min_set) {
+	if (min_set)
+	{
 		memcpy(ann->x, min_x, n_var * sizeof(VIP_ENCFLOAT));
 		memcpy(ann->c, min_c, n_const * sizeof(VIP_ENCFLOAT));
 	}
 
-	free(min_c); free(min_x); free(y1); free(x1); free(y); free(x); free(shuf); free(r);
+	free(min_c);
+	free(min_x);
+	free(y1);
+	free(x1);
+	free(y);
+	free(x);
+	free(shuf);
+	free(r);
 	return i;
 }
 
 float kann_cost_fnn1(kann_t *ann, int n, float **x, float **y)
 {
-  abort();
+	abort();
 #ifdef FIXME
-	int n_in, n_out, n_proc = 0, mini_size = 64 < n? 64 : n;
+	int n_in, n_out, n_proc = 0, mini_size = 64 < n ? 64 : n;
 	float *x1, *y1;
 	double cost = 0.0;
 
 	n_in = kann_dim_in(ann);
 	n_out = kann_dim_out(ann);
-	if (n <= 0 || n_in < 0 || n_out < 0) return 0.0;
+	if (n <= 0 || n_in < 0 || n_out < 0)
+		return 0.0;
 
-	x1 = (float*)malloc(n_in  * mini_size * sizeof(float));
-	y1 = (float*)malloc(n_out * mini_size * sizeof(float));
-	kann_feed_bind(ann, KANN_F_IN,    0, &x1);
+	x1 = (float *)malloc(n_in * mini_size * sizeof(float));
+	y1 = (float *)malloc(n_out * mini_size * sizeof(float));
+	kann_feed_bind(ann, KANN_F_IN, 0, &x1);
 	kann_feed_bind(ann, KANN_F_TRUTH, 0, &y1);
 	kann_switch(ann, 0);
-	while (n_proc < n) {
-		int b, ms = n - n_proc < mini_size? n - n_proc : mini_size;
-		for (b = 0; b < ms; ++b) {
-			memcpy(&x1[b*n_in],  x[n_proc+b], n_in  * sizeof(float));
-			memcpy(&y1[b*n_out], y[n_proc+b], n_out * sizeof(float));
+	while (n_proc < n)
+	{
+		int b, ms = n - n_proc < mini_size ? n - n_proc : mini_size;
+		for (b = 0; b < ms; ++b)
+		{
+			memcpy(&x1[b * n_in], x[n_proc + b], n_in * sizeof(float));
+			memcpy(&y1[b * n_out], y[n_proc + b], n_out * sizeof(float));
 		}
 		kann_set_batch_size(ann, ms);
 		cost += kann_cost(ann, 0, 0) * ms;
 		n_proc += ms;
 	}
-	free(y1); free(x1);
+	free(y1);
+	free(x1);
 	return (float)(cost / n);
 #endif
-  return 0;
+	return 0;
 }
 
 VIP_ENCFLOAT *kann_apply1(kann_t *a, VIP_ENCFLOAT *x)
 {
 	int i_out;
 	i_out = kann_find(a, KANN_F_OUT, 0);
-	if (i_out < 0) return 0;
+	if (i_out < 0)
+		return 0;
 	kann_set_batch_size(a, 1);
 	kann_feed_bind(a, KANN_F_IN, 0, &x);
 	kad_eval_at(a->n, a->v, i_out);

@@ -8,8 +8,7 @@ config.mk
 *.swp
 FOO
 FOO1
-*.enc
-*.na
+*.dump
 mem.out
 *.log
 */bin/*

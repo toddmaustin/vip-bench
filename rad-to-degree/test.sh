@@ -1,0 +1,13 @@
+#! /bin/bash
+PROG=rad-to-degree
+
+make clean
+make MODE=do build
+./$PROG.do > basic_out.dump
+objdump -S $PROG.do > basic_exe.dump
+
+make clean
+make MODE=do ARCH=x86 build
+./$PROG.do > x86_out.dump
+objdump -S $PROG.do > x86_exe.dump
+

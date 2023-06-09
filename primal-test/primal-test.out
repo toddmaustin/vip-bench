@@ -1,10 +1,8 @@
-Primality tests found 9 primes...
+Primality tests found 7 primes...
 Value 3 is `prime' with failure probability (0)
-Value 272094241 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 947559721 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 133702991 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 1982954693 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 3640268911 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 3404481589 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 1020434647 is `likely prime' with failure probability (1 in 4.294967e+09)
-Value 3844914817 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 61027523 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 3202729423 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 1102691867 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 1233255691 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 812439077 is `likely prime' with failure probability (1 in 4.294967e+09)
+Value 301298741 is `likely prime' with failure probability (1 in 4.294967e+09)

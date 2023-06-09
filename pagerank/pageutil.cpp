@@ -19,13 +19,31 @@ void Split(const std::string &s, const char *delim, std::vector<std::string> &v)
     free(dup);
 }
 
+// // Return true if there is still progress.
+// bool Progress(std::vector<VIP_ENCDOUBLE> v1, std::vector<VIP_ENCDOUBLE> v2, double thresh) {
+//     for (size_t i = 0; i < v1.size(); ++i) {
+//         // FIXME: assuming that this info can be decrypted
+//         if (fabs(VIP_DEC(v2.at(i) - v1.at(i))) > thresh) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+
 // Return true if there is still progress.
 bool Progress(std::vector<VIP_ENCDOUBLE> v1, std::vector<VIP_ENCDOUBLE> v2, double thresh) {
+#ifdef VIP_DO_MODE
+    VIP_ENCBOOL ret = false;
+#endif
     for (size_t i = 0; i < v1.size(); ++i) {
-        // FIXME: assuming that this info can be decrypted
-        if (fabs(VIP_DEC(v2.at(i) - v1.at(i))) > thresh) {
+#ifndef VIP_DO_MODE
+        if (((v2.at(i) - v1.at(i)) > thresh) || ((v1.at(i) - v2.at(i)) > thresh)) {
             return true;
         }
+#else
+        ret = VIP_CMOV(((v2.at(i) - v1.at(i)) > thresh) | ((v1.at(i) - v2.at(i)) > thresh), (VIP_ENCBOOL) true, ret);
+
+#endif
     }
-    return false;
+    return ret;
 }

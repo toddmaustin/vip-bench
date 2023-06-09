@@ -3,9 +3,9 @@
 // https://en.wikipedia.org/wiki/Linear_discriminant_analysis
 //
 
-#include<iostream>
-#include<math.h>
-#include<iomanip>
+#include <iostream>
+#include <math.h>
+#include <iomanip>
 
 #include "../config.h"
 #include "../common/utils.h"
@@ -14,41 +14,41 @@
 
 using namespace std;
 
-//Total array size for training and testing
+// Total array size for training and testing
 const int sizet = 800;
-//Size of data in class1
+// Size of data in class1
 const int sizec1 = 400;
-//Size of data in class2, sum of sizec1 and sizec2 should give sizet
+// Size of data in class2, sum of sizec1 and sizec2 should give sizet
 const int sizec2 = 400;
 
-//Arrays that hold all data for training
+// Arrays that hold all data for training
 VIP_ENCDOUBLE datax[sizet];
 VIP_ENCDOUBLE datay[sizet];
 
-//Arrays that hold training data that are in CLASS1
+// Arrays that hold training data that are in CLASS1
 VIP_ENCDOUBLE dataxC1[sizec1];
 VIP_ENCDOUBLE datayC1[sizec1];
 
-//Arrays that hold training data that are in CLASS2
+// Arrays that hold training data that are in CLASS2
 VIP_ENCDOUBLE dataxC2[sizec2];
 VIP_ENCDOUBLE datayC2[sizec2];
 
-//Arrays that hold testing data that are in CLASS1
+// Arrays that hold testing data that are in CLASS1
 VIP_ENCDOUBLE dataxC1test[sizec1];
 VIP_ENCDOUBLE datayC1test[sizec1];
 
-//Arrays that hold testing data that are in CLASS2
+// Arrays that hold testing data that are in CLASS2
 VIP_ENCDOUBLE dataxC2test[sizec2];
 VIP_ENCDOUBLE datayC2test[sizec2];
 
-//Holds the prediction
+// Holds the prediction
 VIP_ENCINT classPrediction[sizet];
 
-//These are constants that represent the model
+// These are constants that represent the model
 VIP_ENCDOUBLE b0;
 VIP_ENCDOUBLE b1;
 
-//These arrays hold the scores of each data, scores are helpful for separating the classes
+// These arrays hold the scores of each data, scores are helpful for separating the classes
 VIP_ENCDOUBLE scorec1[sizec1];
 VIP_ENCDOUBLE scorec2[sizec2];
 
@@ -70,17 +70,14 @@ void initializeData(double cond1,double cond2){
 	}
 	//initialize class2 test data and training data
 	for (int i=0; i < sizec2; i++){
-		datax[i+sizec1-1] = myrand()%40;
-		datay[i+sizec1-1] = (VIP_ENCDOUBLE)cond1*datax[i+sizec1-1] + cond2 - myrand()%40;
-		datayC2[i] = datay[i+sizec1-1];
-		dataxC2[i] = datax[i+sizec1-1];
+		datax[i+sizec1] = myrand()%40;
+		datay[i+sizec1] = (VIP_ENCDOUBLE)cond1*datax[i+sizec1] + cond2 - myrand()%40;
+		datayC2[i] = datay[i+sizec1];
+		dataxC2[i] = datax[i+sizec1];
 			
 		dataxC2test[i] = myrand()%40;
 		datayC2test[i] = (VIP_ENCDOUBLE)cond1*dataxC2test[i] + cond2 - myrand()%40;
-	}	 
-	datax[sizet-1] = 0; //Weird Bug, off-by-1 matrix init error between enc and unenc
-	datay[sizet-1] = 0; //Weird Bug, off-by-1 matrix init error between enc and unenc
-	// ^^ This fix keeps it consistent with the original output in lda.out
+	}
 }
 
 //calculates the mean of an array
@@ -265,7 +262,7 @@ void displayOutput(int size){
 		cout<<setprecision(3)<<VIP_DEC(datax[i])<<"\t"<<VIP_DEC(datay[i])<<"\t"<<VIP_DEC(scorec1[i])<<"\t"<<"CLASS1"<<endl;		
 	}
 	for(int i = 0;i<sizec2;i++){
-		cout<<setprecision(3)<<VIP_DEC(datax[i+sizec1-1])<<"\t"<<VIP_DEC(datay[i+sizec1-1])<<"\t"<<VIP_DEC(scorec2[i])<<"\t"<<"CLASS2"<<endl;
+		cout<<setprecision(3)<<VIP_DEC(datax[i+sizec1])<<"\t"<<VIP_DEC(datay[i+sizec1])<<"\t"<<VIP_DEC(scorec2[i])<<"\t"<<"CLASS2"<<endl;
 	}
 	
 	cout<<"\n//////////////////TESTING RESULT////////////////////\n";
@@ -278,16 +275,17 @@ void displayOutput(int size){
 	}
 	for(int i = 0;i<sizec2;i++){		
 		cout<<setprecision(3)<<VIP_DEC(dataxC2test[i])<<"\t"<<VIP_DEC(datayC2test[i])<<"\t"<<"CLASS2";
-		cout<<"\t"<<"CLASS"<<VIP_DEC(classPrediction[i+sizec1-1])<<endl;
+		cout<<"\t"<<"CLASS"<<VIP_DEC(classPrediction[i+sizec1])<<endl;
 	}
 }
+
 int main(void){	
 	
 	VIP_INIT;
 	b0 = 0.0; // Must instatiate after VIP_INIT so that values are encrypted under the correct scheme
 	b1 = 0.0; // Must instatiate after VIP_INIT so that values are encrypted under the correct scheme
 	
-	initializeData(3,4);		
+	initializeData(3,4);
 	VIP_ENCDOUBLE meanx = mean(datax,sizet);
 	VIP_ENCDOUBLE meany = mean(datay,sizet);
 
@@ -381,13 +379,13 @@ int main(void){
 			VIP_ENCDOUBLE score = b0*(dataxC2test[i]-meanx)+b1*(datayC2test[i]-meany);				
 			#ifdef VIP_NA_MODE
 				if((score>=0 && path ==1) || (score<0 && path ==2)){
-					classPrediction[i+sizec1-1] = 1;					
+					classPrediction[i+sizec1] = 1;					
 				}else{
-					classPrediction[i+sizec1-1] = 2;					
+					classPrediction[i+sizec1] = 2;					
 				}
 			#else
 				condition = (score>=0 && path ==1) || (score<0 && path ==2);
-				classPrediction[i+sizec1-1] = VIP_CMOV(condition,(VIP_ENCINT)1,(VIP_ENCINT)2);
+				classPrediction[i+sizec1] = VIP_CMOV(condition,(VIP_ENCINT)1,(VIP_ENCINT)2);
 			#endif				
 		}		
 	}

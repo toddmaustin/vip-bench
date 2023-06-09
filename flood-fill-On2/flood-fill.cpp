@@ -21,7 +21,7 @@ typedef vector<VIP_ENCUINT64> VIP_Enc_Group_t;
 VIP_Enc_Group_t initGroup(BITMAPS, 0); //{BITMAPS x 0}
 struct node
 {
-	VIP_Enc_Group_t group = initGroup;
+        VIP_Enc_Group_t group = initGroup;
 };
 
 // matrix showing portion of the screen having different colors
@@ -184,260 +184,266 @@ VIP_ENCCHAR mat[M][N] =
 #endif
 };
 
-
 inline VIP_ENCBOOL haveIntersection(VIP_Enc_Group_t bin1, VIP_Enc_Group_t bin2)
 {
-	VIP_ENCBOOL intersect = false;
-	for (int i = 0; i < BITMAPS; i++)
-	{
-		intersect = intersect || ((bin1[i] & bin2[i]) != 0);
-	}
+        VIP_ENCBOOL intersect = false;
+        for (int i = 0; i < BITMAPS; i++)
+        {
+#ifdef VIP_DO_MODE
+                intersect = intersect | ((bin1[i] & bin2[i]) != 0);
+#else
+                intersect = intersect || ((bin1[i] & bin2[i]) != 0);
+#endif
+        }
 
-	return intersect;
+        return intersect;
 }
 inline VIP_ENCUINT64 combine(VIP_ENCUINT64 bin1, VIP_ENCUINT64 bin2)
 {
-	return bin1 | bin2;
+        return bin1 | bin2;
 }
-
-
-
-
-
 
 void floodfill(VIP_ENCCHAR mat[M][N], VIP_ENCINT x, VIP_ENCINT y, VIP_ENCCHAR replacement)
 {
-	int row[] = {-1, -1, -1, 0, 0, 1, 1, 1, 0};
-	int col[] = {-1, 0, 1, -1, 1, -1, 0, 1, 0};
-	node struct_mat[M][N];
-	VIP_ENCUINT64 currId = 1;
-	VIP_ENCINT bitMapIdx = 0;
+        int row[] = {-1, -1, -1, 0, 0, 1, 1, 1, 0};
+        int col[] = {-1, 0, 1, -1, 1, -1, 0, 1, 0};
+        node struct_mat[M][N];
+        VIP_ENCUINT64 currId = 1;
+        VIP_ENCINT bitMapIdx = 0;
 
 #define SAFELOC(X, Y) ((X) >= 0 && (X) < M && (Y) >= 0 && (Y) < N)
 
-	VIP_ENCBOOL matchFound = false;
+        VIP_ENCBOOL matchFound = false;
 
-	// Forward pass
-	for (int i = 0; i < M; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
+        // Forward pass
+        for (int i = 0; i < M; i++)
+        {
+                for (int j = 0; j < N; j++)
+                {
 
-			node *cell = &(struct_mat[i][j]);
-			VIP_Enc_Group_t commonGroup = cell->group;
+                        node *cell = &(struct_mat[i][j]);
+                        VIP_Enc_Group_t commonGroup = cell->group;
 
-			// Forward read pass
-			for (int k = 0; k < 4; k++)
-			{
+                        // Forward read pass
+                        for (int k = 0; k < 4; k++)
+                        {
 
-				if (SAFELOC(i + row[k], j + col[k]))
-				{
-					node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
+                                if (SAFELOC(i + row[k], j + col[k]))
+                                {
+                                        node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
 
-					VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
-
-					matchFound = match || matchFound;
-
-					for (int b = 0; b < BITMAPS; b++)
-					{
-#ifdef VIP_DO_MODE
-						commonGroup[b] = VIP_CMOV(match, combine(commonGroup[b], (adjCell->group)[b]), commonGroup[b]);
-#else /* VIP_NA_MODE */
-            if (match)
-              commonGroup[b] = combine(commonGroup[b], (adjCell->group)[b]);
-#endif
-					}
-				}
-			}
-
-			cell->group = commonGroup;
-
-			// Forward write pass
-			for (int k = 0; k < 4; k++)
-			{
-				if (SAFELOC(i + row[k], j + col[k]))
-				{
-					node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
-
-					VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
-
-					for (int b = 0; b < BITMAPS; b++)
-					{
-#ifdef VIP_DO_MODE
-						(adjCell->group)[b] = VIP_CMOV(match, (commonGroup)[b], (adjCell->group)[b]);
-#else /* VIP_NA_MODE */
-            if (match)
-						  (adjCell->group)[b] = (commonGroup)[b];
-#endif
-					}
-				}
-			}
-
-			VIP_ENCBOOL update_current_id = !matchFound && (currId == 0) && (bitMapIdx + 1 < BITMAPS);
+                                        VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
 
 #ifdef VIP_DO_MODE
-			currId = VIP_CMOV(update_current_id, (VIP_ENCUINT64)1, currId);
-#else /* VIP_NA_MODE */
-			if (update_current_id)
-        currId = (uint64_t)1;
+
+                                        matchFound = match | matchFound;
+#else
+                                        matchFound = match || matchFound;
+
 #endif
-			// currId = currId + (((currId + 1) << ((((-currId) | currId) >> (64 - 1)) & 1)) & 1);
+
+                                        for (int b = 0; b < BITMAPS; b++)
+                                        {
+#ifdef VIP_DO_MODE
+                                                commonGroup[b] = VIP_CMOV(match, combine(commonGroup[b], (adjCell->group)[b]), commonGroup[b]);
+#else /* VIP_NA_MODE */
+                                                if (match)
+                                                        commonGroup[b] = combine(commonGroup[b], (adjCell->group)[b]);
+#endif
+                                        }
+                                }
+                        }
+
+                        cell->group = commonGroup;
+
+                        // Forward write pass
+                        for (int k = 0; k < 4; k++)
+                        {
+                                if (SAFELOC(i + row[k], j + col[k]))
+                                {
+                                        node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
+
+                                        VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
+
+                                        for (int b = 0; b < BITMAPS; b++)
+                                        {
+#ifdef VIP_DO_MODE
+                                                (adjCell->group)[b] = VIP_CMOV(match, (commonGroup)[b], (adjCell->group)[b]);
+#else /* VIP_NA_MODE */
+                                                if (match)
+                                                        (adjCell->group)[b] = (commonGroup)[b];
+#endif
+                                        }
+                                }
+                        }
+
 
 #ifdef VIP_DO_MODE
-      bitMapIdx += VIP_ENCINT(VIP_CMOV(update_current_id, (VIP_ENCINT)1, (VIP_ENCINT)0));
+                        VIP_ENCBOOL update_current_id = !matchFound & (currId == 0) & (bitMapIdx + 1 < BITMAPS);
+                        currId = VIP_CMOV(update_current_id, (VIP_ENCUINT64)1, currId);
 #else /* VIP_NA_MODE */
-      bitMapIdx += update_current_id ? 1 : 0;
+                        VIP_ENCBOOL update_current_id = !matchFound && (currId == 0) && (bitMapIdx + 1 < BITMAPS);
+                        if (update_current_id)
+                                currId = (uint64_t)1;
 #endif
-
-			for (int b = 0; b < BITMAPS; b++)
-			{
-#ifdef VIP_DO_MODE
-				cell->group[b] = VIP_CMOV(b == bitMapIdx && !matchFound, currId, cell->group[b]);
-#else /* VIP_NA_MODE */
-				if (b == bitMapIdx && !matchFound)
-          cell->group[b] = currId;
-#endif
-			}
+                        // currId = currId + (((currId + 1) << ((((-currId) | currId) >> (64 - 1)) & 1)) & 1);
 
 #ifdef VIP_DO_MODE
-      currId = currId << VIP_CMOV(!matchFound, (VIP_ENCUINT64)1, (VIP_ENCUINT64)0);
+                        bitMapIdx += VIP_ENCINT(VIP_CMOV(update_current_id, (VIP_ENCINT)1, (VIP_ENCINT)0));
 #else /* VIP_NA_MODE */
-      currId = currId << (!matchFound ? 1 : 0);
+                        bitMapIdx += update_current_id ? 1 : 0;
 #endif
 
-			matchFound = false;
-		}
-	}
-
-	VIP_Enc_Group_t targetGr = initGroup;
-
-	// Reverse pass
-	for (int i = M - 1; i >= 0; i--)
-	{
-		for (int j = N - 1; j >= 0; j--)
-		{
-			node *cell = &(struct_mat[i][j]);
-			VIP_Enc_Group_t commonGroup = cell->group;
-
-			// Reverse read pass
-			for (int k = 0; k < 8; k++)
-			{
-				if (SAFELOC(i + row[k], j + col[k]))
-				{
-					node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
-
-					// Check if current position matches with the cell
-					VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
-
-					for (int b = 0; b < BITMAPS; b++)
-					{
+                        for (int b = 0; b < BITMAPS; b++)
+                        {
 #ifdef VIP_DO_MODE
-						commonGroup[b] = VIP_CMOV(match, combine(commonGroup[b], (adjCell->group)[b]), commonGroup[b]);
+                                cell->group[b] = VIP_CMOV(b == bitMapIdx & !matchFound, currId, cell->group[b]);
 #else /* VIP_NA_MODE */
-						if (match)
-              commonGroup[b] = combine(commonGroup[b], (adjCell->group)[b]);
+                                if (b == bitMapIdx && !matchFound)
+                                        cell->group[b] = currId;
 #endif
-					}
-				}
-			}
+                        }
 
-			// Reverse write pass
-			for (int k = 0; k <= 8; k++)
-			{
-				if (SAFELOC(i + row[k], j + col[k]))
-				{
-					node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
-
-					VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
-
-					VIP_ENCBOOL _istarget = (x == i + row[k]) && (y == j + col[k]);
-					for (int b = 0; b < BITMAPS; b++)
-					{
 #ifdef VIP_DO_MODE
-						(adjCell->group)[b] = VIP_CMOV(match, commonGroup[b], (adjCell->group)[b]);
-						// Oblivious access to get target group
-						targetGr[b] = VIP_CMOV(_istarget, (adjCell->group)[b], targetGr[b]);
+                        currId = currId << VIP_CMOV(!matchFound, (VIP_ENCUINT64)1, (VIP_ENCUINT64)0);
 #else /* VIP_NA_MODE */
-						if (match)
-              (adjCell->group)[b] = commonGroup[b];
-						// Oblivious access to get target group
-						if (_istarget)
-              targetGr[b] = (adjCell->group)[b];
+                        currId = currId << (!matchFound ? 1 : 0);
 #endif
-					}
-				}
-			}
-		}
-	}
 
-	// Target Group Update pass: This pass is required for correctness [Verified - MZD]
-	for (int ix = 0; ix < M; ix++)
-	{
-		for (int iy = 0; iy < N; iy++)
-		{
+                        matchFound = false;
+                }
+        }
 
-			node *cell = &struct_mat[ix][iy];
+        VIP_Enc_Group_t targetGr = initGroup;
 
-			VIP_ENCBOOL cond = haveIntersection(cell->group, targetGr);
-			// if group contains target group
-			for (int b = 0; b < BITMAPS; b++)
-			{
+        // Reverse pass
+        for (int i = M - 1; i >= 0; i--)
+        {
+                for (int j = N - 1; j >= 0; j--)
+                {
+                        node *cell = &(struct_mat[i][j]);
+                        VIP_Enc_Group_t commonGroup = cell->group;
+
+                        // Reverse read pass
+                        for (int k = 0; k < 8; k++)
+                        {
+                                if (SAFELOC(i + row[k], j + col[k]))
+                                {
+                                        node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
+
+                                        // Check if current position matches with the cell
+                                        VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
+
+                                        for (int b = 0; b < BITMAPS; b++)
+                                        {
 #ifdef VIP_DO_MODE
-				targetGr[b] = VIP_CMOV(cond, combine(cell->group[b], targetGr[b]), targetGr[b]);
+                                                commonGroup[b] = VIP_CMOV(match, combine(commonGroup[b], (adjCell->group)[b]), commonGroup[b]);
 #else /* VIP_NA_MODE */
-				if (cond)
-          targetGr[b] = combine(cell->group[b], targetGr[b]);
+                                                if (match)
+                                                        commonGroup[b] = combine(commonGroup[b], (adjCell->group)[b]);
 #endif
-			}
-		}
-	}
+                                        }
+                                }
+                        }
 
-	// Coloring pass
-	for (int i = 0; i < M; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			VIP_ENCBOOL flood = haveIntersection(targetGr, struct_mat[i][j].group);
+                        // Reverse write pass
+                        for (int k = 0; k <= 8; k++)
+                        {
+                                if (SAFELOC(i + row[k], j + col[k]))
+                                {
+                                        node *adjCell = &(struct_mat[i + row[k]][j + col[k]]);
+
+                                        VIP_ENCBOOL match = (mat[i][j] == mat[i + row[k]][j + col[k]]);
+
 #ifdef VIP_DO_MODE
-			mat[i][j] = VIP_CMOV(flood, replacement, mat[i][j]);
-#else /* VIP_NA_MODE */
-			if (flood)
-        mat[i][j] = replacement;
+                                        VIP_ENCBOOL _istarget = (x == i + row[k]) & (y == j + col[k]);
+#else
+                                        VIP_ENCBOOL _istarget = (x == i + row[k]) && (y == j + col[k]);
 #endif
-		}
-	}
+                                        for (int b = 0; b < BITMAPS; b++)
+                                        {
+#ifdef VIP_DO_MODE
+                                                (adjCell->group)[b] = VIP_CMOV(match, commonGroup[b], (adjCell->group)[b]);
+                                                // Oblivious access to get target group
+                                                targetGr[b] = VIP_CMOV(_istarget, (adjCell->group)[b], targetGr[b]);
+#else /* VIP_NA_MODE */
+                                                if (match)
+                                                        (adjCell->group)[b] = commonGroup[b];
+                                                // Oblivious access to get target group
+                                                if (_istarget)
+                                                        targetGr[b] = (adjCell->group)[b];
+#endif
+                                        }
+                                }
+                        }
+                }
+        }
+
+        // Target Group Update pass: This pass is required for correctness [Verified - MZD]
+        for (int ix = 0; ix < M; ix++)
+        {
+                for (int iy = 0; iy < N; iy++)
+                {
+
+                        node *cell = &struct_mat[ix][iy];
+
+                        VIP_ENCBOOL cond = haveIntersection(cell->group, targetGr);
+                        // if group contains target group
+                        for (int b = 0; b < BITMAPS; b++)
+                        {
+#ifdef VIP_DO_MODE
+                                targetGr[b] = VIP_CMOV(cond, combine(cell->group[b], targetGr[b]), targetGr[b]);
+#else /* VIP_NA_MODE */
+                                if (cond)
+                                        targetGr[b] = combine(cell->group[b], targetGr[b]);
+#endif
+                        }
+                }
+        }
+
+        // Coloring pass
+        for (int i = 0; i < M; i++)
+        {
+                for (int j = 0; j < N; j++)
+                {
+                        VIP_ENCBOOL flood = haveIntersection(targetGr, struct_mat[i][j].group);
+#ifdef VIP_DO_MODE
+                        mat[i][j] = VIP_CMOV(flood, replacement, mat[i][j]);
+#else /* VIP_NA_MODE */
+                        if (flood)
+                                mat[i][j] = replacement;
+#endif
+                }
+        }
 }
-
 
 void printMatrix(VIP_ENCCHAR mat[M][N])
 {
-  for (int i = 0; i < M; i++)
-  {
-    for (int j = 0; j < N; j++)
-    {
-      cout << setw(3) << VIP_DEC(mat[i][j]);
-    }
-    cout << endl;
-  }
+        for (int i = 0; i < M; i++)
+        {
+                for (int j = 0; j < N; j++)
+                {
+                        cout << setw(3) << VIP_DEC(mat[i][j]);
+                }
+                cout << endl;
+        }
 }
 
 int main()
 {
 
-  mysrand(0);
+        mysrand(0);
 
-  VIP_ENCINT x = 3, y = 9;
-  VIP_ENCCHAR replacement = 'C';
+        VIP_ENCINT x = 3, y = 9;
+        VIP_ENCCHAR replacement = 'C';
 
-
-  cout << "\nBEFORE flooding `" << VIP_DEC(replacement) << "' @ "
-       << "(" << VIP_DEC(x) << "," << VIP_DEC(y) << "):\n";
-  printMatrix(mat);
-  {
-    Stopwatch start("VIP-bench runtime: ");
-    floodfill(mat, x, y, replacement);
-  }
-  cout << "\nAFTER:" << endl;
-  printMatrix(mat);
+        cout << "\nBEFORE flooding `" << VIP_DEC(replacement) << "' @ "
+             << "(" << VIP_DEC(x) << "," << VIP_DEC(y) << "):\n";
+        printMatrix(mat);
+        {
+                Stopwatch start("VIP-bench runtime: ");
+                floodfill(mat, x, y, replacement);
+        }
+        cout << "\nAFTER:" << endl;
+        printMatrix(mat);
 }
-

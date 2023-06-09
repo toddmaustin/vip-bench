@@ -12,9 +12,10 @@ Within individual directories, the following Makefile targets are also available
   test           - run the standard test on the binary
 
 Note that benchmark builds must be parameterized with the build MODE, such as:
-  MODE=na        - build in NATIVE mode, non-data-oblivious build without encryption
-  MODE=do        - build in DATA-OBLIVIOUS mode, data-oblivious build without encryption
-  MODE=enc       - build in DATA-OBLIVIOUS ENCRYPTED mode, data-oblivious build with encrpytion
+  MODE=na             - build in NATIVE mode, non-data-oblivious build without encryption
+  MODE=do             - build in DATA-OBLIVIOUS mode, data-oblivious build without encryption
+  MODE=do ARCH=x86    - build in DATA-OBLIVIOUS mode, data-oblivious build without encryption. It uses x86 CMOVs to implement the conditional operator. 
+  MODE=enc            - build in DATA-OBLIVIOUS ENCRYPTED mode, data-oblivious build with encrpytion
 
 Example benchmark builds:
   make MODE=na clean build test
@@ -67,6 +68,8 @@ build: $(TARGET_EXE)
 %.o: %.cpp
 ifeq ($(MODE), na)
 	$(CXX) $(CFLAGS) -DVIP_NA_MODE -o $(notdir $@) -c $<
+else ifeq ($(MODE) $(ARCH), do x86)
+	$(CXX) $(CFLAGS) -DVIP_DO_MODE -DX86 -o $(notdir $@) -c $<
 else ifeq ($(MODE), do)
 	$(CXX) $(CFLAGS) -DVIP_DO_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), enc)
@@ -78,6 +81,8 @@ endif
 %.o: %.c
 ifeq ($(MODE), na)
 	$(CC) $(CFLAGS) -DVIP_NA_MODE -o $(notdir $@) -c $<
+else ifeq ($(MODE) ($(ARCH)), do x86) 
+   	$(CC) $(CFLAGS) -DVIP_DO_MODE -DX86 -o $(notdir $@) -c $<
 else ifeq ($(MODE), do)
 	$(CC) $(CFLAGS) -DVIP_DO_MODE -o $(notdir $@) -c $<
 else ifeq ($(MODE), enc)

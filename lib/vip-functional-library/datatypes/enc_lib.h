@@ -93,6 +93,11 @@ struct enc_double;
         // // Logic, Enc-Plaintext Op
         // // Logic, Plaintext-Enc Op
 
+        // // Bitwise, Enc-Enc Op          
+        inline friend enc_bool operator& (enc_bool b1, enc_bool b2) __attribute__((always_inline)) {return enc_bool(b1.decrypt_bool() & b2.decrypt_bool()); }
+        inline friend enc_bool operator| (enc_bool b1, enc_bool b2) __attribute__((always_inline)) {return enc_bool(b1.decrypt_bool() | b2.decrypt_bool()); }
+        
+
        /**************/
        /*** Other ***/
         bool GET_DECRYPTED_VALUE(){ //std::cerr << "ENC_BOOL: EXTERNAL CALL TO UNSAFE DECRYPT FUNCTION\n";
